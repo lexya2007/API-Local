@@ -1,0 +1,12 @@
+TestCase,email_signin,Password,alias,description
+Get Token - SignIn - Wrong Password,bi_api2@123flo.com,123asd,cbad944424393cf309efaf0e70f1b125,Your signature is invalid.
+Get Token - SignIn - Wrong Username,bi_apiaaa7@123flo.com,123456,cbad944424393cf309efaf0e70f1b125,User/password is invalid.
+Get Token - SignIn - Password under 6 characters,bi_api7@123flo.com,123,cbad944424393cf309efaf0e70f1b125,Your signature is invalid.
+Get Token - SignIn - Password over 32 characters,bi_api7@123flo.com,LoginFailureWithInvalidPasswordove32characters,cbad944424393cf309efaf0e70f1b125,Your signature is invalid.
+Get Token - SignIn - Null Password,bi_api7@123flo.com,,cbad944424393cf309efaf0e70f1b125,Your signature is invalid.
+Get Token - SignIn - Null Username,,123456,cbad944424393cf309efaf0e70f1b125,User/password is invalid.
+Get Token - SignIn - Username has special characters,bi_api7#$%@123flo.com,,cbad944424393cf309efaf0e70f1b125,User/password is invalid.
+Get Token - SignIn - Null Username and Password,,,cbad944424393cf309efaf0e70f1b125,User/password is invalid.
+Get Token - SignIn - Wrong Alias in body,bi_api7@123flo.com,,123123,Your application registry is invalid.
+Get Token - SignIn - None Alias in body,bi_api7@123flo.com,,,Your application registry is invalid.
+Get Token - SignIn - Success,bi_api2@123flo.com,123456,cbad944424393cf309efaf0e70f1b125,Flo

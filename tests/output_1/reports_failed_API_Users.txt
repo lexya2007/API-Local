@@ -1,0 +1,7 @@
+Title TC: Failed - Create User - SignUp - Null Password
+endpoint: v2.1.1/api/users.json
+method: post
+error: status response failed
+status: 500
+response message: Current API not support this case
+

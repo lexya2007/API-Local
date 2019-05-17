@@ -1,0 +1,331 @@
+Title TC: Test Version: v2.1.1/api
+Passed - Pretest - Login
+endpoint: v2.1.1/api/users/token.json
+method: POST
+error: No Error
+status: 200
+response message: Flo
+
+Title TC: Test Version: v2.1.1/api
+Passed - Pretest - Create Collection
+endpoint: v2.1.1/api/projects.json
+method: POST
+error: No Error
+status: 200
+response message: Create new Collection has project_id: 82196
+
+Title TC: Passed - Create Kanbans - Only input parameter project_id
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Create Kanban with parameter 'project_id' successful
+status: 200
+response message: {"data":[{"kanban":{"id":53183,"name":"","updated_date":1557894004.419,"created_date":1557894004.419,"project_id":82196,"color":"","order_number":1,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - Only input parameter name
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id'
+status: 200
+response message: You are not authorized to perform this action.
+
+Title TC: Passed - Create Kanbans - Only input parameter color
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id'
+status: 200
+response message: You are not authorized to perform this action.
+
+Title TC: Passed - Create Kanbans - Input parameters project_id and Name
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Allow create Kanban without parameter 'color'
+status: 200
+response message: {"data":[{"kanban":{"id":53184,"name":"Collection_435683","updated_date":1557894005.493,"created_date":1557894005.493,"project_id":82196,"color":"","order_number":2,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - Input parameters project_id and Color
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Allow create Kanban without parameter 'name'
+status: 200
+response message: {"data":[{"kanban":{"id":53185,"name":"","updated_date":1557894005.87,"created_date":1557894005.87,"project_id":82196,"color":"#4986e7","order_number":3,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - Input parameters Name and Color
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id'
+status: 200
+response message: You are not authorized to perform this action.
+
+Title TC: Passed - Create Kanbans - Input invalid parameter project_id
+endpoint: v2.1.1/api/kanbans
+method: POST
+error: Cannot create kanban with invalid parameter 'project_id'
+status: 200
+response message: You are not authorized to perform this action.
+
+Title TC: Passed - Create Kanbans - Input wrong parameter project_id
+endpoint: v2.1.1/api/kanbans
+method: POST
+error: Cannot create kanban with wrong parameter 'project_id'
+status: 200
+response message: {"error":27,"description":"You are not authorized to perform this action."}
+
+Title TC: Passed - Create Kanbans - Input invalid parameter color
+endpoint: v2.1.1/api/kanbans
+method: POST
+error: Allow create kanban with invalid parameter 'color'
+status: 200
+response message: {"data":[{"kanban":{"id":53186,"name":"Collection_9232805","updated_date":1557894007.21,"created_date":1557894007.21,"project_id":82196,"color":"123","order_number":4,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - Input invalid parameter name
+endpoint: v2.1.1/api/kanbans
+method: POST
+error: Allow create kanban with invalid parameter 'name'
+status: 200
+response message: {"data":[{"kanban":{"id":53187,"name":"789456123","updated_date":1557894007.565,"created_date":1557894007.565,"project_id":82196,"color":"#4986e7","order_number":5,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - None parameter project_id in body
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id'
+status: 200
+response message: You are not authorized to perform this action.
+
+Title TC: Passed - Create Kanbans - None parameter name in body
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Allow create kanban without parameter 'name'
+status: 200
+response message: {"data":[{"kanban":{"id":53188,"name":"","updated_date":1557894008.171,"created_date":1557894008.171,"project_id":82196,"color":"#4986e7","order_number":6,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - None parameter color in body
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Allow create kanban without parameter 'color'
+status: 200
+response message: {"data":[{"kanban":{"id":53189,"name":"Collection_8759431","updated_date":1557894008.489,"created_date":1557894008.489,"project_id":82196,"color":"","order_number":7,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - None parameters color and project_id in body
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id' and 'color'
+status: 200
+response message: You are not authorized to perform this action.
+
+Title TC: Passed - Create Kanbans - None parameters name and project_id in body
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id' and 'name'
+status: 200
+response message: You are not authorized to perform this action.
+
+Title TC: Passed - Create Kanbans - None parameters color and name in body
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Allow create kanban without parameter 'color' and 'name'
+status: 200
+response message: {"data":[{"kanban":{"id":53190,"name":"","updated_date":1557894009.411,"created_date":1557894009.411,"project_id":82196,"color":"","order_number":8,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - Success
+endpoint: v2.1.1/api/kanban
+method: POST
+error: No Error
+status: 200
+response message: Create New Kanban Success!
+
+Title TC: Failed - Create Kanbans - Create Kanban with invalid value inputted
+endpoint: v2.1.1/api/kanban
+method: POST
+error: Status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Passed - Create 50 Kanbans
+endpoint: v2.1.1/api/kanban
+method: POST
+error: No Error
+status: 200
+response message: Create 50 kanbans success
+
+Title TC: Passed - Get List Kanban  - Get a kanban created.
+endpoint: v2.1.1/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get a kanban created successful
+
+Title TC: Passed - Get List Kanban  - Get kanban without parameter project_ids
+endpoint: v2.1.1/api/kanban
+method: GET
+error: Cannot get kanban without parameter 'project_ids' successful
+status: 200
+response message: {"error":25,"description":"param is missing or the value is empty: project_ids"}
+
+Title TC: Passed - Get List Kanban  -  Get all Kanbans created
+endpoint: v2.1.1/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get all Kanbans created successful
+
+Title TC: Passed - Get List Kanban  - Get all Kanbans - pItem = 20
+endpoint: v2.1.1/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Show 20 Kanbans in 1 page
+
+Title TC: Passed - Get List Kanban  - Get Change Sync Kanbans with modifiedGTE
+endpoint: v2.1.1/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get Change Sync Kanbans with modifiedGTE successful
+
+Title TC: Passed - Update Kanbans - Update invalid id Kanban
+endpoint: v2.1.1/api/kanban/update
+method: PUT
+error: Update invalid id Kanban
+status: 200
+response message: {"error":27,"description":"You are not authorized to perform this action."}
+
+Title TC: Passed - Update Kanbans - null project_id
+endpoint: v2.1.1/api/kanban/update
+method: PUT
+error: Update Kanban with null 'project_id'
+status: 200
+response message: {"error":27,"description":"You are not authorized to perform this action."}
+
+Title TC: Passed - Update Kanbans - invalid project_id
+endpoint: v2.1.1/api/kanban/update
+method: PUT
+error: Update Kanban with invalid 'project_id'
+status: 200
+response message: {"error":27,"description":"You are not authorized to perform this action."}
+
+Title TC: Failed - Update Kanbans - Update Kanban with invalid value inputted
+endpoint: v2.1.1/api/kanban/update
+method: PUT
+error: Status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Passed - Update Kanbans - wrong project_id
+endpoint: v2.1.1/api/kanban/update
+method: PUT
+error: Update Kanban with wrong 'project_id'
+status: 200
+response message: {"error":27,"description":"You are not authorized to perform this action."}
+
+Title TC: Passed - Update Kanbans - Update valid id Kanban
+endpoint: v2.1.1/api/kanban/update
+method: PUT
+error: No Error
+status: 200
+response message: Update Kanban successful
+
+Title TC: Passed - Get List Kanban  - Get Change - a Kanban updated
+endpoint: v2.1.1/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get a Kanban updated successful
+
+Title TC: Passed - Update Kanbans - Update 50 kanbans created
+endpoint: v2.1.1/api/kanban/update
+method: PUT
+error: No Error
+status: 200
+response message: Update 50 Kanbans created successful
+
+Title TC: Passed - Get List Kanban  - Get Change - Show 50 Kanbans updated
+endpoint: v2.1.1/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: GET 50 Kanbans updated successful
+
+Title TC: Passed - Get List Kanban  - Get Change - 20 Kanbans updated in 1 page
+endpoint: v2.1.1/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: GET 20 Kanbans updated successful
+
+Title TC: Passed - Update Kanbans - Update sort order 2 Kanbans
+endpoint: v2.1.1/api/kanban/update
+method: PUT
+error: No Error
+status: 200
+response message: Update sort order 2 Kanbans successful
+
+Title TC: Passed - Get List Kanban - Get Change - 2 Kanbans update order
+endpoint: v2.1.1/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get order 2 Kanbans successful.
+
+Title TC: Passed - Delete Kanbans - Delete invalid id Kanban
+endpoint: v2.1.1/api/kanban
+method: DELETE
+error: No Error
+status: 200
+response message: Cannot delete invalid id Kanban
+
+Title TC: Passed - Delete Kanbans - Delete with null id Kanban
+endpoint: v2.1.1/api/kanban
+method: DELETE
+error: No Error
+status: 200
+response message: Cannot delete with null id Kanban
+
+Title TC: Passed - Delete Kanbans - Delete with none id Kanban in body request
+endpoint: v2.1.1/api/kanban
+method: DELETE
+error: No Error
+status: 200
+response message: Cannot delete with none id kanban in body request
+
+Title TC: Passed - Delete Kanbans - Delete invalid id Project_id
+endpoint: v2.1.1/api/kanban
+method: DELETE
+error: Cannot delete invalid id Project
+status: 200
+response message: {"error":27,"description":"You are not authorized to perform this action."}
+
+Title TC: Passed - Delete Kanbans - Delete with null id Project_id
+endpoint: v2.1.1/api/kanban
+method: DELETE
+error: Cannot delete with null id Project
+status: 200
+response message: {"error":27,"description":"You are not authorized to perform this action."}
+
+Title TC: Passed - Delete Kanbans - Delete with none id Project_id in body request
+endpoint: v2.1.1/api/kanban
+method: DELETE
+error: Cannot delete with none id Project in body request
+status: 200
+response message: {"error":27,"description":"You are not authorized to perform this action."}
+
+Title TC: Passed - Delete Kanbans - Delete a Kanban
+endpoint: v2.1.1/api/kanban
+method: DELETE
+error: No Error
+status: 200
+response message: Delete a Kanban successful
+
+Title TC: Passed - Get List Kanban  - Get Changes a Kanbans after deleted
+endpoint: v2.1.1/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Data response id Kanban delete correctly
+
+Title TC: Passed - Get List Kanban  -  Get all Kanbans Pre-Test
+endpoint: v2.1.1/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get all Kanbans created
+

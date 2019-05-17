@@ -1,0 +1,158 @@
+{
+	"info": {
+		"_postman_id": "c03823a5-96dd-4dde-b6db-4b8daa299d11",
+		"name": "API-Users-Create[Data Driven]",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User - SignUp - Data Driven",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4e10440b-6e47-49a3-baf3-bb5b71384746",
+						"exec": [
+							"var testCase = pm.iterationData.get(\"TestCase\");",
+							"var getServer = pm.environment.get(\"server\");",
+							"if(testCase == \"SignUp-None alias in body\"){",
+							"    var alias = pm.iterationData.get(\"Alias\")",
+							"    pm.environment.set(\"alias\",null);",
+							"}else{",
+							"    var alias = pm.iterationData.get(\"Alias\")",
+							"    pm.environment.set(\"alias\",alias);",
+							"}",
+							"if(testCase==\"SignUp-Success\" || testCase==\"SignUp-Null Password\" || testCase==\"SignUp-Password over 32 characters\" || testCase==\"SignUp-Password under 6 characters\" || testCase==\"SignUp-Username has special characters\" || testCase==\"SignUp-Wrong alias in body\" || testCase==\"SignUp-None alias in body\" ){",
+							"    // Get random number",
+							"    var numberRandom = Math.floor(Math.random() * 10000000);",
+							"    var emailRandom = pm.iterationData.get(\"Email\")+numberRandom;",
+							"    if(getServer.includes(\"123flo.com\")){",
+							"        pm.environment.set(\"email_signup\",emailRandom+\"@123flo.com\" );",
+							"    }else{",
+							"        pm.environment.set(\"email_signup\",emailRandom+\"@flomail.net\" );",
+							"    }",
+							"  ",
+							"}else if(testCase == \"SignUp-Username has no domain\"){",
+							"    pm.environment.set(\"email_signup\",pm.iterationData.get(\"Email\") );",
+							"}else{",
+							"    var emailaddress = pm.iterationData.get(\"Email\")",
+							"    if(getServer.includes(\"123flo.com\")){",
+							"        pm.environment.set(\"email_signup\",emailaddress+\"@123flo.com\" );",
+							"    }else{",
+							"        pm.environment.set(\"email_signup\",emailaddress+\"@flomail.net\" );",
+							"    }",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "df07f9c7-d0dc-4e99-a2aa-297bf503c41e",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var reqBody = JSON.parse(request.data);",
+							"// Get Username inputted",
+							"var Testcase =reqBody.TC;",
+							"var emailAddress = reqBody.email;",
+							"var Description = reqBody.Description;",
+							"var msgFailed = {",
+							"    collection: \"API_Users\",",
+							"    title: \"Failed - \"+Testcase,",
+							"    endpoint: \"/api/users.json\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Users\",",
+							"    title: 'Passed - '+Testcase,",
+							"    endpoint: \"/api/users.json\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var dataResponse = pm.response.text();",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var body = json.description;",
+							"    if(body == Description){",
+							"        msg.error = body;",
+							"        msg.description = dataResponse;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed!\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"TC\":\"{{TestCase}}\",\n\t\"email\":\"{{email_signup}}\",\n\t\"password\":\"{{Password}}\",\n\t\"alias\":\"{{alias}}\",\n\t\"Description\":\"{{Description}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users.json",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users.json"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

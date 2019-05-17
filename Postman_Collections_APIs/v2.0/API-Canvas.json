@@ -1,0 +1,3793 @@
+{
+	"info": {
+		"_postman_id": "73f5d043-68a5-4df2-b12b-0abe89dd3ca9",
+		"name": "v2.0 API-Canvas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Pre-Condition - Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "710fc72f-9c01-458d-91e2-999228c54ca0",
+						"exec": [
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig\", hash);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9b65e0a-3805-49b2-a0e8-3b2d205156e2",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+							"postman.setEnvironmentVariable(\"keyapi\", keyapi);",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"pm.test(\"Tokenapi is returned\", function () {pm.expect(pm.response.text()).to.include(\"tokenapi\");});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Canvas - VEVENT - full optional params",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bda3ef61-2e3e-41af-942c-896216783827",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Create Canvas - VEVENT - full optional params',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Create Canvas - VEVENT - full optional params',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var item_id = pm.environment.get(\"v4uuid\");",
+							"        // Check data response",
+							"        if ((json.data[0].canvas.item_id === item_id)&&(json.data[0].canvas.item_type === \"VEVENT\")) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create canvas success\"",
+							"",
+							"            postman.setEnvironmentVariable(\"canvasid_create\", json.data[0].canvas.id);",
+							"            postman.setEnvironmentVariable(\"canvasid_itemid\", json.data[0].canvas.item_id);",
+							"            ",
+							"            // canvasid_delete to clean up ",
+							"            //var canvasid_delete = pm.environment.get(\"canvasid_delete\");",
+							"            //canvasid_delete = (canvasid_delete !== undefined) ? json.data[0].canvas.id + \",\" + canvasid_delete : json.data[0].canvas.id;",
+							"            //postman.setEnvironmentVariable(\"canvasid_delete\", canvasid_delete);",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5eec4d64-f695-4c06-b410-3bb5d3b93c3c",
+						"exec": [
+							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"canvas\":[\n\t    {\n\t        \"item_type\": \"VEVENT\",\n\t        \"item_id\": \"{{v4uuid}}\",\n\t        \"collection_id\": 0,\n\t        \"item_card_order\": 5,\n\t        \"kanban_id\": 1,\n\t        \"source_account\": 0,\n\t        \"ref\": \"123\"\n\t    }\n\t]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Canvas - VTODO",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bd74b65-dbe9-4edb-a70d-2d3a225c7e1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Create Canvas - VTODO',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Create Canvas - VTODO',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var item_id = pm.environment.get(\"v4uuid\");",
+							"        // Check data response",
+							"        if ((json.data[0].canvas.item_id === item_id)&&(json.data[0].canvas.item_type === \"VTODO\")) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create canvas success\"",
+							"",
+							"            // canvasid_delete to clean up ",
+							"            //var canvasid_delete = pm.environment.get(\"canvasid_delete\");",
+							"            //canvasid_delete = (canvasid_delete !== undefined) ? json.data[0].canvas.id + \",\" + canvasid_delete : json.data[0].canvas.id;",
+							"            //postman.setEnvironmentVariable(\"canvasid_delete\", canvasid_delete);",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f1ec19ed-e3f2-47ac-8626-4b3214e968bc",
+						"exec": [
+							"postman.setEnvironmentVariable(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"item_type\": \"VTODO\",\n        \"item_id\": \"{{v4uuid}}\",\n        \"collection_id\": 0,\n        \"item_card_order\": 5,\n        \"kanban_id\": 1,\n        \"source_account\": 0,\n        \"ref\": \"123\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Canvas - VJOURNAL",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bd74b65-dbe9-4edb-a70d-2d3a225c7e1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Create Canvas - VJOURNAL',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Create Canvas - VJOURNAL',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var item_id = pm.environment.get(\"v4uuid\");",
+							"        // Check data response",
+							"        if ((json.data[0].canvas.item_id === item_id)&&(json.data[0].canvas.item_type === \"VJOURNAL\")) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create canvas success\"",
+							"",
+							"            // canvasid_delete to clean up ",
+							"            //var canvasid_delete = pm.environment.get(\"canvasid_delete\");",
+							"            //canvasid_delete = (canvasid_delete !== undefined) ? json.data[0].canvas.id + \",\" + canvasid_delete : json.data[0].canvas.id;",
+							"            //postman.setEnvironmentVariable(\"canvasid_delete\", canvasid_delete);",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ee24c8c4-61a4-475f-8775-0e7c9101acfe",
+						"exec": [
+							"postman.setEnvironmentVariable(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"item_type\": \"VJOURNAL\",\n        \"item_id\": \"{{v4uuid}}\",\n        \"collection_id\": 0,\n        \"item_card_order\": 5,\n        \"kanban_id\": 1,\n        \"source_account\": 0,\n        \"ref\": \"123\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Canvas - EMAIL",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bd74b65-dbe9-4edb-a70d-2d3a225c7e1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Create Canvas - EMAIL',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Create Canvas - EMAIL',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var item_id = pm.environment.get(\"v4uuid\");",
+							"        // Check data response",
+							"        if ((json.data[0].canvas.item_id === item_id)&&(json.data[0].canvas.item_type === \"EMAIL\")) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create canvas success\"",
+							"",
+							"            // canvasid_delete to clean up ",
+							"            //var canvasid_delete = pm.environment.get(\"canvasid_delete\");",
+							"            //canvasid_delete = (canvasid_delete !== undefined) ? json.data[0].canvas.id + \",\" + canvasid_delete : json.data[0].canvas.id;",
+							"            //postman.setEnvironmentVariable(\"canvasid_delete\", canvasid_delete);",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "acdfce6e-d5d0-473b-bccb-323ab163b2b2",
+						"exec": [
+							"postman.setEnvironmentVariable(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"item_type\": \"EMAIL\",\n        \"item_id\": \"{{v4uuid}}\",\n        \"collection_id\": 0,\n        \"item_card_order\": 5,\n        \"kanban_id\": 1,\n        \"source_account\": 0,\n        \"ref\": \"123\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Canvas - CONTACT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bd74b65-dbe9-4edb-a70d-2d3a225c7e1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Create Canvas - CONTACT',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Create Canvas - CONTACT',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var item_id = pm.environment.get(\"v4uuid\");",
+							"        // Check data response",
+							"        if ((json.data[0].canvas.item_id === item_id)&&(json.data[0].canvas.item_type === \"CONTACT\")) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create canvas success\"",
+							"",
+							"            // canvasid_delete to clean up ",
+							"            //var canvasid_delete = pm.environment.get(\"canvasid_delete\");",
+							"            //canvasid_delete = (canvasid_delete !== undefined) ? json.data[0].canvas.id + \",\" + canvasid_delete : json.data[0].canvas.id;",
+							"            //postman.setEnvironmentVariable(\"canvasid_delete\", canvasid_delete);",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "18152fe6-c692-4343-947f-2a9465cce7f7",
+						"exec": [
+							"postman.setEnvironmentVariable(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"item_type\": \"CONTACT\",\n        \"item_id\": \"{{v4uuid}}\",\n        \"collection_id\": 0,\n        \"item_card_order\": 5,\n        \"kanban_id\": 1,\n        \"source_account\": 0,\n        \"ref\": \"123\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Canvas - URL",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bd74b65-dbe9-4edb-a70d-2d3a225c7e1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Create Canvas - URL',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Create Canvas - URL',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var item_id = pm.environment.get(\"v4uuid\");",
+							"        // Check data response",
+							"        if ((json.data[0].canvas.item_id === item_id)&&(json.data[0].canvas.item_type === \"URL\")) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create canvas success\"",
+							"",
+							"            // canvasid_delete to clean up ",
+							"            //var canvasid_delete = pm.environment.get(\"canvasid_delete\");",
+							"            //canvasid_delete = (canvasid_delete !== undefined) ? json.data[0].canvas.id + \",\" + canvasid_delete : json.data[0].canvas.id;",
+							"            //postman.setEnvironmentVariable(\"canvasid_delete\", canvasid_delete);",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9a622fdb-e696-4241-9824-e76625a4b879",
+						"exec": [
+							"postman.setEnvironmentVariable(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"item_type\": \"URL\",\n        \"item_id\": \"{{v4uuid}}\",\n        \"collection_id\": 0,\n        \"item_card_order\": 5,\n        \"kanban_id\": 1,\n        \"source_account\": 0,\n        \"ref\": \"123\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Canvas - FILE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bd74b65-dbe9-4edb-a70d-2d3a225c7e1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Create Canvas - FILE',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Create Canvas - FILE',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var item_id = pm.environment.get(\"v4uuid\");",
+							"        // Check data response",
+							"        if ((json.data[0].canvas.item_id === item_id)&&(json.data[0].canvas.item_type === \"FILE\")) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create canvas success\"",
+							"",
+							"            // canvasid_delete to clean up ",
+							"            //var canvasid_delete = pm.environment.get(\"canvasid_delete\");",
+							"            //canvasid_delete = (canvasid_delete !== undefined) ? json.data[0].canvas.id + \",\" + canvasid_delete : json.data[0].canvas.id;",
+							"            //postman.setEnvironmentVariable(\"canvasid_delete\", canvasid_delete);",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c925eab9-14cd-4583-bbed-4afdb219e8d2",
+						"exec": [
+							"postman.setEnvironmentVariable(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"item_type\": \"FILE\",\n        \"item_id\": \"{{v4uuid}}\",\n        \"collection_id\": 0,\n        \"item_card_order\": 5,\n        \"kanban_id\": 1,\n        \"source_account\": 0,\n        \"ref\": \"123\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create projects - duplicated item_id, item_type, kanban_id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bd74b65-dbe9-4edb-a70d-2d3a225c7e1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Create Canvas - No error with duplicated item_id, item_type, kanban_id',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Create Canvas - show error with duplicated item_id, item_type, kanban_id',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        // API error ",
+							"        msg = msgFailed;",
+							"        msg.description = \"Error - create canvas success\"",
+							"        ",
+							"        // canvasid_delete to clean up ",
+							"        //var canvasid_delete = pm.environment.get(\"canvasid_delete\");",
+							"        //canvasid_delete = (canvasid_delete !== undefined) ? json.data[0].canvas.id + \",\" + canvasid_delete : json.data[0].canvas.id;",
+							"        //postman.setEnvironmentVariable(\"canvasid_delete\", canvasid_delete);",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgPassed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"item_type\": \"VEVENT\",\n        \"item_id\": \"{{canvasid_itemid}}\",\n        \"kanban_id\": 1\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Canvas - full optional params",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fc5633b9-fb5e-4be0-89b2-372ffdfc4327",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Update Canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Update Canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        var update1 = json.data[0].canvas.collection_id;",
+							"        var update2 = json.data[0].canvas.item_card_order;",
+							"        var update3 = json.data[0].canvas.item_id;",
+							"        var update4 = json.data[0].canvas.item_type;",
+							"        var update5 = json.data[0].canvas.source_account;",
+							"        var update6 = json.data[0].canvas.order_number;",
+							"        var update7 = json.data[0].canvas.order_update_time;",
+							"        ",
+							"        // Check data response",
+							"        if((update1 === 123)&&(update2 === 123)&&(update3 === pm.environment.get(\"v4uuid\"))&&(update4 === \"VEVENT\")&&(update5 === 54321)&&(update6 === 1)&&(update7 === 123456789)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"update canvas success\"",
+							"            ",
+							"            postman.setEnvironmentVariable(\"modifiedTime\", json.data[0].canvas.updated_date);",
+							"            postman.setEnvironmentVariable(\"canvasid_itemid\", json.data[0].canvas.item_id);",
+							"        }",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6d9044ec-99b5-4ae2-9e39-d797f4ac1b39",
+						"exec": [
+							"postman.setEnvironmentVariable(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": {{canvasid_create}},\n        \"created_date\": 123456789,\n        \"collection_id\": 123,\n        \"item_card_order\": 123,\n        \"item_id\": \"{{v4uuid}}\",\n        \"item_type\": \"VEVENT\",\n        \"kanban_id\": 123,\n        \"source_account\": 54321,\n        \"order_number\": 1,\n        \"order_update_time\": 123456789\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Canvas -  Precondition for update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bd74b65-dbe9-4edb-a70d-2d3a225c7e1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var json = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"canvasid_updatefail\", json.data[0].canvas.id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ef79c8f5-82b4-424d-b04c-7ce6841a354a",
+						"exec": [
+							"postman.setEnvironmentVariable(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"item_type\": \"FILE\",\n        \"item_id\": \"{{v4uuid}}\",\n        \"collection_id\": 0,\n        \"item_card_order\": 5,\n        \"kanban_id\": 1,\n        \"source_account\": 0,\n        \"ref\": \"123\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Canvas - duplicated item_id, item_type, kanban_id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fc5633b9-fb5e-4be0-89b2-372ffdfc4327",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Update Canvas - No error with duplicated item_id, item_type, kanban_id',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Update Canvas - show error with duplicated item_id, item_type, kanban_id',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        // API error ",
+							"        msg = msgFailed;",
+							"        msg.description = \"Error - update canvas success\"",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        //console.log(count_error);",
+							"        if (count_error !== 0){",
+							"            msg = msgPassed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": {{canvasid_updatefail}},\n        \"item_id\": \"{{canvasid_itemid}}\",\n        \"created_date\": 123456789,\n        \"collection_id\": 123,\n        \"item_card_order\": 123,\n        \"item_type\": \"VEVENT\",\n        \"kanban_id\": 123,\n        \"source_account\": 54321,\n        \"order_number\": 1,\n        \"order_update_time\": 123456789\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ac1ca948-f942-45a1-aade-ce7cf8d0e878",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        // Check data response",
+							"        if(\"canvas\" in json.data[0]){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list canvas success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,item_id,item_type,order_number,kanban_id,collection_id,item_card_order,order_update_time,source_account,created_date,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "171810",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - with modifiedGTE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ac1ca948-f942-45a1-aade-ce7cf8d0e878",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Canvas - with modifiedGTE',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Canvas - with modifiedGTE',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        var dataResponse = pm.response.text();",
+							"        // Check data response",
+							"        if(dataResponse.includes(pm.environment.get(\"canvasid_create\"))){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list canvas success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&modifiedGTE={{modifiedTime}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{modifiedTime}}"
+						},
+						{
+							"key": "modifiedLT",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,item_id,item_type,order_number,kanban_id,collection_id,item_card_order,order_update_time,source_account,created_date,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "171810",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - with modifiedLT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ac1ca948-f942-45a1-aade-ce7cf8d0e878",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Canvas - with modifiedLT',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Canvas - with modifiedLT',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        var dataResponse = pm.response.text();",
+							"        // Check data response",
+							"        if(dataResponse.includes(pm.environment.get(\"canvasid_create\"))){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list canvas success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2a4bf273-d2e1-48a5-beb7-6a9ecf3ed360",
+						"exec": [
+							"var tempTime = pm.environment.get(\"modifiedTime\");",
+							"",
+							"postman.setEnvironmentVariable(\"modifiedLT\", Number(tempTime) + 1);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&modifiedLT={{modifiedLT}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedLT",
+							"value": "{{modifiedLT}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1234",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,item_id,item_type,order_number,kanban_id,collection_id,item_card_order,order_update_time,source_account,created_date,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "171810",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - with ids",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Canvas - with ids',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Canvas - with ids',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        var canvas_id = pm.environment.get(\"canvasid_create\")",
+							"        // Check data response",
+							"        if((\"canvas\" in json.data[0])&&(json.data[0].canvas.id == canvas_id)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list canvas success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&ids={{canvasid_create}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{canvasid_create}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - with fields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Canvas - with fields',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Canvas - with fields',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        // Check data response",
+							"        if((\"id\" in json.data[0].canvas)&&(\"item_id\" in json.data[0].canvas)&&(\"item_type\" in json.data[0].canvas)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list canvas success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&fields=id,item_id,item_type",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,item_id,item_type"
+						},
+						{
+							"key": "ids",
+							"value": "34791,34792",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - with minID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Canvas - with minID',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Canvas - with minID',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        // Check data response",
+							"        var minID = pm.environment.get(\"minID\");",
+							"        var flag = 1;",
+							"        for(var i = 0; i< count; i++){",
+							"            if(minID >= json.data[i].canvas.id)",
+							"                flag = 0;",
+							"        }",
+							"        //console.log(flag);",
+							"        if(flag === 1){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list canvas success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c1800f26-b325-4f1a-947f-5c8495747782",
+						"exec": [
+							"var tempId = pm.environment.get(\"canvasid_create\");",
+							"",
+							"postman.setEnvironmentVariable(\"minID\", Number(tempId) - 1);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&minID={{minID}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{minID}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "34791,34792",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - with pItem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Canvas - with pItem',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Canvas - with pItem',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count === 2){",
+							"        msg = msgPassed;",
+							"        msg.description = \"get list canvas success\"",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c1800f26-b325-4f1a-947f-5c8495747782",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&pItem=2",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "pItem",
+							"value": "2"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "34791,34792",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "36713",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - with has_del",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Canvas - with has_del',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Canvas - with has_del',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check response data",
+							"    if(\"data_del\" in json){",
+							"        msg = msgPassed;",
+							"        msg.description = \"get list canvas success\"",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c1800f26-b325-4f1a-947f-5c8495747782",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "34791,34792",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "36713",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Canvas -  Precondition for get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bd74b65-dbe9-4edb-a70d-2d3a225c7e1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var json = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"canvasid_get\", json.data[0].canvas.id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "214b21ed-e724-4d01-8ada-576b1b157cb4",
+						"exec": [
+							"postman.setEnvironmentVariable(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"item_type\": \"FILE\",\n        \"item_id\": \"{{v4uuid}}\",\n        \"collection_id\": 0,\n        \"item_card_order\": 5,\n        \"kanban_id\": 1,\n        \"source_account\": 0,\n        \"ref\": \"123\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Canvas - 1 canvas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "affba649-dcbb-4d94-8553-1e62ecdf9999",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Delete Canvas - 1 canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Delete Canvas - 1 canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        var canvasid_get = pm.environment.get(\"canvasid_get\")",
+							"        // Check data response",
+							"        if(json.data[0].id == canvasid_get){",
+							"            msg = msgPassed;",
+							"            msg.description = \"delete canvas success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas/{{canvasid_get}}?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas",
+						"{{canvasid_get}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - Precondition get minDelID All",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8d317429-481f-4eb1-94fe-e2a65e50190b",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var json = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"minDelID\", json.data_del[0].deleted_item.id -1);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&ids={{canvasid_get}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{canvasid_get}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "fields",
+							"value": "id,item_id,item_type",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - get All paging (minID, minDelID)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Canvas - get All paging (minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Canvas - get All paging (minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count_data = json.data.length;",
+							"    var count_data_del = json.data_del.length;",
+							"    ",
+							"    if((count_data !== 0)&&(count_data_del !== 0)){",
+							"        // Check data response",
+							"        var minID = pm.environment.get(\"minID\");",
+							"        var minDelID = pm.environment.get(\"minDelID\");",
+							"        //console.log(minID +\" \"+ minDelID)",
+							"        ",
+							"        var flag = 1;",
+							"        for(var i = 0; i< count_data; i++){",
+							"            if(minID >= json.data[i].canvas.id)",
+							"                flag = 0;",
+							"        }",
+							"        ",
+							"        for(var i = 0; i< count_data_del; i++){",
+							"            if(minDelID >= json.data_del[i].deleted_item.id)",
+							"                flag = 0;",
+							"        }",
+							"        //console.log(flag);",
+							"        if(flag === 1){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list canvas success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c1800f26-b325-4f1a-947f-5c8495747782",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&minID={{minID}}&minDelID={{minDelID}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{minID}}"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelID}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "34791,34792",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Canvas -  Limit 50 items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bd74b65-dbe9-4edb-a70d-2d3a225c7e1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Create Canvas - Limit 50 canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Create Canvas - Limit 50 canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        // check number item",
+							"        if(count === 50){",
+							"            msg = msgPassed;",
+							"            msg.description = \"create 50 canvas success\";",
+							"        }else{",
+							"            msg.description = \"number of created canvas is not correct\";",
+							"        }",
+							"        ",
+							"        // clean up canvas",
+							"        var canvasid50 =[];",
+							"        for(var i=0; i<count; i++){",
+							"            canvasid50[i] = json.data[i].canvas.id;",
+							"        }",
+							"        pm.environment.set(\"canvasid50\", canvasid50);",
+							"    }",
+							"    // fail - not canvas data response",
+							"    else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "214b21ed-e724-4d01-8ada-576b1b157cb4",
+						"exec": [
+							"postman.setEnvironmentVariable(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"1{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"2{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"3{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"4{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"5{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"6{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"7{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"8{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"9{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"10{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"11{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"12{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"13{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"14{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"15{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"16{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"17{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"18{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"19{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"20{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"21{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"22{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"23{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"24{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"25{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"26{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"27{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"28{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"29{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"30{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"31{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"32{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"33{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"34{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"35{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"36{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"37{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"38{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"39{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"40{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"41{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"42{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"43{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"44{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"45{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"46{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"47{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"48{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"49{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"50{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  },\n  {\n    \"item_type\": \"FILE\",\n    \"item_id\": \"51{{v4uuid}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"ref\": \"123\"\n  }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Canvas - Limit 50 items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fc5633b9-fb5e-4be0-89b2-372ffdfc4327",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var statusResponse = responseCode.code;",
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Update Canvas - Limit 50 canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Update Canvas - Limit 50 canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        if (count === 50) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"update 50 canvas success\";",
+							"        } else {",
+							"            msg.description = \"number of updated canvas is not correct\";",
+							"        }",
+							"",
+							"        // Clear temp variables",
+							"        for (var i = 0; i < count; i++) {",
+							"            postman.clearEnvironmentVariable(\"Canvas_\" + (i + 1));",
+							"        }",
+							"",
+							"        pm.environment.set(\"modifiedGTE_upd\", json.data[0].canvas.updated_date);",
+							"    }",
+							"    // fail - not canvas data response",
+							"    else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4e5ef48a-9c45-4706-9771-5c69874fa30d",
+						"exec": [
+							"// convert Array to String",
+							"var canvasid50 = pm.environment.get(\"canvasid50\").toString();",
+							"var count = pm.environment.get(\"canvasid50\").length;",
+							"",
+							"for(var i = 0; i< count; i++){",
+							"    //console.log(i+1+\" \"+ canvasid50.split(\",\")[i]);",
+							"    pm.environment.set(\"Canvas_\"+(i+1),canvasid50.split(\",\")[i]);",
+							"}",
+							"",
+							"pm.environment.set(\"minID_upd\", canvasid50.split(\",\")[0]);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"id\": \"{{Canvas_1}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"f144236b-d77e-4bec-99a2-acd585d7165f\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 2,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_2}}\",\n    \"collection_id\": 123,\n    \"item_card_order\": 123,\n    \"item_id\": \"1234567890987654321\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 123,\n    \"source_account\": 54321,\n    \"order_number\": 1,\n    \"order_update_time\": 123456789\n  },\n  {\n    \"id\": \"{{Canvas_3}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"b2352415-cbe6-4cc2-9f8d-6934fa08f18c\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 3,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_4}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"1b9c7939e-eb96-45c9-9cc5-c64ad3062537\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 4,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_5}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"2b9c7939e-eb96-45c9-9cc5-c64ad3062537\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 5,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_6}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"15f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 6,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_7}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"25f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 7,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_8}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"35f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 8,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_9}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"45f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 9,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_10}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"55f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 10,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_11}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"65f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 11,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_12}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"75f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 12,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_13}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"85f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 13,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_14}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"95f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 14,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_15}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"105f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 15,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_16}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"115f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 16,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_17}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"125f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 17,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_18}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"135f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 18,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_19}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"145f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 19,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_20}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"155f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 20,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_21}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"165f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 21,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_22}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"175f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 22,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_23}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"185f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 23,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_24}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"195f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 24,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_25}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"205f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 25,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_26}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"215f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 26,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_27}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"225f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 27,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_28}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"235f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 28,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_29}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"245f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 29,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_30}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"255f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 30,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_31}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"265f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 31,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_32}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"275f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 32,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_33}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"285f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 33,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_34}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"295f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 34,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_35}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"305f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 35,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_36}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"315f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 36,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_37}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"325f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 37,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_38}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"335f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 38,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_39}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"345f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 39,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_40}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"355f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 40,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_41}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"365f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 41,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_42}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"375f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 42,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_43}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"385f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 43,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_44}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"395f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 44,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_45}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"405f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 45,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_46}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"415f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 46,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_47}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"425f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 47,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_48}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"435f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 48,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_49}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"445f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 49,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"{{Canvas_50}}\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"455f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 50,\n    \"order_update_time\": 0\n  },\n  {\n    \"id\": \"12345\",\n    \"collection_id\": 0,\n    \"item_card_order\": 5,\n    \"item_id\": \"465f8e8793-1162-4f88-acaa-670d90d3983a\",\n    \"item_type\": \"VTODO\",\n    \"kanban_id\": 1,\n    \"source_account\": 0,\n    \"order_number\": 51,\n    \"order_update_time\": 0\n  }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - get Change Update Paging (modifiedGTE, minID)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Canvas - get Change Update Paging (modifiedGTE, minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Canvas - get Change Update Paging (modifiedGTE, minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count_data = json.data.length;",
+							"    ",
+							"    if((count_data === 50)){",
+							"       var minID = Number(pm.environment.get(\"minID_upd\"));",
+							"       ",
+							"       //console.log(minID)",
+							"        // Check data response",
+							"        if((json.data[0].canvas.id === minID)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list canvas success\";",
+							"            ",
+							"            postman.clearEnvironmentVariable(\"minID_upd-1\");",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c1800f26-b325-4f1a-947f-5c8495747782",
+						"exec": [
+							"var tempId = pm.environment.get(\"minID_upd\");",
+							"",
+							"pm.environment.set(\"minID_upd-1\", Number(tempId) - 1);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE_upd}}&minID={{minID_upd-1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{modifiedGTE_upd}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{minID_upd-1}}"
+						},
+						{
+							"key": "minDelID",
+							"value": "1234",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "34791,34792",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Canvas - Many items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "affba649-dcbb-4d94-8553-1e62ecdf9999",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - Delete Canvas - Many canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status:\"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Delete Canvas - Many canvas',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count === 50){",
+							"        // convert Array to String",
+							"        var countExpect = pm.environment.get(\"canvasid50\").toString().split(\",\").length;",
+							"        // Check data response",
+							"        if(count === countExpect){",
+							"            msg = msgPassed;",
+							"            msg.description = \"delete many canvas success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas/{{canvasid50}}?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas",
+						"{{canvasid50}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - Precondition get minDelID Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8d317429-481f-4eb1-94fe-e2a65e50190b",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var json = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"minDelID_del\", json.data_del[0].deleted_item.id);",
+							"postman.setEnvironmentVariable(\"modifiedGTE_del\", json.data_del[0].deleted_item.updated_date);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&ids={{minID_upd}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{minID_upd}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "fields",
+							"value": "id,item_id,item_type",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Canvas - get Change Delete Paging (modifiedGTE, minDelID)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Canvas - get Change Delete Paging (modifiedGTE, minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Canvas - get Change Delete Paging (modifiedGTE, minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/canvas\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count_data_del = json.data_del.length;",
+							"    ",
+							"    if((count_data_del === 50)){",
+							"       var minDelID = Number(pm.environment.get(\"minDelID_del\"));",
+							"       ",
+							"       //console.log(minDelID)",
+							"        // Check data response",
+							"        if((json.data_del[0].deleted_item.id === minDelID)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list canvas success\"",
+							"            ",
+							"            postman.clearEnvironmentVariable(\"minDelID_del-1\");",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});",
+							"",
+							"// Clear all variables for API - Canvas",
+							"postman.clearEnvironmentVariable(\"minDelID_del-1\");",
+							"postman.clearEnvironmentVariable(\"minDelID_del\");",
+							"postman.clearEnvironmentVariable(\"modifiedGTE_del\");",
+							"postman.clearEnvironmentVariable(\"modifiedGTE_upd\");",
+							"postman.clearEnvironmentVariable(\"minID_upd\");",
+							"postman.clearEnvironmentVariable(\"modifiedTime\");",
+							"postman.clearEnvironmentVariable(\"modifiedLT\");",
+							"postman.clearEnvironmentVariable(\"canvasid50\");",
+							"postman.clearEnvironmentVariable(\"minID\");",
+							"postman.clearEnvironmentVariable(\"minDelID\");",
+							"postman.clearEnvironmentVariable(\"canvasid_itemid\");",
+							"postman.clearEnvironmentVariable(\"canvasid_get\");",
+							"postman.clearEnvironmentVariable(\"canvasid_create\");",
+							"postman.clearEnvironmentVariable(\"canvasid_updatefail\");",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c1800f26-b325-4f1a-947f-5c8495747782",
+						"exec": [
+							"var tempId = pm.environment.get(\"minDelID_del\");",
+							"",
+							"pm.environment.set(\"minDelID_del-1\", Number(tempId) - 1);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/canvas?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE_del}}&minDelID={{minDelID_del-1}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"canvas"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{modifiedGTE_del}}"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelID_del-1}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minID",
+							"value": "123",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "34791,34792",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "fc7cc46b-6ba8-479c-bb2f-a8dbc54df1ed",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "a22fdc94-50e8-4333-9a33-ae20fecc059d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

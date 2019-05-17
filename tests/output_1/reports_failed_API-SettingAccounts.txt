@@ -1,0 +1,28 @@
+Title TC: Failed - Create Setting Account - Input param user_income as type int
+endpoint: v2.1.1/api/setaccounts
+method: POST
+error: Status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Update Setting Account - Update setting account with invalid value inputted
+endpoint: v2.1.1/api/setaccounts/update
+method: PUT
+error: Status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Update Setting Account - Update input param user_income as type int
+endpoint: v2.1.1/api/setaccounts/update
+method: PUT
+error: Status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Delete Setting Account - Delete with id = 0
+endpoint: v2.1.1/api/setaccounts
+method: DELETE
+error: Status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+

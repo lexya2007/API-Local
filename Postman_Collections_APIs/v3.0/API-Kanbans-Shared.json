@@ -1,0 +1,5321 @@
+{
+	"info": {
+		"_postman_id": "ff050c0e-7681-44b5-b7d7-96669d353813",
+		"name": "API - Kanbans Version 3.0 Shared",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Kanbans",
+			"item": [
+				{
+					"name": "RUN ALL SCRIPTS API - KANBANS FUNCTION SHARED",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
+								"exec": [
+									"// Use the CryptoJS",
+									"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U1\")+\":LeftCoastLogic:\"+pm.environment.get(\"password_U1\"))+pm.environment.get(\"appreg\")).toString();",
+									"",
+									"console.log(\"sig: \" + hash);",
+									"postman.setEnvironmentVariable(\"sig\", hash);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "64ab487d-2eda-44c8-b027-39943e652ed9",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"",
+									"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U1\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+									"",
+									"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+									"postman.setEnvironmentVariable(\"keyapi\", keyapi);",
+									"",
+									"var msgFailed = {",
+									"    collection:'API_Kanbans_shared',",
+									"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Login',",
+									"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"200\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection:'API_Kanbans_shared',",
+									"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Login',",
+									"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"200\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"var statusResponse = responseCode.code;",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    var body = json.description;",
+									"    if(body==\"Flo\"){",
+									"        msg.description=body;",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Description response failed\";",
+									"        msg.description=body;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\"",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"{{email_U1}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/users/token.json",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"users",
+								"token.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[Owner] - Create Collection Pre-Test",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f143c287-8361-4d2a-aa9c-815ea1c423e1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection:'API_Kanbans_shared',",
+									"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Create Collection',",
+									"    endpoint: pm.environment.get('version')+\"/projects.json\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"200\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection:'API_Kanbans_shared',",
+									"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Create Collection',",
+									"    endpoint: pm.environment.get('version')+\"/projects.json\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"200\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    msg = msgPassed;",
+									"    msg.status = statusResponse;",
+									"    if(dataResponse.includes(\"error\")){",
+									"        msg = msgFailed;",
+									"        msg.description=dataResponse;",
+									"        msg.error = \"Description response failed\";",
+									"    }else{",
+									"        msg = msgPassed;",
+									"        var idProj = json.data[0].project.id;",
+									"        pm.environment.set(\"idProjectCreated\", idProj);",
+									"        msg.description=\"Create new Collection has project_id: \"+idProj;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7b6f26db-5c33-4efb-9fad-b0be0d917b3e",
+								"exec": [
+									"var numberRandom = Math.floor(Math.random() * 10000000);",
+									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"{{nameCollection}}\",\n            \"proj_type\": 3\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/projects.json",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"projects.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invite Members to Shared collection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f143c287-8361-4d2a-aa9c-815ea1c423e1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection:'API_Kanbans_shared',",
+									"    title: 'Failed - Invite Members to Shared collection',",
+									"    endpoint: pm.environment.get('version')+\"/projects.json\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"200\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection:'API_Kanbans_shared',",
+									"    title: 'Passed - Invite Members to Shared collection',",
+									"    endpoint: pm.environment.get('version')+\"/projects.json\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"200\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    msg = msgPassed;",
+									"    msg.status = statusResponse;",
+									"    if(dataResponse.includes(\"projects_users\")){",
+									"        msg.description=\"Invite Members to Shared Collection successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.description=dataResponse;",
+									"        msg.error = \"Invite Members to Shared Collection not successful\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7b6f26db-5c33-4efb-9fad-b0be0d917b3e",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"value": "{{keyapi}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"projects_users\": [\n        \n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"email\": \"{{email_U2}}\",\n            \"card_uid\": \"/htmh99@flomail.net/XXXXXXXX-1D1F-451D-A716-84CB64FDE0CF.vcf\",\n            \"href\": \"/htmh99@flomail.net/D9B4AB89-1D1F-451D-A716-84CB64FDE0CF.vcf\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/projects/invite",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"projects",
+								"invite"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login email invited Shared Collection",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
+								"exec": [
+									"// Use the CryptoJS",
+									"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U2\")+\":LeftCoastLogic:\"+pm.environment.get(\"password_U2\"))+pm.environment.get(\"appreg\")).toString();",
+									"",
+									"console.log(\"sig: \" + hash);",
+									"postman.setEnvironmentVariable(\"sig\", hash);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "64ab487d-2eda-44c8-b027-39943e652ed9",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"",
+									"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U2\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+									"",
+									"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+									"postman.setEnvironmentVariable(\"keyapi_U2\", keyapi);",
+									"",
+									"var msgFailed = {",
+									"    collection:'API_Kanbans_shared',",
+									"    title: 'Failed - Login email invited Shared Collection',",
+									"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"200\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection:'API_Kanbans_shared',",
+									"    title: 'Passed - Login email invited Shared Collection',",
+									"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"200\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"var statusResponse = responseCode.code;",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    var body = json.description;",
+									"    if(body==\"Flo\"){",
+									"        msg.description=body;",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Description response failed\";",
+									"        msg.description=body;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\"",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"{{email_U2}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/users/token.json",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"users",
+								"token.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept invite Shared Collection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f143c287-8361-4d2a-aa9c-815ea1c423e1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection:'API_Kanbans_shared',",
+									"    title: 'Failed - Accept invite Shared Collection',",
+									"    endpoint: pm.environment.get('version')+\"/projects.json\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"200\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection:'API_Kanbans_shared',",
+									"    title: 'Passed - Accept invite Shared Collection',",
+									"    endpoint: pm.environment.get('version')+\"/projects.json\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"200\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    msg = msgPassed;",
+									"    msg.status = statusResponse;",
+									"    if(dataResponse.includes(\"project_user\")){",
+									"        msg.description=\"Accept invite Shared Collection successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.description=dataResponse;",
+									"        msg.error = \"Accept invite Shared Collection not successful\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "7b6f26db-5c33-4efb-9fad-b0be0d917b3e",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi_U2}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n{\n    \"projects\": [\n        {\n            \"id\": \"{{idProjectCreated}}\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/projects/accept_invite?",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"projects",
+								"accept_invite"
+							],
+							"query": [
+								{
+									"key": "kpi",
+									"value": "{{keyapi_U2}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Kanbans - [Owner] Create a Kanban",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2a3712e8-4267-41dd-b822-a139fc860c66",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Create Kanbans - Create a Kanban from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Create Kanbans - Create a Kanban from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idProj = pm.environment.get(\"idProjectCreated\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idProj)){",
+									"        msg.description = \"Create a Kanban from Owner Success!\";",
+									"        msg.error = \"No Error\";",
+									"        var idKanban = pm.environment.set(\"id_Kanban\",json.data[0].kanban.id);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Description response failed\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a8d3e205-8120-4350-acb1-0505faa8b0da",
+								"exec": [
+									"var numberRandom = Math.floor(Math.random()*10000000);",
+									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\":\"{{nameCollection}}\",\n            \"color\":\"#4986e7\",\n            \"order_number\":1,\n            \"archive_status\":0,\n            \"order_update_time\":1547534092.088,\n            \"show_done_todo\":1,\n            \"add_new_obj_type\":1,\n            \"sort_by_type\":1,\n            \"kanban_type\":0,\n            \"ref\":\"\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Kanbans - [Member] Create a Kanban",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2a3712e8-4267-41dd-b822-a139fc860c66",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Create Kanbans - Create a Kanban from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Create Kanbans - Create a Kanban from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idProj = pm.environment.get(\"idProjectCreated\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idProj)){",
+									"        msg.description = \"Create Kanbans - Create a Kanban from Member Success!\";",
+									"        msg.error = \"No Error\";",
+									"        var idKanban = pm.environment.set(\"id_Kanban_member\",json.data[0].kanban.id);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Description response failed\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a8d3e205-8120-4350-acb1-0505faa8b0da",
+								"exec": [
+									"var numberRandom = Math.floor(Math.random()*10000000);",
+									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi_U2}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\":\"{{nameCollection}}\",\n            \"color\":\"#4986e7\",\n            \"order_number\":1,\n            \"archive_status\":0,\n            \"order_update_time\":1547534092.088,\n            \"show_done_todo\":1,\n            \"add_new_obj_type\":1,\n            \"sort_by_type\":1,\n            \"kanban_type\":0,\n            \"ref\":\"\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Kanbans - [Owner] Create 50 Kanbans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2a3712e8-4267-41dd-b822-a139fc860c66",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Create Kanbans - [Owner] Create 50 Kanbans',",
+									"    endpoint: \"/api/kanban\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Create Kanbans - [Owner] Create 50 Kanbans',",
+									"    endpoint: \"/api/kanban\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idProj = pm.environment.get(\"idProjectCreated\");",
+									"var msg ;",
+									"var array =[];",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    var count = json.data.length;",
+									"    if(count === 50){",
+									"        for(var i=0; i<count; i++){",
+									"             array[i] = json.data[i].kanban.id;",
+									"        }",
+									"        pm.environment.set(\"50idKanbans[]\",array);",
+									"        msg.description=\"[Owner] Create 50 kanbans success\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.status = count;",
+									"        msg.description = \"[Owner] Create 50 kanbans failed\";",
+									"        msg.error = \"Error\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a8d3e205-8120-4350-acb1-0505faa8b0da",
+								"exec": [
+									"var numberRandom = Math.floor(Math.random()*10000000);",
+									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);",
+									"",
+									"var stringJson = \"\";",
+									"for(var i = 0; i< 50; i++){",
+									"   stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"project_id\": \"{{idProjectCreated}}\",\"name\":\"{{nameCollection}}\",\"color\":\"#4986e7\",\"order_number\":1,\"archive_status\":0,\"order_update_time\":1547534092.088,\"show_done_todo\":1,\"add_new_obj_type\":1,\"sort_by_type\":1,\"kanban_type\":0,\"ref\":1 '+'}';",
+									"}",
+									"",
+									"pm.environment.set(\"CreateKanban\", stringJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {{CreateKanban}}\n    ]\n}\n"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get List Kanban",
+			"item": [
+				{
+					"name": "Get List Kanban  - [Member] Get a kanban created from Member",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Member] Get a kanban created from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Member] Get a kanban created from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get id Kanban from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban_member\");",
+									"var msg ;",
+									"",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idKanban)){",
+									"        msg.description = \"[Member] Get a kanban created from Member successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.description = \"[Member] Get a kanban created from Member not successful\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{keyapi_U2}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?ids={{id_Kanban_member}}&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "{{id_Kanban_member}}"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Member] Get a kanban created from Owner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Member] Get a kanban created from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Member] Get a kanban created from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get id Kanban from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban\");",
+									"var msg ;",
+									"",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idKanban)){",
+									"        msg.description = \"[Member] Get a kanban created from Owner successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.description = \"[Member] Get a kanban created from Owner not successful\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi_U2}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?ids={{id_Kanban}}&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "{{id_Kanban}}"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Owner] Get a kanban created from Member",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Owner] Get a kanban created from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Owner] Get a kanban created from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get id Kanban from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban_member\");",
+									"var msg ;",
+									"",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idKanban)){",
+									"        msg.description = \"[Owner] Get a kanban created from Member successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.description = \"[Owner] Get a kanban created from Member not successful\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{keyapi}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?ids={{id_Kanban_member}}&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "{{id_Kanban_member}}"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Owner] Get a kanban created from Owner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Owner] Get a kanban created from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Owner] Get a kanban created from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get id Kanban from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban\");",
+									"var msg ;",
+									"",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idKanban)){",
+									"        msg.description = \"[Owner] Get a kanban created from Owner successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.description = \"[Owner] Get a kanban created from Owner not successful\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?ids={{id_Kanban}}&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "{{id_Kanban}}"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Owner] Get all Kanbans created",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Owner] Get all Kanbans created',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Owner] Get all Kanbans created',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"var msg ;",
+									"var array = [];",
+									"var count = json.data.length;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(!dataResponse.includes(\"error\")){",
+									"        msg.description=\"[Owner] Get all Kanbans created successful\";",
+									"        var count = json.data.length;",
+									"        var id = [];",
+									"        for(var i = 0; i < count; i++){",
+									"            id[i] = json.data[i].kanban.id;",
+									"        }",
+									"        // Set all and id trash in environment.",
+									"        pm.environment.set(\"allIDKanbans[]\",id);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"[Owner] Get all Kanbans created not successful\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"status response failed\";",
+									"    msg.description = dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?project_ids[]={{idProjectCreated}}&has_del=0",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								},
+								{
+									"key": "has_del",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Member] Get all Kanbans created",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban - [Member] Get all Kanbans created',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban - [Member] Get all Kanbans created',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"var msg ;",
+									"var array = [];",
+									"var count = json.data.length;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(!dataResponse.includes(\"error\")){",
+									"        msg.description=\"[Member] Get all Kanbans created successful\";",
+									"        var count = json.data.length;",
+									"        var id = [];",
+									"        for(var i = 0; i < count; i++){",
+									"            id[i] = json.data[i].kanban.id;",
+									"        }",
+									"        // Set all and id trash in environment.",
+									"        pm.environment.set(\"allIDKanbans[]\",id);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"[Member] Get all Kanbans created not successful\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"status response failed\";",
+									"    msg.description = dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi_U2}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?project_ids[]={{idProjectCreated}}&has_del=0",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								},
+								{
+									"key": "has_del",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban - [Owner] Get all Kanbans - pItem = 20",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ef00b9e8-561e-4378-8785-3a6624db0e41",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "9196f733-d856-4f2e-be9e-6841a9d8bd00",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban - [Owner] Get all Kanbans - pItem = 20',",
+									"    endpoint: \"/api/kanban\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban - [Owner] Get all Kanbans - pItem = 20',",
+									"    endpoint: \"/api/kanban\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"var msg ;",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    var count = json.data.length;",
+									"    if(count === 20){",
+									"        msg.description=\"Show 20 Kanbans in 1 page\";",
+									"        pm.environment.set(\"ModifiedGTE\",json.data[19].kanban.updated_date);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.description = \"Not show 20 Kanbans in 1 page\";",
+									"        msg.error = \"Error\";",
+									"    }",
+									"    ",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?minID=&pItem=20&fields=project_id,name,color,updated_date,created_date,id&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "minID",
+									"value": ""
+								},
+								{
+									"key": "modifiedGTE",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "ids",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "pItem",
+									"value": "20"
+								},
+								{
+									"key": "fields",
+									"value": "project_id,name,color,updated_date,created_date,id"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								},
+								{
+									"key": "minDelID",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban - [Owner] Get Change Sync Kanbans with modifiedGTE",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ef00b9e8-561e-4378-8785-3a6624db0e41",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "9196f733-d856-4f2e-be9e-6841a9d8bd00",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban - [Owner] Get Change Sync Kanbans with modifiedGTE',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban - [Owner] Get Change Sync Kanbans with modifiedGTE',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"var msg ;",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"var updatedtime = pm.environment.get(\"ModifiedGTE\");",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    var count = json.data.length;",
+									"    if(count > 0){",
+									"        if(updatedtime >= json.data[0].kanban.updated_date){",
+									"            msg.description=\"[Owner] Get Change Sync Kanbans with modifiedGTE successful\";",
+									"        }else{",
+									"            msg = msgFailed;",
+									"            msg.description = \"[Owner] Get Change Sync Kanbans with modifiedGTE not successful\";",
+									"            msg.error = \"Error\";",
+									"        }",
+									"    }else{",
+									"        msg.description=dataResponse;",
+									"        msg.error = \"Response null data\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?modifiedGTE={{ModifiedGTE}}&has_del=1&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "minID",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "modifiedGTE",
+									"value": "{{ModifiedGTE}}"
+								},
+								{
+									"key": "ids",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "pItem",
+									"value": "20",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "project_id,name,color,updated_date,created_date,id",
+									"disabled": true
+								},
+								{
+									"key": "has_del",
+									"value": "1"
+								},
+								{
+									"key": "minDelID",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Update Kanbans",
+			"item": [
+				{
+					"name": "Update Kanbans - [Owner] Update kanban created from Member",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a80c8cd4-633b-4a25-9ffa-165a367d78f8",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Update Kanbans - [Owner] Update kanban created from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
+									"    method: \"PUT\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Update Kanbans - [Owner] Update kanban created from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
+									"    method: \"PUT\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban_member\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idKanban)){",
+									"        msg.description = \"[Owner] Update kanban created from Member successful\";",
+									"        var modifiedGTE = json.data[0].kanban.updated_date;",
+									"        pm.environment.set(\"modifiedGTE_1\",modifiedGTE);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"[Owner] Update kanban created from Member not successful\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {\n            \"id\": \"{{id_Kanban_member}}\",\n            \"name\": \"Update Kanban from Owner\",\n            \"created_date\": 1550653239.696,\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"color\": \"#F492B3\",\n            \"order_number\": 8,\n            \"archive_status\": 0,\n            \"order_kbitem\": \"\",\n            \"order_update_time\": 0,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 0,\n            \"sort_by_type\": 0,\n            \"archived_time\": 0,\n            \"kanban_type\": 0\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Member] Get Change - a Kanban updated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Member] Get Change - a Kanban updated',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Member] Get Change - a Kanban updated',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(pm.environment.get(\"id_Kanban_member\"))){",
+									"        msg.description = \"[Member] Get Change - a Kanban updated successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"[Member] Get Change - a Kanban updated not successful\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{keyapi_U2}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?modifiedGTE={{modifiedGTE_1}}&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "modifiedGTE",
+									"value": "{{modifiedGTE_1}}"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Kanbans - [Member] Update kanban created from Owner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a80c8cd4-633b-4a25-9ffa-165a367d78f8",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Update Kanbans - [Member] Update kanban created from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
+									"    method: \"PUT\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Update Kanbans - [Member] Update kanban created from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
+									"    method: \"PUT\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idKanban)){",
+									"        msg.description = \"[Member] Update kanban created from Owner successful\";",
+									"        var modifiedGTE = json.data[0].kanban.updated_date;",
+									"        pm.environment.set(\"modifiedGTE\",modifiedGTE);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"[Member] Update kanban created from Owner not successful\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi_U2}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {\n            \"id\": \"{{id_Kanban}}\",\n            \"name\": \"Update Kanban from Member\",\n            \"created_date\": 1550653239.696,\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"color\": \"#F492B3\",\n            \"order_number\": 8,\n            \"archive_status\": 0,\n            \"order_kbitem\": \"\",\n            \"order_update_time\": 0,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 0,\n            \"sort_by_type\": 0,\n            \"archived_time\": 0,\n            \"kanban_type\": 0\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Owner] Get Change - a Kanban updated",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Owner] Get Change - a Kanban updated',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Owner] Get Change - a Kanban updated',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(pm.environment.get(\"id_Kanban\"))){",
+									"        msg.description = \"[Owner] Get Change - a Kanban updated successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"[Owner] Get Change - a Kanban updated not successful\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{keyapi}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?modifiedGTE={{modifiedGTE}}&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "modifiedGTE",
+									"value": "{{modifiedGTE}}"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Kanbans - [Member] Update 50 kanbans created",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a80c8cd4-633b-4a25-9ffa-165a367d78f8",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Update Kanbans - [Member] Update 50 kanbans created',",
+									"    endpoint: \"/api/kanban/update\",",
+									"    method: \"PUT\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Update Kanbans - [Member] Update 50 kanbans created',",
+									"    endpoint: \"/api/kanban/update\",",
+									"    method: \"PUT\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var count = json.data.length;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(count>0){",
+									"        for(var i = 0; i < count; i++){",
+									"            var KanbanID = parseInt(pm.environment.get(\"kanbanid-\"+i)); // convernt string to int",
+									"            var idKanban = json.data[i].kanban.id; // int",
+									"            if(KanbanID === idKanban){",
+									"                msg.description = \"[Member] Update 50 kanbans created successful\";",
+									"                pm.environment.set(\"modifiedGTE-0\",json.data[0].kanban.updated_date);",
+									"            }else{",
+									"                msg = msgFailed;",
+									"                msg.error = \"Description response failed\";",
+									"                msg.description = \"[Member] Update 50 kanbans created not successful\";",
+									"                break;",
+									"            }",
+									"        }",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Return null Data\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else{",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "94d4287c-04b9-4419-b054-5f2b80f0cc7c",
+								"exec": [
+									"var Array_50idKanbans = pm.environment.get(\"50idKanbans[]\");",
+									"console.log(Array_50idKanbans);",
+									"var count = Array_50idKanbans.length;",
+									"// convert Array to String",
+									"var idKanbans = Array_50idKanbans.toString();",
+									"var numberRandom = Math.floor(Math.random()*10000000);",
+									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);",
+									"",
+									"var stringJson = \"\";",
+									"for(var i = 0; i< count; i++){",
+									"    var listIDKanban = idKanbans.split(\",\")[i];",
+									"    pm.environment.set(\"kanbanid-\"+i,listIDKanban);",
+									"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"id\":'+idKanbans.split(\",\")[i]+ ',\"name\":\"{{nameCollection}}\",\"created_date\":1550653239.696,\"project_id\": {{idProjectCreated}},\"color\":\"#4986e7\",\"order_number\":1,\"archive_status\":0,\"order_kbitem\":1,\"order_update_time\":1547534092.088,\"show_done_todo\":1,\"add_new_obj_type\":1,\"sort_by_type\":1,\"kanban_type\":0,\"archived_time\":1 '+'}';",
+									"}",
+									"",
+									"pm.environment.set(\"UpdateKanban\", stringJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {{UpdateKanban}}\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Owner] Get Change - Show 50 Kanbans updated",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ef00b9e8-561e-4378-8785-3a6624db0e41",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "9196f733-d856-4f2e-be9e-6841a9d8bd00",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Owner] Get Change - Show 50 Kanbans updated',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Owner] Get Change - Show 50 Kanbans updated',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"var msg ;",
+									"",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    var count = json.data.length;",
+									"    if(count>0){",
+									"        for(var i = 0; i < count; i++){",
+									"            var KanbanID = parseInt(pm.environment.get(\"kanbanid-\"+i)); // convernt string to int",
+									"            var idKanban = json.data[i].kanban.id; // int",
+									"            if(KanbanID === idKanban){",
+									"                msg.description = \"[Owner] Get Change - Show 50 Kanbans updated successful\";",
+									"            }else{",
+									"                msg = msgFailed;",
+									"                msg.error = \"Description response failed\";",
+									"                msg.description = \"[Owner] Get Change - Show 50 Kanbans updated not successful\";",
+									"                break;",
+									"            }",
+									"        }",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Return null Data\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?minID=&modifiedGTE={{modifiedGTE-0}}&fields=project_id,name,color,updated_date,created_date,id&has_del=0&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "minID",
+									"value": ""
+								},
+								{
+									"key": "modifiedGTE",
+									"value": "{{modifiedGTE-0}}"
+								},
+								{
+									"key": "ids",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "pItem",
+									"value": "20",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "project_id,name,color,updated_date,created_date,id"
+								},
+								{
+									"key": "has_del",
+									"value": "0"
+								},
+								{
+									"key": "minDelID",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - Get Change - 20 Kanbans updated in 1 page",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ef00b9e8-561e-4378-8785-3a6624db0e41",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "9196f733-d856-4f2e-be9e-6841a9d8bd00",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - Get Change - 20 Kanbans updated in 1 page',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - Get Change - 20 Kanbans updated in 1 page',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"var msg ;",
+									"",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    var count = json.data.length;",
+									"    if(count === 20){",
+									"        msg.description=\"GET 20 Kanbans updated successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Description response failed\";",
+									"        msg.description = \"GET 20 Kanbans updated not successful\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?minID=&modifiedGTE={{modifiedGTE-0}}&pItem=20&fields=project_id,name,color,updated_date,created_date,id&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "minID",
+									"value": ""
+								},
+								{
+									"key": "modifiedGTE",
+									"value": "{{modifiedGTE-0}}"
+								},
+								{
+									"key": "ids",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "pItem",
+									"value": "20"
+								},
+								{
+									"key": "fields",
+									"value": "project_id,name,color,updated_date,created_date,id"
+								},
+								{
+									"key": "has_del",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "minDelID",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Kanbans - Update sort order 2 Kanbans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "52266027-1fc7-4b26-9351-e454f5827d4b",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Update Kanbans - Update sort order 2 Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
+									"    method: \"PUT\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Update Kanbans - Update sort order 2 Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
+									"    method: \"PUT\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    // Get project_id from environment",
+									"    var idKanban8 = pm.environment.get(\"kanbanid-8\");",
+									"    var idKanban9 = pm.environment.get(\"kanbanid-9\");",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idKanban8) && dataResponse.includes(idKanban9)){",
+									"        msg.description = \"Update sort order 2 Kanbans successful\";",
+									"        pm.environment.set(\"modifiedGTE-Order\",json.data[0].kanban.updated_date);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Update sort order 2 Kanbans not successful\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "token",
+								"value": "{{keyapi}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [{\n        \"name\":\"my kanban 2\",\n        \"project_id\":\"{{idProjectCreated}}\",\n        \"id\": \"{{kanbanid-8}}\",\n        \"order_number\": 2\n    },\n    {\n        \"name\":\"my kanban 3\",\n        \"project_id\":\"{{idProjectCreated}}\",\n        \"id\": \"{{kanbanid-9}}\",\n        \"order_number\": 3\n}]}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban - Get Change - 2 Kanbans update order",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ef00b9e8-561e-4378-8785-3a6624db0e41",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "9196f733-d856-4f2e-be9e-6841a9d8bd00",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban - Get Change - 2 Kanbans update order',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban - Get Change - 2 Kanbans update order',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idKanban8 = pm.environment.get(\"kanbanid-8\");",
+									"var idKanban9 = pm.environment.get(\"kanbanid-9\");",
+									"",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    idkanban8 = json.data[0].kanban.id;",
+									"    idkanban9 = json.data[1].kanban.id;",
+									"    order1 = json.data[0].kanban.order_number;",
+									"    order2 = json.data[1].kanban.order_number;",
+									"    if(idKanban8 == idkanban8 && idKanban9 == idkanban9 && order1 == 2 && order2 == 3){",
+									"        msg.description = \"Get order 2 Kanbans successful.\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Description response failed\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?modifiedGTE={{modifiedGTE-Order}}&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "minID",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "modifiedGTE",
+									"value": "{{modifiedGTE-Order}}"
+								},
+								{
+									"key": "ids",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "pItem",
+									"value": "20",
+									"disabled": true
+								},
+								{
+									"key": "fields",
+									"value": "project_id,name,color,updated_date,created_date,id",
+									"disabled": true
+								},
+								{
+									"key": "has_del",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "minDelID",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Archived Kanban",
+			"item": [
+				{
+					"name": "Update Kanbans - [Member] Update archived kanban created from Owner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a80c8cd4-633b-4a25-9ffa-165a367d78f8",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Update Kanbans - [Member] Update archived kanban created from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
+									"    method: \"PUT\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Update Kanbans - [Member] Update archived kanban created from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
+									"    method: \"PUT\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idKanban)){",
+									"        msg.description = \"[Member] Update archived kanban created from Owner successful\";",
+									"        var modifiedGTE = json.data[0].kanban.updated_date;",
+									"        pm.environment.set(\"modifiedGTE\",modifiedGTE);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"[Member] Update archived kanban created from Owner not successful\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi_U2}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {\n            \"id\": \"{{id_Kanban}}\",\n            \"name\": \"Update Archived Kanban from Member\",\n            \"created_date\": 1550653239.696,\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"color\": \"#F492B3\",\n            \"order_number\": 8,\n            \"archive_status\": 1,\n            \"order_kbitem\": \"\",\n            \"order_update_time\": 0,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 0,\n            \"sort_by_type\": 0,\n            \"archived_time\": 0,\n            \"kanban_type\": 0\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Owner] Get Change - A archived Kanban updated from Member",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Owner] Get Change - A archived Kanban updated from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Owner] Get Change - A archived Kanban updated from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(pm.environment.get(\"id_Kanban\")) && json.data[0].kanban.archive_status === 0){",
+									"        msg.description = \"[Owner] Get Change - A archived Kanban updated from Member successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"[Owner] Get Change - A archived Kanban updated from Member not successful, Show 'archive_status' = 1\\nBug: https://floware.atlassian.net/browse/FB-102\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?modifiedGTE={{modifiedGTE}}&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								"archived"
+							],
+							"query": [
+								{
+									"key": "modifiedGTE",
+									"value": "{{modifiedGTE}}"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Kanbans - [Owner] Update archived kanban created from Member",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a80c8cd4-633b-4a25-9ffa-165a367d78f8",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Update Kanbans - [Owner] Update archived kanban created from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
+									"    method: \"PUT\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Update Kanbans - [Owner] Update archived kanban created from Member',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
+									"    method: \"PUT\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban_member\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idKanban)){",
+									"        msg.description = \"[Owner] Update archived kanban created from Member successful\";",
+									"        var modifiedGTE = json.data[0].kanban.updated_date;",
+									"        pm.environment.set(\"modifiedGTE_1\",modifiedGTE);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"[Owner] Update archived kanban created from Member not successful\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {\n            \"id\": \"{{id_Kanban_member}}\",\n            \"name\": \"Update Archived Kanban from Owner\",\n            \"created_date\": 1550653239.696,\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"color\": \"#F492B3\",\n            \"order_number\": 8,\n            \"archive_status\": 1,\n            \"order_kbitem\": \"\",\n            \"order_update_time\": 0,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 0,\n            \"sort_by_type\": 0,\n            \"archived_time\": 0,\n            \"kanban_type\": 0\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Member] Get Change - A archived Kanban updated from Owner",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Member] Get Change - A archived Kanban updated from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Member] Get Change - A archived Kanban updated from Owner',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(pm.environment.get(\"id_Kanban_member\")) && json.data[0].kanban.archive_status === 0){",
+									"        msg.description = \"[Member] Get Change - A archived Kanban updated from Owner successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"[Member] Get Change - A archived Kanban updated from Owner not successful, Show 'archive_status' = 1\\nBug: https://floware.atlassian.net/browse/FB-102\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi_U2}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?modifiedGTE={{modifiedGTE_1}}&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								"archived"
+							],
+							"query": [
+								{
+									"key": "modifiedGTE",
+									"value": "{{modifiedGTE_1}}"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Kanbans - [Member] Create an archive Kanban",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2a3712e8-4267-41dd-b822-a139fc860c66",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Create Kanbans - Create an archive Kanban',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Create Kanbans - Create an archive Kanban',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idProj = pm.environment.get(\"idProjectCreated\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idProj)){",
+									"        msg.description = \"Create New Archive Kanban Successful!\";",
+									"        msg.error = \"No Error\";",
+									"        var idKanban = pm.environment.set(\"id_ArchiveKanban\",json.data[0].kanban.id);",
+									"        pm.environment.set(\"modifiedGTE\",json.data[0].kanban.updated_date);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Description response failed\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a8d3e205-8120-4350-acb1-0505faa8b0da",
+								"exec": [
+									"var numberRandom = Math.floor(Math.random()*10000000);",
+									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi_U2}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\":\"{{nameCollection}}\",\n            \"color\":\"#4986e7\",\n            \"order_number\":1,\n            \"archive_status\":1,\n            \"order_update_time\":1547534092.088,\n            \"show_done_todo\":1,\n            \"add_new_obj_type\":1,\n            \"sort_by_type\":1,\n            \"kanban_type\":0,\n            \"ref\":\"1\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Kanbans - [Owner] Create an archive Kanban",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2a3712e8-4267-41dd-b822-a139fc860c66",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Create Kanbans - Create an archive Kanban',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Create Kanbans - Create an archive Kanban',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idProj = pm.environment.get(\"idProjectCreated\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idProj)){",
+									"        msg.description = \"Create New Archive Kanban Successful!\";",
+									"        msg.error = \"No Error\";",
+									"        var idKanban = pm.environment.set(\"id_ArchiveKanban\",json.data[0].kanban.id);",
+									"        pm.environment.set(\"modifiedGTE\",json.data[0].kanban.updated_date);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Description response failed\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a8d3e205-8120-4350-acb1-0505faa8b0da",
+								"exec": [
+									"var numberRandom = Math.floor(Math.random()*10000000);",
+									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\":\"{{nameCollection}}\",\n            \"color\":\"#4986e7\",\n            \"order_number\":1,\n            \"archive_status\":1,\n            \"order_update_time\":1547534092.088,\n            \"show_done_todo\":1,\n            \"add_new_obj_type\":1,\n            \"sort_by_type\":1,\n            \"kanban_type\":0,\n            \"ref\":\"1\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Kanbans - [Owner] Create 10 archive Kanbans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2a3712e8-4267-41dd-b822-a139fc860c66",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Create Kanbans - [Owner] Create 10 archive Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Create Kanbans - [Owner] Create 10 archive Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idProj = pm.environment.get(\"idProjectCreated\");",
+									"var msg ;",
+									"var array =[];",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    var count = json.data.length;",
+									"    if(count === 10){",
+									"        for(var i=0; i<count; i++){",
+									"             array[i] = json.data[i].kanban.id;",
+									"        }",
+									"        pm.environment.set(\"10idKanbans[]\",array);",
+									"        msg.description=\"[Owner] Create 10 archive Kanbans successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.status = count;",
+									"        msg.description = \"[Owner] Create 10 archive Kanbans failed\";",
+									"        msg.error = \"Error\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a8d3e205-8120-4350-acb1-0505faa8b0da",
+								"exec": [
+									"var numberRandom = Math.floor(Math.random()*10000000);",
+									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        }\n    ]\n}\n"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Owner] Get all archive Kanbans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Owner] Get all archive Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Owner] Get all archive Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"var msg ;",
+									"",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    var count = json.data.length;",
+									"    if(count>0){",
+									"        for(var i=0; i<count; i++){",
+									"            if(json.data[i].kanban.archive_status == 1){",
+									"                msg.description=\"[Owner] Get all archive Kanbans successful\";",
+									"            }else{",
+									"                msg = msgFailed;",
+									"                msg.error = \"[Owner] Get all archive Kanbans not successful\";",
+									"                msg.description=dataResponse;",
+									"                break;",
+									"            }",
+									"        }",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Return null Data\";",
+									"        msg.description=dataResponse;",
+									"    }",
+									"}else{",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?has_del=0&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								"archived"
+							],
+							"query": [
+								{
+									"key": "has_del",
+									"value": "0"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Kanbans",
+			"item": [
+				{
+					"name": "Delete Kanbans - [Owner] Delete a Kanban",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9190f34d-d9e6-4913-a45d-4c461c6bb9bb",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Delete Kanbans - [Owner] Delete a Kanban',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"DELETE\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Delete Kanbans - [Owner] Delete a Kanban',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"DELETE\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    // Get id Kanban from environment",
+									"    var idKanban = pm.environment.get(\"id_Kanban_member\");",
+									"    var msg ;",
+									"    if(!dataResponse.includes(\"data_error\") && dataResponse.includes(idKanban)){",
+									"        msg.description = \"[Owner] Delete a Kanban successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"[Owner] Delete a Kanban not successful\";",
+									"        msg.description = dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description= \"Not reponse status code 200\";",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"id\": \"{{id_Kanban_member}}\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Kanbans - [Member] Delete a Kanban",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9190f34d-d9e6-4913-a45d-4c461c6bb9bb",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Delete Kanbans - [Member] Delete a Kanban',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"DELETE\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Delete Kanbans - [Member] Delete a Kanban',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"DELETE\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    // Get id Kanban from environment",
+									"    var idKanban = pm.environment.get(\"id_Kanban\");",
+									"    var msg ;",
+									"    if(!dataResponse.includes(\"data_error\") && dataResponse.includes(idKanban)){",
+									"        msg.description = \"Delete a Kanban successful\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Delete a Kanban not successful\";",
+									"        msg.description = dataResponse;",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description= \"Not reponse status code 200\";",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi_U2}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"id\": \"{{id_Kanban}}\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/{{id_Kanban}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								"{{id_Kanban}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Member] Get Changes a Kanbans after deleted",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d81d592d-4610-4630-b992-ff5cbc9c8423",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Member] Get Changes a Kanbans after deleted',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Member] Get Changes a Kanbans after deleted',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban\");",
+									"var idKanbanMember = pm.environment.get(\"id_Kanban_member\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idKanban) && dataResponse.includes(idKanbanMember)){",
+									"        msg.description=\"Data response id Kanban delete correctly\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.description = \"Data response id Kanban delete incorrectly\\nBug: https://floware.atlassian.net/browse/FB-101\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi_U2}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=1&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "has_del",
+									"value": "1"
+								},
+								{
+									"key": "minDelID",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "pItem",
+									"value": "20",
+									"disabled": true
+								},
+								{
+									"key": "ids",
+									"value": "{{id_Kanban}}",
+									"disabled": true
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Owner] Get Changes a Kanbans after deleted",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d81d592d-4610-4630-b992-ff5cbc9c8423",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Owner] Get Changes a Kanbans after deleted',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Owner] Get Changes a Kanbans after deleted',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban\");",
+									"var idKanbanMember = pm.environment.get(\"id_Kanban_member\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(idKanban) && dataResponse.includes(idKanbanMember)){",
+									"        msg.description=\"Data response id Kanban delete correctly\";",
+									"        var count = json.data_del.length;",
+									"        pm.environment.set(\"minDellID\",json.data_del[count-1].deleted_item.id);",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.description = \"Data response id Kanban delete incorrectly\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=1&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "has_del",
+									"value": "1"
+								},
+								{
+									"key": "minDelID",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "pItem",
+									"value": "20",
+									"disabled": true
+								},
+								{
+									"key": "ids",
+									"value": "{{id_Kanban}}",
+									"disabled": true
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Owner] Get all Kanbans Pre-Test",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  -  Get all Kanbans Pre-Test',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  -  Get all Kanbans Pre-Test',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"",
+									"var msg ;",
+									"var array = [];",
+									"var count = json.data.length;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(count>0){",
+									"        for(var i=0; i<count; i++){",
+									"        array[i] = json.data[i].kanban.id;",
+									"        }",
+									"        pm.environment.set(\"allIDKanbans[]\",array);",
+									"        msg = msgPassed;",
+									"        msg.description=\"Get all Kanbans created\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.error = \"Return null Data\";",
+									"        msg.description=dataResponse;",
+									"        pm.environment.set(\"allIDKanbans[]\",null);",
+									"    }",
+									"}else{",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=0&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "has_del",
+									"value": "0"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Kanbans - [Owner] Delete all Kanbans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2c325b61-0e08-4bfb-a456-89cfb0bf7db0",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Delete Kanbans - [Owner] Delete all Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"DELETE\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Delete Kanbans - [Owner] Delete all Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"DELETE\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    ",
+									"    var allKanbanID = pm.environment.get(\"allIDKanbans[]\").toString();",
+									"    var count = json.data.length;",
+									"    var count1 = allKanbanID.split(\",\").length;",
+									"    if(count > 0){",
+									"       for(var i = 0; i < count1; i++){",
+									"            var listIDKanban = allKanbanID.split(\",\")[i];",
+									"            if(dataResponse.includes(listIDKanban)){",
+									"                msg.description = \"[Owner] Delete all Kanbans correctly.\";",
+									"            }else{",
+									"                msg = msgFailed;",
+									"                msg.error = \"Not found item to delete\";",
+									"                msg.description=\"[Owner] Delete all Kanbans incorrectly\";",
+									"                break;",
+									"            }",
+									"        }",
+									"    }else{",
+									"        msg.description=\"Return null data\";",
+									"    }",
+									"}else{",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a7926875-a7d1-4a75-b563-f54ae319393d",
+								"exec": [
+									"",
+									"var convertToString = pm.environment.get(\"allIDKanbans[]\").toString();",
+									"var count = pm.environment.get(\"allIDKanbans[]\").length;",
+									"",
+									"var stringJson = \"\";",
+									"for(var i = 0; i< count; i++){",
+									"   stringJson = (stringJson === \"\" ? stringJson : stringJson +', ') +' { \"project_id\": {{idProjectCreated}},\"id\" : ' +convertToString.split(\",\")[i]+ '}';",
+									"}",
+									"",
+									"pm.environment.set(\"idKanban\", stringJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {{idKanban}}\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Member] Get Changes 20 Kanban deleted",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Member] Get Changes 20 Kanban deleted',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Member] Get Changes 20 Kanban deleted',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    var count = json.data_del.length;",
+									"    if(count === 20 && dataResponse.includes(\"data_del\")){",
+									"        msg.description=\"Show 20 Kanbans deleted in 1 page, pItem = 20 & has_del = 1 & minDellID\";",
+									"        pm.environment.set(\"modifiedGTE-1\",json.data_del[19].deleted_item.updated_date)",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.description = \"Not show 20 Kanbans deleted in 1 page, pItem = 20 & has_del = 1 & minDellID\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=1&minDelID={{minDellID}}&pItem=20&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "has_del",
+									"value": "1"
+								},
+								{
+									"key": "minDelID",
+									"value": "{{minDellID}}"
+								},
+								{
+									"key": "pItem",
+									"value": "20"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - [Owner] Get Changes 10 Kanbans deleted with modifiedGTE",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Failed - Get List Kanban  - [Owner] Get Changes 10 Kanbans deleted with modifiedGTE',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API_Kanbans_shared\",",
+									"    title: 'Passed - Get List Kanban  - [Owner] Get Changes 10 Kanbans deleted with modifiedGTE',",
+									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
+									"    method: \"GET\",",
+									"    error: \"No Error\",",
+									"    status: \"\",",
+									"    description:\"\",",
+									"};",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idKanban = pm.environment.get(\"id_Kanban\");",
+									"var modifiedGTE = pm.environment.get(\"modifiedGTE-1\");",
+									"var msg ;",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    var count = json.data_del.length;",
+									"    var timeupdate = json.data_del[0].deleted_item.updated_date;",
+									"    if(count === 10 && timeupdate == modifiedGTE){",
+									"        msg.description=\"Show 10 Kanbans deleted in 1 page, pItem = 10 & has_del = 1 & ModifiedGTE = \"+modifiedGTE;",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.description = \"Not show 10 Kanbans deleted in 1 page, pItem = 10 & has_del = 1 & ModifiedGTE = \"+modifiedGTE;",
+									"        msg.error = \"Error\";",
+									"    }",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=1&minDelID={{minDellID}}&pItem=10&modifiedGTE={{modifiedGTE-1}}&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "has_del",
+									"value": "1"
+								},
+								{
+									"key": "minDelID",
+									"value": "{{minDellID}}"
+								},
+								{
+									"key": "pItem",
+									"value": "10"
+								},
+								{
+									"key": "modifiedGTE",
+									"value": "{{modifiedGTE-1}}"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Projects",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var array =[];",
+									"var count = json.data.length;",
+									"if(count>0){",
+									"        for(var i=0; i<count; i++){",
+									"        array[i] = json.data[i].project.id;",
+									"        }",
+									"        pm.environment.set(\"allIDProjects[]\",array);",
+									"    }else{",
+									"        pm.environment.set(\"allIDProjects[]\",null);",
+									"    }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"projects"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
+								{
+									"key": "fields",
+									"value": "id,proj_name,calendar_id",
+									"disabled": true
+								},
+								{
+									"key": "ids",
+									"value": "34791,34792",
+									"disabled": true
+								},
+								{
+									"key": "has_del",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "minID",
+									"value": "1058130",
+									"disabled": true
+								},
+								{
+									"key": "pItem",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "modifiedGTE",
+									"value": "1548144027",
+									"disabled": true
+								},
+								{
+									"key": "modifiedLT",
+									"value": "1548144027",
+									"disabled": true
+								},
+								{
+									"key": "minDelID",
+									"value": "1058130",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Detele Projects - All project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7c8e5f83-07b8-4fbb-8d19-137934360a1c",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "14d6e68e-faba-40da-b159-eef947e01312",
+								"exec": [
+									"var projectid50 = pm.environment.get(\"allIDProjects[]\").toString();",
+									"var count = pm.environment.get(\"allIDProjects[]\").length;",
+									"",
+									"var stringJson = \"\";",
+									"for(var i = 0; i< count; i++){",
+									"   stringJson = (stringJson === \"\" ? stringJson : stringJson +', ') +' { \"id\" : ' +projectid50.split(\",\")[i]+ '}';",
+									"}",
+									"",
+									"pm.environment.set(\"stringJson\", stringJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"projects\": [ \n    \t{{stringJson}} \n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"projects"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List Kanban  - Clear Up",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+								"exec": [
+									"// Clean up environment",
+									"pm.environment.unset(\"nameCollection\");",
+									"pm.environment.unset(\"keyapi_U2\");",
+									"pm.environment.unset(\"idProjectCreated\");",
+									"pm.environment.unset(\"modifiedGTE\");",
+									"pm.environment.unset(\"id_Kanban\");",
+									"pm.environment.unset(\"id_Kanban_member\");",
+									"pm.environment.unset(\"modifiedGTE-0\");",
+									"pm.environment.unset(\"modifiedGTE-1\");",
+									"pm.environment.unset(\"allIDKanbans[]\");",
+									"pm.environment.unset(\"50idKanbans[]\");",
+									"pm.environment.unset(\"ID_Kanban-0\");",
+									"pm.environment.unset(\"minDellID\");",
+									"pm.environment.unset(\"ModifiedGTE\");",
+									"pm.environment.unset(\"ModifiedGTE_1\");",
+									"pm.environment.unset(\"modifiedGTE-Order\");",
+									"pm.environment.unset(\"id_ArchiveKanban\");",
+									"pm.environment.unset(\"10idKanbans[]\");",
+									"pm.environment.unset(\"allIDProjects[]\");",
+									"pm.environment.unset(\"stringJson\");",
+									"pm.environment.unset(\"idKanban\");",
+									"pm.environment.unset(\"modifiedGTE_1\")",
+									"pm.environment.unset(\"CreateKanban\")",
+									"pm.environment.unset(\"UpdateKanban\")",
+									"// Clean up each id kanbans",
+									"for(var i = 0; i<100; i++){",
+									"    pm.environment.unset(\"kanbanid-\"+i);",
+									"    pm.environment.unset(\"idKanban_\"+i);",
+									"    ",
+									"}",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=0&project_ids[]={{idProjectCreated}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "has_del",
+									"value": "0"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

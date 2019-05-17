@@ -1,0 +1,128 @@
+{
+	"info": {
+		"_postman_id": "96ca690c-9240-485f-8fb5-438fa49c9062",
+		"name": "Get Token - SignIn - Data Driven",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Token - SignIn",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7c8a27a1-3a6f-4952-8af5-35f4df154f82",
+						"exec": [
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.iterationData.get(\"email_signin\")+\":LeftCoastLogic:\"+pm.iterationData.get(\"Password\"))+pm.environment.get(\"appreg\")).toString();",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig\", hash);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5d8fc4d2-1bf5-4828-b08f-31f2aef0b298",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.iterationData.get(\"email_signin\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+							"postman.setEnvironmentVariable(\"keyapi\", keyapi);",
+							"",
+							"var reqBody = JSON.parse(request.data);",
+							"// Get Testcase inputted",
+							"var Testcase =reqBody.TC;",
+							"var Description = reqBody.Description;",
+							"var msgFailed = {",
+							"    collection: \"API_Users\",",
+							"    title: 'Failed - '+Testcase,",
+							"    endpoint: \"/api/users/token.json\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Users\",",
+							"    title: 'Passed - '+Testcase,",
+							"    endpoint: \"/api/users/token.json\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200 OK\",",
+							"    description:\"\",",
+							"};",
+							"var dataResponse = pm.response.text();",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var body = json.description;",
+							"    if(body == Description){",
+							"        msg.error = body;",
+							"        msg.description = dataResponse;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed!\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"TC\":\"{{TestCase}}\",\n\t\"email\": \"{{email_signin}}\",\n\t\"password\":\"{{Password}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\",\n\t\"Description\":\"{{description}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token.json",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token.json"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

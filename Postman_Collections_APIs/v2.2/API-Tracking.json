@@ -1,0 +1,3509 @@
+{
+	"info": {
+		"_postman_id": "a8425b18-44c4-4e43-9491-116a257fa1f8",
+		"name": "API-Tracking Version 2.2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RUN ALL SCRIPTS API - TRACKING",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
+						"exec": [
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig\", hash);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "64ab487d-2eda-44c8-b027-39943e652ed9",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+							"postman.setEnvironmentVariable(\"keyapi\", keyapi);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-TRACKING',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Login',",
+							"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-TRACKING',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Login',",
+							"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var body = json.description;",
+							"    if(body==\"Flo\"){",
+							"        msg.description=body;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=body;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\"",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token.json",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - Create tracking email replied",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "de6a5e15-b239-4e36-a86f-2546cd840ca3",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Create - Create tracking email replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Create - Create tracking email replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"tracking\")){",
+							"        msg.description=\"Create tracking email replied successful\";",
+							"        pm.environment.set(\"idReplied\",json.data[0].tracking.id);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Create tracking email replied failed\";",
+							"        msg.error = \"Error\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{keyapi}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"message_id\":\"123\",\n        \"path\":\"inbox\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":1,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - Create tracking email waiting",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "13279067-8878-4942-b0be-2a6641d0402f",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Create - Create tracking email waiting',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Create - Create tracking email waiting',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"tracking\")){",
+							"        msg.description=\"Create tracking email waiting successful\";",
+							"        pm.environment.set(\"idWaiting\",json.data[0].tracking.id);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Create tracking email waiting failed\";",
+							"        msg.error = \"Error\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"message_id\":\"456\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - Create tracking email not replied",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "13b9e807-5f09-4aab-8056-30e07b626a87",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Create - Create tracking email not replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Create - Create tracking email not replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"tracking\")){",
+							"        msg.description=\"Create tracking email not replied successful\";",
+							"        pm.environment.set(\"idNotReplied\",json.data[0].tracking.id);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Create tracking email not replied failed\";",
+							"        msg.error = \"Error\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"message_id\":\"789\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":2,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - Create Tracking without params required",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8d7dccfc-e3df-48fb-beed-f5f7933212a7",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Create - Create Tracking without params required',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Create - Create Tracking without params required',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"error\")){",
+							"        msg.description=\"Can not create tracking without params required\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Create tracking without params required\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API - Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - Create 50 Tracking",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a8f1ac03-50f2-43ba-9ac5-301711ef6677",
+						"exec": [
+							"",
+							"var stringJson = \"\";",
+							"for(var i = 0; i< 50; i++){",
+							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"message_id\":\"message_id_'+i+'\",\"path\":\"Sent\",\"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\"subject\":\"TEST API-Tracking-'+i+'\",\"time_send\":123123,\"time_tracking\":24.122,\"ref\":\"1\",\"replied_time\":0,\"status\":0,\"acc_id\":0,\"uid\":\"1\" '+'}';",
+							"}",
+							"pm.environment.set(\"CreateTracking\", stringJson);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "67566155-8001-4f4e-b433-73bf3879bea2",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Create - Create 50 Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Create - Create 50 Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"var array =[];",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = statusResponse;",
+							"    var count = json.data.length;",
+							"    if(count === 50){",
+							"        for(var i=0; i<count; i++){",
+							"            array[i] = json.data[i].tracking.id;",
+							"            pm.environment.unset(\"subject_\"+i);",
+							"            pm.environment.unset(\"message_id_\"+i);",
+							"        }",
+							"        pm.environment.set(\"50idTracking[]\",array);",
+							"        msg.description=\"Create 50 Tracking successful\";",
+							"        ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Create 50 Tracking failed\";",
+							"        msg.error = \"Error\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {{CreateTracking}}\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - Create tracking with invalid value inputted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "13b9e807-5f09-4aab-8056-30e07b626a87",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Create - Create tracking with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Create - Create tracking with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.description = dataResponse;",
+							"        msg.error = \"Cannot create tracking with invalid value inputted\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = dataResponse;",
+							"        msg.error = \"Allow to create tracking with invalid value inputted\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"message_id\":\"12automationqcflo@gmail.automationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comm\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":2,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get All Tracking List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = 200;",
+							"    if(!dataResponse.includes(\"error\")){",
+							"        msg.description=\"Get all tracking list successful\";",
+							"        var count = json.data.length;",
+							"        var id = [];",
+							"        for(var i = 0; i < count; i++){",
+							"            id[i] = json.data[i].tracking.id;",
+							"        }",
+							"        // Set all and id tracking in environment.",
+							"        pm.environment.set(\"id_all_tracking\",id);",
+							"        ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Get all files not successful\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "{{keyapi}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "142293",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking null id tracking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "eb86b760-b40d-40c5-a4b7-9ef59acecb3c",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking null id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking null id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = statusResponse;",
+							"    var count = json.data.length;",
+							"    if(count === 0){",
+							"        msg.description=\"Can not update tracking null id tracking\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking null id tracking\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": null,\n        \"message_id\":\"123\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking none id tracking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "42c65519-f4cc-406c-9861-03f658c980ad",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking none id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking none id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.description=\"Can not update tracking none id tracking\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking none id tracking\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": \"\",\n        \"message_id\":\"123\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking invalid id tracking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e4b16e4f-447c-4d62-9202-b8f32e4d0116",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking invalid id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking invalid id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.description=\"Can not update tracking invalid id tracking.\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking invalid id tracking\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": 3333,\n        \"message_id\":\"123\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking with incorrect value inputted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e4b16e4f-447c-4d62-9202-b8f32e4d0116",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking with incorrect value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking with incorrect value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.description=\"Can not update tracking with incorrect value.\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking with incorrect value successful\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": \"{{idReplied}}\",\n\t\t\"message_id\":\"12automationqcflo@gmail.automationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.com\",\n        \"path\":\"inbox\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":1,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]\n"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking status replied to waiting",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "98e319f7-3f87-4dfa-93d2-1823b2622ceb",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking status replied to waiting',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking status replied to waiting',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    var statusTracking = parseInt(json.data[0].tracking.status); ",
+							"    if(statusTracking === 0){",
+							"        msg.description=\"Update tracking status replied to waiting successful.\";",
+							"        pm.environment.set(\"updated_date\",json.data[0].tracking.updated_date);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking status replied to waiting failed.\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": \"{{idReplied}}\",\n        \"message_id\":\"123\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking status waiting to late",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "51710464-9fb7-49e8-9e92-bf3842efea92",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking status waiting to late',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking status waiting to late',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    var statusTracking = parseInt(json.data[0].tracking.status); ",
+							"    if(statusTracking === 2){",
+							"        msg.description=\"Update tracking status waiting to late successful.\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking status waiting to late failed.\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": \"{{idWaiting}}\",\n        \"message_id\":\"456\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":2,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking status late to replied",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "64f13c27-7417-48ee-a3cd-ae139036b024",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking status late to replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking status late to replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = statusResponse;",
+							"    var statusTracking = parseInt(json.data[0].tracking.status); ",
+							"    if(statusTracking === 1){",
+							"        msg.description=\"UUpdate tracking status late to replied successful.\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking status late to replied failed.\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": \"{{idNotReplied}}\",\n        \"message_id\":\"789\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":1,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get Change - 3 Tracking Updated Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get Change - 3 Tracking Updated Status',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get Change - 3 Tracking Updated Status',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 3){",
+							"        var id1 = json.data[0].tracking.id;",
+							"        var id2 = json.data[1].tracking.id;",
+							"        var id3 = json.data[2].tracking.id;",
+							"        var idReplied = pm.environment.get(\"idReplied\");",
+							"        var idWaiting = pm.environment.get(\"idWaiting\");",
+							"        var idNotReplied = pm.environment.get(\"idNotReplied\");",
+							"        if(idReplied == id1 && idWaiting == id2 && idNotReplied == id3){",
+							"            msg.description=\"Get Change - 3 Tracking Updated Status successful\";",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = \"Get Change - 3 Tracking Updated Status - Failed\";",
+							"            msg.description=dataResponse;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Not show only 3 tracking updated status\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?fields=id,message_id,emails,status,subject,updated_date&modifiedGTE={{updated_date}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date"
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "142293",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update 50 Tracking",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c5017f43-dbc6-43ca-abf7-009b30250be5",
+						"exec": [
+							"var Array_50idTracking = pm.environment.get(\"50idTracking[]\");",
+							"var count = Array_50idTracking.length;",
+							"// convert Array to String",
+							"var idTracking = Array_50idTracking.toString();",
+							"var stringJson = \"\";",
+							"for(var i = 0; i<count; i++){",
+							"    var listIDTracking = idTracking.split(\",\")[i];",
+							"    pm.environment.set(\"TrackingID-\"+i,listIDTracking);",
+							"     stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"id\": '+listIDTracking+',\"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\"message_id\": \"12312321\",\"path\": \"sent 1\",\"subject\": \"Email - 0\",\"time_send\": 123123.123,\"time_tracking\": 1 '+'}';",
+							"}",
+							"",
+							"pm.environment.set(\"UpdateTracking\", stringJson);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "82c9247e-c9e9-4e7f-8333-aa515e069ec0",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update 50 Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update 50 Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 50){",
+							"        for(var i = 0; i < count; i++){",
+							"            var trackingID = parseInt(pm.environment.get(\"TrackingID-\"+i)); // convernt string to int",
+							"            var idTracking = json.data[i].tracking.id; // int",
+							"            if(trackingID === idTracking){",
+							"                msg.description = \"Update 50 Tracking correctly\";",
+							"                pm.environment.set(\"updated_date_0\",json.data[0].tracking.updated_date);",
+							"                ",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"Description response failed\";",
+							"                msg.description=\"Update 50 Tracking incorrectly\";",
+							"                break;",
+							"            }",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=\"Not show enough 50 Tracking\";",
+							"    }",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {{UpdateTracking}}\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get Change - All 50 Tracking Updated",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get Change - All 50 Tracking Updated',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get Change - All 50 Tracking Updated',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    var count = json.data.length;",
+							"    if(count === 50){",
+							"        for(var i = 0; i < count; i++){",
+							"            var trackingID = parseInt(pm.environment.get(\"TrackingID-\"+i)); // convernt string to int",
+							"            var idTracking = json.data[i].tracking.id; // int",
+							"            if(trackingID === idTracking){",
+							"                msg.description = \"Get Change - All 50 Tracking Updated Successful\";",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"Description response failed\";",
+							"                msg.description=\"Get Change - All 50 Tracking Updated Not Successful\";",
+							"                break;",
+							"            }",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=\"Not show enough 50 Tracking\";",
+							"    }",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?minID={{idNotReplied}}&pItem=50&fields=id,message_id,emails,status,subject,updated_date&modifiedGTE={{updated_date_0}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{idNotReplied}}"
+						},
+						{
+							"key": "pItem",
+							"value": "50"
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date"
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "142293",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date_0}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete - Delete Tracking List With Invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "523a2fb4-87be-4d3f-9dd2-1c9daf1a04be",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Delete - Delete Tracking List With Invalid id',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Delete - Delete Tracking List With Invalid id',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = 200;",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.error = json.data_error[0].error;",
+							"        msg.description = \"Show description: \"+json.data_error[0].description;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Delete Tracking List With Invalid id\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/123",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete - Delete 3 id Tracking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "eb988ad4-be98-4039-b936-4a47d2277aff",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Delete - Delete 3 id Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Delete - Delete 3 id Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 3){",
+							"        var id1 = json.data[0].id;",
+							"        var id2 = json.data[1].id;",
+							"        var id3 = json.data[2].id;",
+							"        var idReplied = pm.environment.get(\"idReplied\");",
+							"        var idWaiting = pm.environment.get(\"idWaiting\");",
+							"        var idNotReplied = pm.environment.get(\"idNotReplied\");",
+							"        if(idReplied == id1 && idWaiting == id2 && idNotReplied == id3){",
+							"            msg.description=\"Delete 3 id Tracking successful\";",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = \"Delete 3 id Tracking - Failed\";",
+							"            msg.description=dataResponse;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Not show only 3 tracking deleted status\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/{{idReplied}},{{idWaiting}},{{idNotReplied}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"{{idReplied}},{{idWaiting}},{{idNotReplied}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get Change - 3 id Tracking Deleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get Change - 3 id Tracking Deleted',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get Change - 3 id Tracking Deleted',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    var count = json.data_del.length;",
+							"    if(count === 3){",
+							"        var id1 = parseInt(json.data_del[0].deleted_item.item_id);",
+							"        var id2 = parseInt(json.data_del[1].deleted_item.item_id);",
+							"        var id3 = parseInt(json.data_del[2].deleted_item.item_id);",
+							"        var idReplied = parseInt(pm.environment.get(\"idReplied\"));",
+							"        var idWaiting = parseInt(pm.environment.get(\"idWaiting\"));",
+							"        var idNotReplied = parseInt(pm.environment.get(\"idNotReplied\"));",
+							"        ",
+							"        if(idReplied == id1 && idWaiting == id2 && idNotReplied == id3){",
+							"            msg.description=\"Get Change - 3 id Tracking Deleted successful\";",
+							"            pm.environment.set(\"minDelID\",json.data_del[0].deleted_item.id-1);",
+							"            pm.environment.set(\"minDelID_2\",json.data_del[2].deleted_item.id);",
+							"            pm.environment.set(\"updated_date_2\",json.data_del[1].deleted_item.updated_date);",
+							"            pm.environment.set(\"idItem1\",json.data_del[1].deleted_item.item_id);",
+							"            pm.environment.set(\"idItem2\",json.data_del[2].deleted_item.item_id);",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = \"Get Change - 3 id Tracking Deleted - Failed\";",
+							"            msg.description=dataResponse;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Not show only 3 id tracking deleted\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?ids={{idReplied}},{{idWaiting}},{{idNotReplied}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "{{idReplied}},{{idWaiting}},{{idNotReplied}}"
+						},
+						{
+							"key": "minID",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minDelID",
+							"value": "173347",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1552553069.99",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get Change - 2 id Tracking Deleted with ModifiedGTE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get Change - 2 id Tracking Deleted with ModifiedGTE',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get Change - 2 id Tracking Deleted with ModifiedGTE',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    var count = json.data_del.length;",
+							"    if(count === 2){",
+							"        var id_Item1 = pm.environment.get(\"idItem1\");",
+							"        var id_Item2 = pm.environment.get(\"idItem2\");",
+							"        if(dataResponse.includes(id_Item1) && dataResponse.includes(id_Item2)){",
+							"            msg.description=\"Get Change - 2 id Tracking Deleted with ModifiedGTE successful\";",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = \"Get Change - 2 id Tracking Deleted with ModifiedGTE - Failed\";",
+							"            msg.description=dataResponse;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Not show only 2 id tracking deleted\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?has_del=1&modifiedGTE={{updated_date_2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minDelID",
+							"value": "142293",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date_2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get All Tracking List - PRE-TEST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    if(dataResponse.includes(\"tracking\")){",
+							"        msg.description=\"Get all tracking list successful\";",
+							"        var count = json.data.length;",
+							"        var id = [];",
+							"        for(var i = 0; i < count; i++){",
+							"            id[i] = json.data[i].tracking.id;",
+							"        }",
+							"        // Set all and id tracking in environment.",
+							"        pm.environment.set(\"id_all_tracking\",id);",
+							"        ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Get all files not successful\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "142293",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete - Delete All id Tracking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "17d22f2f-5428-4f9d-bd63-a8f0c5e128dc",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Delete - Delete All id Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Delete - Delete All id Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    if(!dataResponse.includes(\"data_error\")){",
+							"        var count = json.data.length;",
+							"        // convert Array to String",
+							"        for(var i = 0; i < count; i++){",
+							"            var allTrackingID = pm.environment.get(\"id_all_tracking\").toString();",
+							"            var listIDTracking = allTrackingID.split(\",\")[i];",
+							"            var idTracking = json.data[i].id;",
+							"            if(listIDTracking === idTracking){",
+							"                msg.description = \"Delete All id Tracking correctly.\";",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"Not found item to delete\";",
+							"                msg.description=\"Delete All id Tracking incorrectly\";",
+							"                break;",
+							"        }",
+							"    }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Show error!\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/{{id_all_tracking}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"{{id_all_tracking}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get Change - All Tracking List Deleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get Change - All Tracking List Deleted',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get Change - All Tracking List Deleted',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    if(!dataResponse.includes(\"data_error\")){",
+							"        var minDelIDTracking = parseInt(json.data_del[0].deleted_item.id);",
+							"        var getMinDelID = parseInt(pm.environment.get(\"minDelID\"));",
+							"        if(minDelIDTracking > getMinDelID){",
+							"                msg.description = \"All Tracking List Deleted\";",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.description = \"Response not include id tracking deleted\";",
+							"            }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Return error Data\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?has_del=1&minDelID={{minDelID}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelID}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get Change - Tracking List 50 id deleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get Change - Tracking List 50 id deleted',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get Change - Tracking List 50 id deleted',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    var count = json.data_del.length;",
+							"    if(count === 50){",
+							"        var array = pm.environment.get(\"id_all_tracking\");",
+							"        var text = array.toString();",
+							"        for(var i = 0; i < count; i++){",
+							"            var trackingID = parseInt(text.split(\",\")[i]);",
+							"            var idTracking = parseInt(json.data_del[i].deleted_item.item_id); // int",
+							"            if(trackingID === idTracking){",
+							"                msg.description = \"Tracking List 50 id deleted correctly\";",
+							"                pm.environment.set(\"minDelID_3\",json.data_del[30].deleted_item.id);",
+							"                pm.environment.set(\"updated_date_delete\",json.data_del[30].deleted_item.updated_date);",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"Not found id tracking in data response\";",
+							"                msg.description=\"Tracking List 50 id deleted incorrectly\";",
+							"                break;",
+							"            }",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=\"Not show enough 50 ìd Tracking\";",
+							"    }",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?pItem=50&has_del=1&minDelID={{minDelID_2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "50"
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelID_2}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get Change - Tracking List 10 id deleted with minDelID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get Change - Tracking List 10 id deleted with minDelID',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get Change - Tracking List 10 id deleted with minDelID',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = 200;",
+							"    var count = json.data_del.length;",
+							"    if(count === 10){",
+							"        for(var i = 0; i < count; i++){",
+							"            // convernt string to int'",
+							"            var id = 31+i;",
+							"            var trackingID = parseInt(pm.environment.get(\"TrackingID-\"+id));",
+							"            var idTracking = parseInt(json.data_del[i].deleted_item.item_id);",
+							"            var minDelID = pm.environment.get(\"minDelID_3\");",
+							"            if(trackingID === idTracking){",
+							"                msg.description = \"Tracking List 10 id deleted with minDelID: \"+minDelID+\" correctly\";",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"Not found id tracking in data response\";",
+							"                msg.description= \"Tracking List 10 id deleted with minDelID: \"+minDelID+\" incorrectly\";",
+							"                break;",
+							"            }",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=\"Not show enough 10 ìd Tracking\";",
+							"    }",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?pItem=10&has_del=1&minDelID={{minDelID_3}}&modifiedGTE={{updated_date_delete}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "10"
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelID_3}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date_delete}} "
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get All Tracking List - Clean Up",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    pm.environment.unset(\"id_all_tracking\");",
+							"    pm.environment.unset(\"50idTracking[]\");",
+							"    pm.environment.unset(\"idReplied\");",
+							"    pm.environment.unset(\"idWaiting\");",
+							"    pm.environment.unset(\"idNotReplied\");",
+							"    pm.environment.unset(\"updated_date\");",
+							"    pm.environment.unset(\"updated_date_0\");",
+							"    pm.environment.unset(\"minDelID\");",
+							"    pm.environment.unset(\"minDelID_2\");",
+							"    pm.environment.unset(\"minDelID_3\");",
+							"    pm.environment.unset(\"updated_date_2\");",
+							"    pm.environment.unset(\"idItem1\");",
+							"    pm.environment.unset(\"idItem2\");",
+							"    pm.environment.unset(\"updated_date_delete\");",
+							"    for(var i=0; i<50; i++){",
+							"            pm.environment.unset(\"TrackingID-\"+i);",
+							"    }",
+							"",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "142293",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,185 @@
+Title TC: Test Version: v2.2/api
+Passed - Pretest - Login
+endpoint: v2.2/api/users/token.json
+method: POST
+error: No Error
+status: 200
+response message: Flo
+
+Title TC: Passed - Upload - update a file
+endpoint: v2.2/api/files/upload
+method: POST
+error: No Error
+status: 200
+response message: Upload successful.
+
+Title TC: Passed - Get List File - Get a file uploaded
+endpoint: v2.2/api/files
+method: GET
+error: No Error
+status: 200
+response message: Get file updated successful
+
+Title TC: Passed - Upload - update a file 1
+endpoint: v2.2/api/files/upload
+method: POST
+error: No Error
+status: 200
+response message: Upload file 1 successful
+
+Title TC: Passed - Upload - update a file 2
+endpoint: v2.2/api/files/upload
+method: POST
+error: No Error
+status: 200
+response message: Upload file 2 successful
+
+Title TC: Passed - Upload - update a file 3
+endpoint: v2.2/api/files/upload
+method: POST
+error: No Error
+status: 200
+response message: Upload file 3 successful
+
+Title TC: Failed - Upload - update a file 4
+endpoint: v2.2/api/files/upload
+method: POST
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Passed - Upload - update a file 5
+endpoint: v2.2/api/files/upload
+method: POST
+error: No Error
+status: 200
+response message: Upload file 5 successful
+
+Title TC: Passed - Upload - update a file 6
+endpoint: v2.2/api/files/upload
+method: POST
+error: No Error
+status: 200
+response message: Upload file 6 successful
+
+Title TC: Failed - Upload - update a file 7
+endpoint: v2.2/api/files/upload
+method: POST
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Passed - Upload - update a file 8
+endpoint: v2.2/api/files/upload
+method: POST
+error: No Error
+status: 200
+response message: Upload file 8 successful
+
+Title TC: Passed - Upload - update a file 9
+endpoint: v2.2/api/files/upload
+method: POST
+error: No Error
+status: 200
+response message: Upload file 9 successful
+
+Title TC: Failed - Upload - Big size
+endpoint: v2.2/api/files/upload
+method: POST
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Passed - Get List File - Get all files
+endpoint: v2.2/api/files/upload
+method: GET
+error: No Error
+status: 200
+response message: Get all files successful
+
+Title TC: Passed - Update File - Update file without uid
+endpoint: v2.2/api/files/upload
+method: PUT
+error: Cannot update file without uid
+status: 200
+response message: {"data":[]}
+
+Title TC: Passed - Update File - Update file with null uid
+endpoint: v2.2/api/files/upload
+method: PUT
+error: Cannot update file with null uid
+status: 200
+response message: {"data":[],"data_error":[{"error":10,"description":"The item can not be saved.","attributes":{"ext":".jpg","uid":"","filename":"an ninh mang.jpg","local_path":"","source":0,"url":"day la cai url","obj_id":"012345"}}]}
+
+Title TC: Passed - Update File - Update file with invalid uid
+endpoint: v2.2/api/files/upload
+method: PUT
+error: Cannot update file with invalid uid
+status: 200
+response message: {"data":[],"data_error":[{"error":10,"description":"The item can not be saved.","attributes":{"ext":".jpg","filename":"an ninh mang.jpg","local_path":"","source":0,"uid":"123","url":"day la cai url","obj_id":"012345"}}]}
+
+Title TC: Passed - Update File - Update file with valid uid
+endpoint: v2.2/api/files/upload
+method: PUT
+error: No Error
+status: 200
+response message: Update file successful
+
+Title TC: Failed - Update File - Update file with invalid value inputted
+endpoint: v2.2/api/files/upload
+method: PUT
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Passed - File - Get Change file updated
+endpoint: v2.2/api/files
+method: GET
+error: No Error
+status: 200
+response message: Get change file updated successful
+
+Title TC: Passed - Delete File - Delete file with invalid uid
+endpoint: v2.2/api/files
+method: DELETE
+error: Cannot delete file with invalid uid
+status: 200
+response message: {"data":[]}
+
+Title TC: Passed - Delete File - Delete file with valid uid
+endpoint: v2.2/api/files
+method: DELETE
+error: No Error
+status: 200
+response message: Delete file with valid uid successful.
+Data Response: 
+{"data":[{"id":"07f661ab-fd15-4ad8-9675-530c71203f3d"}]}
+
+Title TC: Passed - Get List File - Get Change - 1 file deleted
+endpoint: v2.2/api/files
+method: GET
+error: No Error
+status: 200
+response message: Get a file deleted correctly
+
+Title TC: Passed - File - Get all files
+endpoint: v2.2/api/files/upload
+method: GET
+error: No Error
+status: 200
+response message: Get all files successful
+
+Title TC: Failed - Delete File - Delete all files uploaded
+endpoint: v2.2/api/files
+method: DELETE
+error: Not found filed uploaded to delete
+status: 200
+response message: Delete all files uploaded not successful
+
+Title TC: Passed - File - Get Change files deleted
+endpoint: v2.2/api/files
+method: GET
+error: No Error
+status: 200
+response message: Get change file deleted successful
+

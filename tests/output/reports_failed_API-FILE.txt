@@ -1,0 +1,35 @@
+Title TC: Failed - Upload - update a file 4
+endpoint: v2.2/api/files/upload
+method: POST
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Upload - update a file 7
+endpoint: v2.2/api/files/upload
+method: POST
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Upload - Big size
+endpoint: v2.2/api/files/upload
+method: POST
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Update File - Update file with invalid value inputted
+endpoint: v2.2/api/files/upload
+method: PUT
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Delete File - Delete all files uploaded
+endpoint: v2.2/api/files
+method: DELETE
+error: Not found filed uploaded to delete
+status: 200
+response message: Delete all files uploaded not successful
+

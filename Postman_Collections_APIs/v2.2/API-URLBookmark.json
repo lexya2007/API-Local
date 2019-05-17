@@ -1,0 +1,3772 @@
+{
+	"info": {
+		"_postman_id": "f2d89be5-a38c-472b-b695-4963a98c261d",
+		"name": "API - URL Bookmark",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "pretest - Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1bda41a4-5419-4d56-83a7-911151792891",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+							"postman.setEnvironmentVariable(\"keyapi\", keyapi);",
+							"",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Login',",
+							"    endpoint: pm.environment.get(\"version\")+\"/users/token.json\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Login',",
+							"    endpoint: pm.environment.get(\"version\")+\"/users/token.json\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var body = json.description;",
+							"    if(body==\"Flo\"){",
+							"        msg.description=body;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=body;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1c08c603-e7d0-4913-921b-c3ac7e42ea9f",
+						"exec": [
+							"",
+							"if(pm.environment.get(\"server\") == \"123flo.com\"){",
+							"    postman.setEnvironmentVariable(\"password\",\"qwe123\");",
+							"    postman.setEnvironmentVariable(\"email\", \"api_test_rrr@123flo.com\");",
+							"}else{",
+							"    postman.setEnvironmentVariable(\"password\",\"123456\");",
+							"    postman.setEnvironmentVariable(\"email\", \"flo_automationk5@flomail.net\");",
+							"}",
+							"",
+							"",
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig\", hash);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token.json",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create URL Bookmark - Only url",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "457c7c75-fafb-4446-8310-b5e8d471697d",
+						"exec": [
+							"postman.setEnvironmentVariable(\"url\", \"google.com\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "79613155-b932-4b9f-a090-c8afaccc9997",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Create URL Bookmark - Only url',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Create URL Bookmark - Only url',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"",
+							" ",
+							"    var count = json.length;",
+							"    if(count !== 0){",
+							"        var url = json.data[0].url.url;",
+							"        if(url==pm.environment.get(\"url\"))",
+							"        {",
+							"            msg.description=\"create URL Bookmark success\";",
+							"            pm.environment.set(\"urlid\", json.data[0].url.id);",
+							"            ",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = \"url is not match\";",
+							"            msg.description=\"uri is: \"+url;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"data response null\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							"//Clean up",
+							"//clean up",
+							"postman.clearEnvironmentVariable(\"uri\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"url\":\"{{url}}\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}//urls?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create URL Bookmark - Null url",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "23a4fe29-0c31-4867-ac67-22d9e42cf6a1",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Create URL Bookmark - null url',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Create URL Bookmark - null url',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var dataResponse = pm.response.text();",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.description = \"Error show when create with null uri\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Need to show error\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							"//Clean up",
+							"//clean up",
+							"postman.clearEnvironmentVariable(\"bookmark_data\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "25a34ffc-dbb0-40db-b237-d4a750e0a193",
+						"exec": [
+							"",
+							"postman.setEnvironmentVariable(\"title\", \"title 1\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n[\n    {\n        \"title\": \"{{title}}\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create URL Bookmark - url, title",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b6c1903-989a-4fe4-909e-5729dae32124",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Create URL Bookmark - uri, title',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Create URL Bookmark - uri, title',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"",
+							" ",
+							"    var count = json.length;",
+							"    if(count !== 0){",
+							"        var url = json.data[0].url.url;",
+							"        var title = json.data[0].url.title;",
+							"        if((url==pm.environment.get(\"url\"))",
+							"        &&(title==pm.environment.get(\"title\"))",
+							"        ){",
+							"        msg.description=\"create URL bookmark success\";",
+							"        }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=\"url is: \"+url+\", title is: \"+title;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"data response null\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							"//Clean up",
+							"//clean up",
+							"postman.clearEnvironmentVariable(\"url\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3085c103-dbc1-4caa-84c6-6e335a173844",
+						"exec": [
+							"postman.setEnvironmentVariable(\"url\", \"123google.com.vn\");",
+							"postman.setEnvironmentVariable(\"title\", \"title 2\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n[\n    {\n        \"url\": \"{{url}}\",\n        \"title\": \"{{title}}\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create URL Bookmark - url, ref",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b6c1903-989a-4fe4-909e-5729dae32124",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Create URL Bookmark - uri, ref',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Create URL Bookmark - uri, ref',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"",
+							" ",
+							"    var count = json.length;",
+							"    if(count !== 0){",
+							"        var url = json.data[0].url.url;",
+							"        var ref = json.data[0].url.ref;",
+							"        if((url==pm.environment.get(\"url\"))",
+							"        &&(ref==pm.environment.get(\"ref\"))",
+							"        ){",
+							"        msg.description=\"create URL bookmark success\";",
+							"        }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=\"url is: \"+url+\", ref is: \"+ref;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"data response null\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							"//Clean up",
+							"//clean up",
+							"postman.clearEnvironmentVariable(\"url\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3085c103-dbc1-4caa-84c6-6e335a173844",
+						"exec": [
+							"postman.setEnvironmentVariable(\"url\", \"1234google.com.vn\");",
+							"postman.setEnvironmentVariable(\"ref\", 7);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n[\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create URL Bookmark - Full",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b6c1903-989a-4fe4-909e-5729dae32124",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Create URL Bookmark - Full',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Create URL Bookmark - Full',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"",
+							" ",
+							"    var count = json.length;",
+							"    if(count !== 0){",
+							"        var url = json.data[0].url.url;",
+							"        var ref = json.data[0].url.ref;",
+							"        var title = json.data[0].url.title;",
+							"        if((url==pm.environment.get(\"url\"))",
+							"        &&(ref==pm.environment.get(\"ref\"))",
+							"        &&(title==pm.environment.get(\"title\"))",
+							"        ){",
+							"            msg.description=\"create URL bookmark success\";",
+							"              pm.environment.set(\"urlid\", json.data[0].url.id);",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = \"Description response failed\";",
+							"            msg.description=\"url is: \"+url+\", ref is: \"+ref+\", title is: \"+title;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"data response null\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							"//Clean up",
+							"//clean up",
+							"postman.clearEnvironmentVariable(\"url\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3085c103-dbc1-4caa-84c6-6e335a173844",
+						"exec": [
+							"postman.setEnvironmentVariable(\"url\", \"github.com\");",
+							"postman.setEnvironmentVariable(\"ref\", 7);",
+							"postman.setEnvironmentVariable(\"title\", \"trang chu\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n[\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create URL Bookmark - Big Data 50 Items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b6c1903-989a-4fe4-909e-5729dae32124",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Create URL Bookmark - Big Data 50 Items ',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Create URL Bookmark - Big Data 50 Items',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"",
+							" ",
+							"    var count = json.data.length;",
+							"    if(count == 50){",
+							"        msg.description=\"create URL Bookmark success 50 Items\";",
+							"        for(var i=0; i<count; i++){",
+							"            pm.environment.set(\"urlbookmarkid\"+i, json.data[i].url.id);",
+							"        }",
+							"        var array = [];",
+							"        for(var j=20; j<30; j++){",
+							"          array[j-20] = json.data[j].url.id;",
+							"        }",
+							"        pm.environment.set(\"deleteid\", array);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"data response is not match. The number of items response is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"//Clean up",
+							"//clean up",
+							"postman.clearEnvironmentVariable(\"url\");",
+							"postman.clearEnvironmentVariable(\"ref\");",
+							"postman.clearEnvironmentVariable(\"title\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3085c103-dbc1-4caa-84c6-6e335a173844",
+						"exec": [
+							"",
+							"postman.setEnvironmentVariable(\"url\", \"github.com\");",
+							"postman.setEnvironmentVariable(\"ref\", 999);",
+							"postman.setEnvironmentVariable(\"title\", \"trang chu\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n[\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create URL Bookmark - Big Data 51 Items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b6c1903-989a-4fe4-909e-5729dae32124",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Create URL Bookmark - Big Data 51 Items',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Create URL Bookmark - Big Data 51 Items',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"",
+							" ",
+							"    var count = json.data.length;",
+							"    if(count == 50){",
+							"        msg.description=\"Can not create 51 Items in 1 request , just create URL Bookmark success 50 Items\";",
+							"        ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"data response is not match. The number of items response is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"//Clean up",
+							"//clean up",
+							"postman.clearEnvironmentVariable(\"url\");",
+							"postman.clearEnvironmentVariable(\"ref\");",
+							"postman.clearEnvironmentVariable(\"title\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3085c103-dbc1-4caa-84c6-6e335a173844",
+						"exec": [
+							"postman.setEnvironmentVariable(\"url\", \"baotuoitre.com\");",
+							"postman.setEnvironmentVariable(\"ref\", 1000);",
+							"postman.setEnvironmentVariable(\"title\", \"trang chu 100\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n[\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n     {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    },\n    {\n        \"url\": \"{{url}}\",\n        \"ref\": \"{{ref}}\",\n        \"title\":\"{{title}}\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update URL Bookmark",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3e64428f-224d-4cae-b319-3f525416507f",
+						"exec": [
+							"postman.setEnvironmentVariable(\"title\", \"update title\");",
+							"postman.setEnvironmentVariable(\"url\", \"news.com\");",
+							"postman.setEnvironmentVariable(\"order_number\", 100);",
+							"postman.setEnvironmentVariable(\"order_update_time\", 1552545461.766);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "93f39464-77a3-402c-970e-184501464871",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Update URL Bookmark - Full',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls/update\",",
+							"    method: \"put\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Update URL Bookmark - Full',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls/update\",",
+							"    method: \"put\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"",
+							" ",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        var url = json.data[0].url.url;",
+							"        var order_number = json.data[0].url.order_number;",
+							"        var order_update_time = json.data[0].url.order_update_time;",
+							"        var title = json.data[0].url.title;",
+							"        if((url==pm.environment.get(\"url\"))",
+							"        &&(order_number==pm.environment.get(\"order_number\"))",
+							"        &&(order_update_time==pm.environment.get(\"order_update_time\"))",
+							"        &&(title==pm.environment.get(\"title\"))",
+							"        ){",
+							"            msg.description=\"update URL Bookmark success\";",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = \"Description response failed\";",
+							"            msg.description=\"url is: \"+url+\", order_number is: \"+order_number+\", order_update_time is: \"+order_update_time+\", title is: \"+title;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"data response null\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							"//Clean up",
+							"//clean up",
+							"postman.clearEnvironmentVariable(\"title\");",
+							"postman.clearEnvironmentVariable(\"url\");",
+							"postman.clearEnvironmentVariable(\"order_number\");",
+							"postman.clearEnvironmentVariable(\"order_update_time\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": \"{{urlid}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update URL Bookmark Invalid Id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3e64428f-224d-4cae-b319-3f525416507f",
+						"exec": [
+							"postman.setEnvironmentVariable(\"title\", \"update title\");",
+							"postman.setEnvironmentVariable(\"url\", \"news.com\");",
+							"postman.setEnvironmentVariable(\"order_number\", 100);",
+							"postman.setEnvironmentVariable(\"order_update_time\", 1552545461.766);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "93f39464-77a3-402c-970e-184501464871",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Update URL Bookmark - Invalid id',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls/update\",",
+							"    method: \"put\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Update URL Bookmark - Invalid id',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls/update\",",
+							"    method: \"put\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"",
+							" ",
+							"    var count = json.data_error.length;",
+							"    if(count !== 0){",
+							"        var description = json.data_error[0].description;",
+							"        if(description !==\"The item can not be saved.\"){",
+							"            msg = msgFailed;",
+							"            msg.error = \"Error show is not match with expected\";",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Not show error in response body\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							"//Clean up",
+							"//clean up",
+							"postman.clearEnvironmentVariable(\"title\");",
+							"postman.clearEnvironmentVariable(\"url\");",
+							"postman.clearEnvironmentVariable(\"order_number\");",
+							"postman.clearEnvironmentVariable(\"order_update_time\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": 131231,\n        \"title\": \"flo\",\n        \"url\": \"fl33fsdfa3o.com\",\n        \"order_number\": 499,\n        \"order_update_time\": 1552545461.766\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update URL Bookmark - Big Data 50 Items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b6c1903-989a-4fe4-909e-5729dae32124",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Update URL Bookmark - Big Data 50 Items ',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Update URL Bookmark - Big Data 50 Items',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"",
+							" ",
+							"    var count = json.data.length;",
+							"    if(count == 50){",
+							"        msg.description=\"Update URL Bookmark success 50 Items\";",
+							"        postman.setEnvironmentVariable(\"updated_date\", json.data[5].url.updated_date);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"data response is not match. The number of items response is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"//Clean up",
+							"//clean up",
+							"postman.clearEnvironmentVariable(\"url\");",
+							"postman.clearEnvironmentVariable(\"ref\");",
+							"postman.clearEnvironmentVariable(\"title\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3085c103-dbc1-4caa-84c6-6e335a173844",
+						"exec": [
+							"postman.setEnvironmentVariable(\"title\", \"update title\");",
+							"postman.setEnvironmentVariable(\"url\", \"news.com\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n[\n      {\n        \"id\": \"{{urlbookmarkid0}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n     {\n        \"id\": \"{{urlbookmarkid1}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid2}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid3}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid4}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid5}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n     {\n        \"id\": \"{{urlbookmarkid6}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid7}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid8}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid9}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid10}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n     {\n        \"id\": \"{{urlbookmarkid11}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid12}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid13}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid14}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid15}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n     {\n        \"id\": \"{{urlbookmarkid16}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid17}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid18}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid19}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid20}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n     {\n        \"id\": \"{{urlbookmarkid21}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid22}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid23}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid24}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid25}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n     {\n        \"id\": \"{{urlbookmarkid26}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid27}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid28}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid29}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },{\n        \"id\": \"{{urlbookmarkid30}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n     {\n        \"id\": \"{{urlbookmarkid31}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid32}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid33}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid34}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid35}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n     {\n        \"id\": \"{{urlbookmarkid36}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid37}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid38}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid39}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid40}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n     {\n        \"id\": \"{{urlbookmarkid41}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid42}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid43}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid44}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid45}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n     {\n        \"id\": \"{{urlbookmarkid46}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid47}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid48}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    },\n    {\n        \"id\": \"{{urlbookmarkid49}}\",\n        \"title\": \"{{title}}\",\n        \"url\": \"{{url}}\",\n        \"order_number\": \"{{order_number}}\",\n        \"order_update_time\": \"{{order_update_time}}\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get URL Bookmark - Full",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get List URL Bookmark - Full',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get List URL Bookmark - Full',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 105){",
+							"        ",
+							"        msg.description = \"Get List URL Bookmark Success\";",
+							"    }else{",
+							"        msg.error = \"Data response is not match\";",
+							"        msg.description = \"The number of items respone is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,displayname",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1552552076.387",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get URL Bookmark - Full First Sync",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get List URL Bookmark - First Sync',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get List URL Bookmark - First Sync',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 100){",
+							"        ",
+							"        msg.description = \"Get List URL Bookmark Success\";",
+							"    }else{",
+							"        msg.error = \"Data response is not match\";",
+							"        msg.description = \"The number of items respone is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}&minID=0&pItem=100",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,displayname",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "0"
+						},
+						{
+							"key": "pItem",
+							"value": "100"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1552552076.387",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pretest - Delete URL Bookmark",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7b1f1c47-82fd-424c-85fa-441e0ae66802",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Delete URL Bookmark',",
+							"    endpoint: \"urls/:id\",",
+							"    method: \"delete\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Delete URL Bookmark',",
+							"    endpoint: \"urls/:id\",",
+							"    method: \"delete\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.length;",
+							"    if(count !== 0){",
+							"       ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"data response null\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"pm.environment.unset(\"deleteid\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4e5cdb34-962f-437a-856e-43faff173e0c",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls/{{deleteid}}?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls",
+						"{{deleteid}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get URL Bookmark  1 - minID, pItem, fields, has_del, minDelID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get List URL Bookmark 1 - minID={{urlid}}, pItem=5, has_del=0, fields=id,created_date,title',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get List URL Bookmark 1 - minID={{urlid}}, pItem=5, has_del=0, fields=id,created_date,title',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 5){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            if(json.data[i].url.id > pm.environment.get(\"urlid\")){",
+							"                msg.description = \"- parameter minID worked fine \"",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"- parameter minID: failed\";",
+							"            }",
+							"          ",
+							"            if((json.data[i].url.id !== undefined)",
+							"                &&(json.data[i].url.url === undefined)",
+							"                &&(json.data[i].url.created_date !== undefined)",
+							"                &&(json.data[i].url.updated_date === undefined)",
+							"                &&(json.data[i].url.title !== undefined)",
+							"                &&(json.data[i].url.order_number === undefined)",
+							"                &&(json.data[i].url.order_update_time === undefined)",
+							"            ){",
+							"                msg.description = msg.description+\" - parameter fields worked fine \"",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = msg.error+\" - parameter fields: failed\";",
+							"            }",
+							"        }",
+							"          ",
+							"    }else{",
+							"        msg.description = \" - parameter pItem: failed\";",
+							"    }",
+							"    if(pm.response.text().includes(\"data_del\")){",
+							"        msg = msgFailed;",
+							"        msg.error = msg.error+\" - parameter has_del: failed\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}&fields=id,created_date,title&minID={{urlid}}&pItem=5&has_del=0",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,created_date,title"
+						},
+						{
+							"key": "ids",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{urlid}}"
+						},
+						{
+							"key": "pItem",
+							"value": "5"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1552553763.278",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get URL Bookmark 2 - minID, pItem, fields, has_del, minDelID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get List URL Bookmark 2 - fields=url,updated_date,order_number,order_update_time, pItem=10, has_del=1',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get List URL Bookmark 2 - fields=url,updated_date,order_number,order_update_time, pItem=10, has_del=1',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 10){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            if((json.data[i].url.id !== undefined)",
+							"                &&(json.data[i].url.url !== undefined)",
+							"                &&(json.data[i].url.created_date === undefined)",
+							"                &&(json.data[i].url.updated_date !== undefined)",
+							"                &&(json.data[i].url.title === undefined)",
+							"                &&(json.data[i].url.order_number !== undefined)",
+							"                &&(json.data[i].url.order_update_time !== undefined)",
+							"            ){",
+							"                msg.description = \" - parameter fields worked fine \"",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \" - parameter fields:failed\";",
+							"            }",
+							"        }",
+							"    }else{",
+							"        msg.description = \" - parameter pItem:failed\";",
+							"    }",
+							"    if(pm.response.text().includes(\"data_del\")){",
+							"        var count = json.data.length;",
+							"        if(count === 10){",
+							"            pm.environment.set(\"minDelId\",json.data_del[1].deleted_item.id);",
+							"            if(msg != msgFailed){",
+							"                msg.description = msg.description+\" - parameter pItem worked fine with deleted Items\";",
+							"            }",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = msg.error+\" - parameter pItem: failed with deleted items\";",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = msg.error+\" - parameter has_del:failed\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}&fields=url,updated_date,order_number,order_update_time&pItem=10&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "url,updated_date,order_number,order_update_time"
+						},
+						{
+							"key": "pItem",
+							"value": "10"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "ids",
+							"value": "{{urlid}},",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{urlid}}",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get URL Bookmark  3 - minID, pItem, fields, has_del, minDelID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get List URL Bookmark 3 - fields=id,created_date,title&minID={{urlid}}&pItem=5&has_del=1&minDelID={{minDelId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get List URL Bookmark 3 - fields=id,created_date,title, minID={{urlid}}, pItem=5, has_del=1, minDelID={{minDelId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 5){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            if(json.data[i].url.id > pm.environment.get(\"urlid\")){",
+							"                msg.description = \"- parameter minID worked fine \"",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"- parameter minID: failed\";",
+							"            }",
+							"          ",
+							"            if((json.data[i].url.id !== undefined)",
+							"                &&(json.data[i].url.url === undefined)",
+							"                &&(json.data[i].url.created_date !== undefined)",
+							"                &&(json.data[i].url.updated_date === undefined)",
+							"                &&(json.data[i].url.title !== undefined)",
+							"                &&(json.data[i].url.order_number === undefined)",
+							"                &&(json.data[i].url.order_update_time === undefined)",
+							"            ){",
+							"                msg.description = msg.description+\" - parameter fields worked fine \"",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = msg.error+\" - parameter fields: failed\";",
+							"            }",
+							"        }",
+							"          ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \" - parameter pItem: failed\";",
+							"    }",
+							"    ",
+							"    if(pm.response.text().includes(\"data_del\")){",
+							"        var count = json.data_del.length;",
+							"        if(count === 5){",
+							"            for (var i = 0; i <count; i++) ",
+							"            {",
+							"                if(json.data_del[i].deleted_item.id > pm.environment.get(\"minDelId\")){",
+							"                    msg.description = \"- parameter minDelID worked fine \";",
+							"                }else{",
+							"                    msg = msgFailed;",
+							"                    msg.error = \"- parameter minDelID: failed \";",
+							"                }",
+							"            }   ",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = \" - parameter pItem: failed with deleted Items\";",
+							"        }",
+							"        ",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}&fields=id,created_date,title&minID={{urlid}}&pItem=5&has_del=1&minDelID={{minDelId}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,created_date,title"
+						},
+						{
+							"key": "ids",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{urlid}}"
+						},
+						{
+							"key": "pItem",
+							"value": "5"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1552553763.278",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get URL Bookmark  4 - minID, pItem, fields, has_del, minDelID ids",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							"var urlid1 = pm.environment.get(\"urlid\") - 1;",
+							"pm.environment.set(\"urlid-1\", urlid1);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get List URL Bookmark 4 - fields=id,created_date,title, ids={{urlid}}, minID={{urlid-1}}, pItem=5, has_del=1, minDelID={{minDelId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get List URL Bookmark 4 - fields=id,created_date,title, ids={{urlid}}, minID={{urlid-1}}, pItem=5, has_del=1, minDelID={{minDelId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 1){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            if(json.data[i].url.id > pm.environment.get(\"urlid-1\")){",
+							"                msg.description = \"- parameter minID worked fine \"",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"- parameter minID: failed\";",
+							"            }",
+							"          ",
+							"            if((json.data[i].url.id !== undefined)",
+							"                &&(json.data[i].url.url === undefined)",
+							"                &&(json.data[i].url.created_date !== undefined)",
+							"                &&(json.data[i].url.updated_date === undefined)",
+							"                &&(json.data[i].url.title !== undefined)",
+							"                &&(json.data[i].url.order_number === undefined)",
+							"                &&(json.data[i].url.order_update_time === undefined)",
+							"            ){",
+							"                msg.description = msg.description+\" - parameter fields worked fine \"",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = msg.error+\" - parameter fields: failed\";",
+							"            }",
+							"        }",
+							"          ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \" - parameter pItem: failed\";",
+							"    }",
+							"    ",
+							"    if(pm.response.text().includes(\"data_del\")){",
+							"        msg.description = msg.description+\"- parameter has_del worked fine \";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \" - parameter has_del: failed \";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							"pm.globals.unset(\"urlid-1\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}&fields=id,created_date,title&ids={{urlid}}&minID={{urlid-1}}&pItem=5&has_del=1&minDelID={{minDelId}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,created_date,title"
+						},
+						{
+							"key": "ids",
+							"value": "{{urlid}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{urlid-1}}"
+						},
+						{
+							"key": "pItem",
+							"value": "5"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1552553763.278",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get URL Bookmark  5 - minID, pItem, fields, has_del, minDelID ids",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							"var urlid1 = pm.environment.get(\"urlid\") - 1;",
+							"pm.environment.set(\"urlid-1\", urlid1);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get List URL Bookmark 5 - fields=id,created_date,title, ids={{urlid}}, minID={{urlid}}, pItem=5, has_del=1, minDelID={{minDelId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get List URL Bookmark 5 - fields=id,created_date,title, ids={{urlid}}, minID={{urlid}}, pItem=5, has_del=1, minDelID={{minDelId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 0){",
+							"       msg.description = \"- Data response null as expected\"",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \" - parameter pItem: failed\";",
+							"    }",
+							"    ",
+							"    if(pm.response.text().includes(\"data_del\")){",
+							"        msg.description = msg.description+\"- parameter has_del worked fine \";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \" - parameter has_del: failed \";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							"pm.globals.unset(\"urlid-1\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}&fields=id,created_date,title&ids={{urlid}}&minID={{urlid}}&pItem=5&has_del=1&minDelID={{minDelId}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,created_date,title"
+						},
+						{
+							"key": "ids",
+							"value": "{{urlid}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{urlid}}"
+						},
+						{
+							"key": "pItem",
+							"value": "5"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1552553763.278",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get URL Bookmark - get change modifiedGTE",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get List URL Bookmark - Full',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get List URL Bookmark - Full',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        for (var i = 0; i <count; i++) ",
+							"            {",
+							"                if(json.data[i].url.updated_date >= pm.environment.get(\"updated_date\")){",
+							"                    msg.description = \"- parameter modifiedGTE worked fine \"",
+							"                }else{",
+							"                    msg = msgFailed;",
+							"                    msg.error = \"- parameter modifiedGTE: failed\";",
+							"                }",
+							"            }",
+							"    }else {",
+							"        msg = msgFailed;",
+							"        msg.error = \"Data response null\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}&modifiedGTE={{updated_date}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,displayname",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get URL Bookmark - get change Sync Change",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get List URL Bookmark - sync Change',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get List URL Bookmark - sync Change',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        for (var i = 0; i <count; i++) ",
+							"            {",
+							"                if(json.data[i].url.updated_date < pm.environment.get(\"updated_date\")){",
+							"                    msg = msgFailed;",
+							"                    msg.error = \"- parameter modifiedGTE: failed\";",
+							"                }",
+							"            }",
+							"    }else {",
+							"        msg = msgFailed;",
+							"        msg.error = \"Data response null\";",
+							"    }",
+							"    ",
+							"    if(!pm.response.text().includes(\"data_del\")){",
+							"        msg = msgFailed;",
+							"        msg.error = msg.error+\" - parameter pItem: failed with deleted items\";",
+							"    }else{",
+							"        var count = json.data_del.length;",
+							"        for (var i = 0; i <count; i++) {",
+							"            if(json.data_del[i].deleted_item.updated_date < pm.environment.get(\"updated_date\")){",
+							"                    msg = msgFailed;",
+							"                    msg.error = \"- parameter modifiedGTE: failed\";",
+							"                }",
+							"        }   ",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}&modifiedGTE={{updated_date}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,displayname",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get change URL Bookmark  1 - modifiedGTE, minID, pItem, fields, has_del, minDelID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get change List URL Bookmark 1 - modifiedGTE={{updated_date}}, minID={{urlid}}, pItem=5, has_del=0, fields=id,created_date,title',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get change List URL Bookmark 1 - modifiedGTE={{updated_date}}, minID={{urlid}}, pItem=5, has_del=0, fields=id,created_date,title',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 5){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            if(json.data[i].url.updated_date >= pm.environment.get(\"updated_date\")){",
+							"                msg.description = \"- parameter modifiedGTE worked fine \"",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"- parameter modifiedGTE: failed\";",
+							"            }",
+							"            if(json.data[i].url.id > pm.environment.get(\"urlid\")){",
+							"                msg.description = \"- parameter minID worked fine \"",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"- parameter minID: failed\";",
+							"            }",
+							"          ",
+							"            if((json.data[i].url.id !== undefined)",
+							"                &&(json.data[i].url.url === undefined)",
+							"                &&(json.data[i].url.created_date !== undefined)",
+							"                &&(json.data[i].url.updated_date !== undefined)",
+							"                &&(json.data[i].url.title !== undefined)",
+							"                &&(json.data[i].url.order_number === undefined)",
+							"                &&(json.data[i].url.order_update_time === undefined)",
+							"            ){",
+							"                msg.description = msg.description+\" - parameter fields worked fine \"",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = msg.error+\" - parameter fields: failed\";",
+							"            }",
+							"        }",
+							"          ",
+							"    }else{",
+							"        msg.description = \" - parameter pItem: failed\";",
+							"    }",
+							"    if(pm.response.text().includes(\"data_del\")){",
+							"        msg = msgFailed;",
+							"        msg.error = msg.error+\" - parameter has_del: failed\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}&fields=id,created_date,title,updated_date&minID={{urlid}}&pItem=5&modifiedGTE={{updated_date}}&has_del=0",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,created_date,title,updated_date"
+						},
+						{
+							"key": "ids",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{urlid}}"
+						},
+						{
+							"key": "pItem",
+							"value": "5"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}"
+						},
+						{
+							"key": "has_del",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get change URL Bookmark 2 - modifiedGTE, minID, pItem, fields, has_del, minDelID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get change List URL Bookmark 2 - modifiedGTE={{updated_date}}, fields=url,updated_date,order_number,order_update_time, pItem=10, has_del=1',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get change List URL Bookmark 2 - modifiedGTE={{updated_date}}, fields=url,updated_date,order_number,order_update_time, pItem=10, has_del=1',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 10){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            if(json.data[i].url.updated_date >= pm.environment.get(\"updated_date\")){",
+							"                msg.description = \"- parameter modifiedGTE worked fine \";",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"- parameter modifiedGTE: failed\";",
+							"            }",
+							"            if((json.data[i].url.id !== undefined)",
+							"                &&(json.data[i].url.url !== undefined)",
+							"                &&(json.data[i].url.created_date === undefined)",
+							"                &&(json.data[i].url.updated_date !== undefined)",
+							"                &&(json.data[i].url.title === undefined)",
+							"                &&(json.data[i].url.order_number !== undefined)",
+							"                &&(json.data[i].url.order_update_time !== undefined)",
+							"            ){",
+							"                msg.description = \" - parameter fields worked fine \";",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \" - parameter fields:failed\";",
+							"            }",
+							"        }",
+							"    }else{",
+							"        msg.description = \" - parameter pItem:failed\";",
+							"    }",
+							"    if(pm.response.text().includes(\"data_del\")){",
+							"        var count = json.data.length;",
+							"        if(count === 10){",
+							"            for(var i=0 ; i<count ;i++){",
+							"                if(json.data_del[i].deleted_item.updated_date < pm.environment.get(\"updated_date\")){",
+							"                    msg = msgFailed;",
+							"                    msg.error = \"- parameter modifiedGTE: failed\";",
+							"                }",
+							"            }",
+							"            pm.environment.set(\"minDelId\",json.data_del[1].deleted_item.id);",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = msg.error+\" - parameter pItem: failed with deleted items\";",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = msg.error+\" - parameter has_del:failed\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}&fields=url,updated_date,order_number,order_update_time&pItem=10&modifiedGTE={{updated_date}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "url,updated_date,order_number,order_update_time"
+						},
+						{
+							"key": "ids",
+							"value": "{{urlid}},",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{urlid}}",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "10"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minDelID",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get change URL Bookmark  3 - modifiedGTE, minID, pItem, fields, has_del, minDelID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Get change List URL Bookmark 3 - modifiedGTE={{updated_date}}, fields=id,created_date,title&minID={{urlid}}&pItem=5&has_del=1&minDelID={{minDelId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Get List URL Bookmark 3 - modifiedGTE={{updated_date}}, fields=id,created_date,title,updated_date, minID={{urlid}}, pItem=5, has_del=1, minDelID={{minDelId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 5){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            if(json.data[i].url.updated_date >= pm.environment.get(\"updated_date\")){",
+							"                msg.description = \"- parameter modifiedGTE worked fine \";",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"- parameter modifiedGTE: failed\";",
+							"            }",
+							"            ",
+							"            if(json.data[i].url.id > pm.environment.get(\"urlid\")){",
+							"                msg.description = \"- parameter minID worked fine \";",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"- parameter minID: failed\";",
+							"            }",
+							"          ",
+							"            if((json.data[i].url.id !== undefined)",
+							"                &&(json.data[i].url.url === undefined)",
+							"                &&(json.data[i].url.created_date !== undefined)",
+							"                &&(json.data[i].url.updated_date !== undefined)",
+							"                &&(json.data[i].url.title !== undefined)",
+							"                &&(json.data[i].url.order_number === undefined)",
+							"                &&(json.data[i].url.order_update_time === undefined)",
+							"            ){",
+							"                msg.description = msg.description+\" - parameter fields worked fine \"",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = msg.error+\" - parameter fields: failed\";",
+							"            }",
+							"        }",
+							"          ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \" - parameter pItem: failed\";",
+							"    }",
+							"    ",
+							"    if(pm.response.text().includes(\"data_del\")){",
+							"        var count = json.data_del.length;",
+							"        if(count === 5){",
+							"            for (var i = 0; i <count; i++) ",
+							"            {",
+							"                if(json.data_del[i].deleted_item.updated_date >= pm.environment.get(\"updated_date\")){",
+							"                    msg.description = \"- parameter modifiedGTE worked fine \";",
+							"                }else{",
+							"                    msg = msgFailed;",
+							"                    msg.error = \"- parameter modifiedGTE: failed\";",
+							"                }",
+							"                ",
+							"                if(json.data_del[i].deleted_item.id > pm.environment.get(\"minDelId\")){",
+							"                    msg.description = \"- parameter minDelID worked fine \";",
+							"                }else{",
+							"                    msg = msgFailed;",
+							"                    msg.error = \"- parameter minDelID: failed \";",
+							"                }",
+							"            }   ",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = \" - parameter pItem: failed with deleted Items\";",
+							"        }",
+							"        ",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}&fields=id,created_date,title,updated_date&minID={{urlid}}&pItem=5&modifiedGTE={{updated_date}}&has_del=1&minDelID={{minDelId}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,created_date,title,updated_date"
+						},
+						{
+							"key": "ids",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{urlid}}"
+						},
+						{
+							"key": "pItem",
+							"value": "5"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pretest - Get URLBookmark",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c1c847a-c759-43c8-baa1-349d4d9e5168",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d296a15a-6b1b-45cc-adb5-57c49fce0596",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Pretest - Failed - Get List URL Bookmark - Full',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Pretest - Passed - Get List URL Bookmark - Full',",
+							"    endpoint: pm.environment.get(\"version\")+\"/urls\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            array[i] = json.data[i].url.id;",
+							"            postman.setEnvironmentVariable(\"id\"+i,json.data[i].url.id);",
+							"        }",
+							"        postman.setEnvironmentVariable(\"arrayurlid\", array);",
+							"        msg.description = \"Get List URL Bookmark Success\";",
+							"    }else{",
+							"        msg.description = \"Data response is null\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,displayname",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "3558",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete URLbookmark",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9033055a-e41e-4fe2-a97d-f8b9dc953394",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Delete URL Bookmark',",
+							"    endpoint: \"urls/:id\",",
+							"    method: \"delete\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Delete URL Bookmark',",
+							"    endpoint: \"urls/:id\",",
+							"    method: \"delete\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count != 94){",
+							"         msg = msgFailed;",
+							"        msg.error = \"The number data deleted is not match: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"for(var i = 0; i <150; i++)",
+							"{",
+							"    postman.clearEnvironmentVariable(\"urlbookmarkid\"+i);",
+							"    postman.clearEnvironmentVariable(\"id\"+i);",
+							"}",
+							"postman.clearEnvironmentVariable(\"updated_date\");",
+							"postman.clearEnvironmentVariable(\"minIdAddressBook\");",
+							"postman.clearEnvironmentVariable(\"minDelId\");",
+							"postman.clearEnvironmentVariable(\"urlid\");",
+							"postman.clearEnvironmentVariable(\"description\");",
+							"postman.clearEnvironmentVariable(\"title\");",
+							"postman.clearEnvironmentVariable(\"ref\");",
+							"postman.clearEnvironmentVariable(\"deleteid\");",
+							"postman.clearEnvironmentVariable(\"urlid-1\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls/{{arrayurlid}}?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls",
+						"{{arrayurlid}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete URL Bookmark - Invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7b1f1c47-82fd-424c-85fa-441e0ae66802",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Failed - Delete URL Bookmark - Invalid id',",
+							"    endpoint: \"urls/:id\",",
+							"    method: \"delete\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-URLBookmark',",
+							"    title: 'Passed - Delete URL Bookmark - Invalid id',",
+							"    endpoint: \"urls/:id\",",
+							"    method: \"delete\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data_error.length;",
+							"    if(count !== 0){",
+							"        var id = json.data_error[0].id;",
+							"        var description = json.data_error[0].description;",
+							"        if(id != 95292){",
+							"            msg = msgFailed;",
+							"            msg.error = \"- Data response failed. id is not match\";",
+							"        }",
+							"        if(description != \"The item not found\"){",
+							"            msg = msgFailed;",
+							"            msg.error = msg.error+\" - Data response failed. description is not match\";",
+							"        }",
+							"       ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"data response null\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"for(var i = 0; i <150; i++)",
+							"{",
+							"    postman.clearEnvironmentVariable(\"urlbookmarkid\"+i);",
+							"}",
+							"postman.clearEnvironmentVariable(\"contactId\");",
+							"postman.clearEnvironmentVariable(\"minIdAddressBook\");",
+							"postman.clearEnvironmentVariable(\"addressid\");",
+							"postman.clearEnvironmentVariable(\"uri\");",
+							"postman.clearEnvironmentVariable(\"displayname\");",
+							"postman.clearEnvironmentVariable(\"addressbookid\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls/95292?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"urls",
+						"95292"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

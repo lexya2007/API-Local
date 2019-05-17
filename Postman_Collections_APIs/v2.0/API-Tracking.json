@@ -1,0 +1,2548 @@
+{
+	"info": {
+		"_postman_id": "7dc39ffa-c7a6-4c86-8742-469cf5c235bf",
+		"name": "API-Tracking Version 2.0",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RUN ALL SCRIPTS API - TRACKING",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
+						"exec": [
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig\", hash);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "64ab487d-2eda-44c8-b027-39943e652ed9",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+							"postman.setEnvironmentVariable(\"keyapi\", keyapi);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-TRACKING',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Login',",
+							"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-TRACKING',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Login',",
+							"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var body = json.description;",
+							"    if(body==\"Flo\"){",
+							"        msg.description=body;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=body;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\"",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token.json",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - Create tracking email replied",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "de6a5e15-b239-4e36-a86f-2546cd840ca3",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Create - Create tracking email replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Create - Create tracking email replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"tracking\")){",
+							"        msg.description=\"Create tracking email replied successful\";",
+							"        pm.environment.set(\"idReplied\",json.data[0].tracking.id);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Create tracking email replied failed\";",
+							"        msg.error = \"Error\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "token",
+						"value": "{{keyapi}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"message_id\":\"123\",\n        \"path\":\"inbox\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":1,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - Create tracking email waiting",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "13279067-8878-4942-b0be-2a6641d0402f",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Create - Create tracking email waiting',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Create - Create tracking email waiting',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"tracking\")){",
+							"        msg.description=\"Create tracking email waiting successful\";",
+							"        pm.environment.set(\"idWaiting\",json.data[0].tracking.id);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Create tracking email waiting failed\";",
+							"        msg.error = \"Error\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"message_id\":\"456\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - Create tracking email not replied",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "13b9e807-5f09-4aab-8056-30e07b626a87",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Create - Create tracking email not replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Create - Create tracking email not replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"tracking\")){",
+							"        msg.description=\"Create tracking email not replied successful\";",
+							"        pm.environment.set(\"idNotReplied\",json.data[0].tracking.id);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Create tracking email not replied failed\";",
+							"        msg.error = \"Error\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"message_id\":\"789\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":2,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - Create Tracking without params required",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8d7dccfc-e3df-48fb-beed-f5f7933212a7",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Create - Create Tracking without params required',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Create - Create Tracking without params required',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = statusResponse;",
+							"    if(!dataResponse.includes(\"error\")){",
+							"        msg.description=\"Create tracking without params required successful\";",
+							"    }else{",
+							"        msg.error =\"Create tracking without params required not successful\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API - Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create - Create 50 Tracking",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "a8f1ac03-50f2-43ba-9ac5-301711ef6677",
+						"exec": [
+							"for(var i = 1; i<50; i++){",
+							"    var messID = \"message_id_\"+i;",
+							"    var subject = \"TEST API-Tracking-\"+i;",
+							"    pm.environment.set(\"message_id_\"+i,messID)",
+							"    pm.environment.set(\"subject_\"+i,subject)",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "67566155-8001-4f4e-b433-73bf3879bea2",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Create - Create 50 Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Create - Create 50 Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"var array =[];",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = statusResponse;",
+							"    var count = json.data.length;",
+							"    if(count === 50){",
+							"        for(var i=0; i<count; i++){",
+							"            array[i] = json.data[i].tracking.id;",
+							"            pm.environment.unset(\"subject_\"+i);",
+							"            pm.environment.unset(\"message_id_\"+i);",
+							"        }",
+							"        pm.environment.set(\"50idTracking[]\",array);",
+							"        msg.description=\"Create 50 Tracking successful\";",
+							"        ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Create 50 Tracking failed\";",
+							"        msg.error = \"Error\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"message_id\":\"{{message_id_1}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_1}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_2}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_2}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_3}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_3}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_4}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_4}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_5}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_5}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_6}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_6}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_7}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_7}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_8}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_8}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_9}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_9}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_10}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_10}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_11}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_11}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_12}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_12}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_13}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_13}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_14}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_14}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_15}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_15}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_16}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_16}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_17}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_17}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_18}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_18}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_19}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_19}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_20}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_20}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_21}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_21}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_22}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_22}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_23}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_23}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_24}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_24}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_25}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_25}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_26}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_26}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_27}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_27}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_28}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_28}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_29}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_29}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_30}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_30}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_31}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_31}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_32}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_32}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_33}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_33}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_34}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_34}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_35}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_35}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_36}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_36}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_37}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_37}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_38}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_38}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_39}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_39}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_40}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_40}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_41}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_41}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_42}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_42}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_43}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_43}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_44}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_44}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_45}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_45}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_46}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_46}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_47}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_47}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_48}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_48}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_49}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_49}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    },\n    {\n        \"message_id\":\"{{message_id_50}}\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"{{subject_50}}\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":0,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get All Tracking List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = 200;",
+							"    if(!dataResponse.includes(\"error\")){",
+							"        msg.description=\"Get all tracking list successful\";",
+							"        var count = json.data.length;",
+							"        var id = [];",
+							"        for(var i = 0; i < count; i++){",
+							"            id[i] = json.data[i].tracking.id;",
+							"        }",
+							"        // Set all and id tracking in environment.",
+							"        pm.environment.set(\"id_all_tracking\",id);",
+							"        ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Get all files not successful\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "{{keyapi}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "142293",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking null id tracking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "eb86b760-b40d-40c5-a4b7-9ef59acecb3c",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking null id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking null id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = statusResponse;",
+							"    var count = json.data.length;",
+							"    if(count === 0){",
+							"        msg.description=\"Can not update tracking null id tracking\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking null id tracking\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": null,\n        \"message_id\":\"123\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking none id tracking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "42c65519-f4cc-406c-9861-03f658c980ad",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking none id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking none id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.description=\"Can not update tracking none id tracking\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking none id tracking\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": \"\",\n        \"message_id\":\"123\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking invalid id tracking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e4b16e4f-447c-4d62-9202-b8f32e4d0116",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking invalid id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking invalid id tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.description=\"Can not update tracking invalid id tracking.\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking invalid id tracking\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": 3333,\n        \"message_id\":\"123\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking status replied to waiting",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "98e319f7-3f87-4dfa-93d2-1823b2622ceb",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking status replied to waiting',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking status replied to waiting',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    var statusTracking = parseInt(json.data[0].tracking.status); ",
+							"    if(statusTracking === 0){",
+							"        msg.description=\"Update tracking status replied to waiting successful.\";",
+							"        pm.environment.set(\"updated_date\",json.data[0].tracking.updated_date);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking status replied to waiting failed.\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": \"{{idReplied}}\",\n        \"message_id\":\"123\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":0,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking status waiting to late",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "51710464-9fb7-49e8-9e92-bf3842efea92",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking status waiting to late',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking status waiting to late',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    var statusTracking = parseInt(json.data[0].tracking.status); ",
+							"    if(statusTracking === 2){",
+							"        msg.description=\"Update tracking status waiting to late successful.\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking status waiting to late failed.\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": \"{{idWaiting}}\",\n        \"message_id\":\"456\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":2,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update tracking status late to replied",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "64f13c27-7417-48ee-a3cd-ae139036b024",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update tracking status late to replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update tracking status late to replied',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = statusResponse;",
+							"    var statusTracking = parseInt(json.data[0].tracking.status); ",
+							"    if(statusTracking === 1){",
+							"        msg.description=\"UUpdate tracking status late to replied successful.\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Update tracking status late to replied failed.\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": \"{{idNotReplied}}\",\n        \"message_id\":\"789\",\n        \"path\":\"Sent\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"subject\":\"TEST API-Tracking\",\n        \"time_send\":123123,\n        \"time_tracking\":24.122,\n        \"ref\":\"1\",\n        \"replied_time\":1,\n        \"status\":1,\n        \"acc_id\":0,\n        \"uid\":\"1\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get Change - 3 Tracking Updated Status",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get Change - 3 Tracking Updated Status',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get Change - 3 Tracking Updated Status',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 3){",
+							"        var id1 = json.data[0].tracking.id;",
+							"        var id2 = json.data[1].tracking.id;",
+							"        var id3 = json.data[2].tracking.id;",
+							"        var idReplied = pm.environment.get(\"idReplied\");",
+							"        var idWaiting = pm.environment.get(\"idWaiting\");",
+							"        var idNotReplied = pm.environment.get(\"idNotReplied\");",
+							"        if(idReplied == id1 && idWaiting == id2 && idNotReplied == id3){",
+							"            msg.description=\"Get Change - 3 Tracking Updated Status successful\";",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = \"Get Change - 3 Tracking Updated Status - Failed\";",
+							"            msg.description=dataResponse;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Not show only 3 tracking updated status\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?fields=id,message_id,emails,status,subject,updated_date&modifiedGTE={{updated_date}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date"
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "142293",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update - Update 50 Tracking",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c5017f43-dbc6-43ca-abf7-009b30250be5",
+						"exec": [
+							"var Array_50idTracking = pm.environment.get(\"50idTracking[]\");",
+							"var count = Array_50idTracking.length;",
+							"// convert Array to String",
+							"var idTracking = Array_50idTracking.toString();",
+							"for(var i = 0; i<count; i++){",
+							"    var listIDTracking = idTracking.split(\",\")[i];",
+							"    pm.environment.set(\"TrackingID-\"+i,listIDTracking);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "82c9247e-c9e9-4e7f-8333-aa515e069ec0",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Update - Update 50 Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Update - Update 50 Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 50){",
+							"        for(var i = 0; i < count; i++){",
+							"            var trackingID = parseInt(pm.environment.get(\"TrackingID-\"+i)); // convernt string to int",
+							"            var idTracking = json.data[i].tracking.id; // int",
+							"            if(trackingID === idTracking){",
+							"                msg.description = \"Update 50 Tracking correctly\";",
+							"                pm.environment.set(\"updated_date_0\",json.data[0].tracking.updated_date);",
+							"                ",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"Description response failed\";",
+							"                msg.description=\"Update 50 Tracking incorrectly\";",
+							"                break;",
+							"            }",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=\"Not show enough 50 Tracking\";",
+							"    }",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"id\": \"{{TrackingID-0}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 0\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-1}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 1\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-2}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 2\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-3}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 3\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-4}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 4\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-5}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 5\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-6}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 6\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-7}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 7\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-8}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 8\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-9}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 9\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-10}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 10\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-11}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 11\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-12}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 12\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-13}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 13\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-14}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 14\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-15}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 15\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-16}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 16\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-17}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 17\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-18}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 18\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-19}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 19\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-20}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 20\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-21}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 21\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-22}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 22\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-23}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 23\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-24}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 24\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-25}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 25\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-26}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 26\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-27}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 27\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-28}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 28\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-29}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 29\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-30}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 30\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-31}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 31\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-32}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 32\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-33}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 33\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-34}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 34\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-35}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 35\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-36}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 36\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-37}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 37\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-38}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 38\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-39}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 39\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-40}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 40\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-41}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 41\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-42}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 42\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-43}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 43\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-44}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 44\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-45}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 45\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-46}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 46\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-47}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 47\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-48}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 48\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    },\n    {\n        \"id\": \"{{TrackingID-49}}\",\n        \"emails\": [{\"email\":\"automationqcflo@gmail.com\"}],\n        \"message_id\": \"12312321\",\n        \"path\": \"sent 1\",\n        \"subject\": \"Email - 49\",\n        \"time_send\": 123123.123,\n        \"time_tracking\": 1\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/update",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get Change - All 50 Tracking Updated",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get Change - All 50 Tracking Updated',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get Change - All 50 Tracking Updated',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    var count = json.data.length;",
+							"    if(count === 50){",
+							"        for(var i = 0; i < count; i++){",
+							"            var trackingID = parseInt(pm.environment.get(\"TrackingID-\"+i)); // convernt string to int",
+							"            var idTracking = json.data[i].tracking.id; // int",
+							"            if(trackingID === idTracking){",
+							"                msg.description = \"Get Change - All 50 Tracking Updated Successful\";",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"Description response failed\";",
+							"                msg.description=\"Get Change - All 50 Tracking Updated Not Successful\";",
+							"                break;",
+							"            }",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=\"Not show enough 50 Tracking\";",
+							"    }",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?minID={{idNotReplied}}&pItem=50&fields=id,message_id,emails,status,subject,updated_date&modifiedGTE={{updated_date_0}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{idNotReplied}}"
+						},
+						{
+							"key": "pItem",
+							"value": "50"
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date"
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "142293",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date_0}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete - Delete Tracking List With Invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "523a2fb4-87be-4d3f-9dd2-1c9daf1a04be",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Delete - Delete Tracking List With Invalid id',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Delete - Delete Tracking List With Invalid id',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = 200;",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.error = json.data_error[0].error;",
+							"        msg.description = \"Show description: \"+json.data_error[0].description;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Delete Tracking List With Invalid id\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/123",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"123"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete - Delete 3 id Tracking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "eb988ad4-be98-4039-b936-4a47d2277aff",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Delete - Delete 3 id Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Delete - Delete 3 id Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count === 3){",
+							"        var id1 = json.data[0].id;",
+							"        var id2 = json.data[1].id;",
+							"        var id3 = json.data[2].id;",
+							"        var idReplied = pm.environment.get(\"idReplied\");",
+							"        var idWaiting = pm.environment.get(\"idWaiting\");",
+							"        var idNotReplied = pm.environment.get(\"idNotReplied\");",
+							"        if(idReplied == id1 && idWaiting == id2 && idNotReplied == id3){",
+							"            msg.description=\"Delete 3 id Tracking successful\";",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.error = \"Delete 3 id Tracking - Failed\";",
+							"            msg.description=dataResponse;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Not show only 3 tracking deleted status\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/{{idReplied}},{{idWaiting}},{{idNotReplied}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"{{idReplied}},{{idWaiting}},{{idNotReplied}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get All Tracking List - PRE-TEST",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    if(dataResponse.includes(\"tracking\")){",
+							"        msg.description=\"Get all tracking list successful\";",
+							"        var count = json.data.length;",
+							"        var id = [];",
+							"        for(var i = 0; i < count; i++){",
+							"            id[i] = json.data[i].tracking.id;",
+							"        }",
+							"        // Set all and id tracking in environment.",
+							"        pm.environment.set(\"id_all_tracking\",id);",
+							"        ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Get all files not successful\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "142293",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete - Delete All id Tracking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "17d22f2f-5428-4f9d-bd63-a8f0c5e128dc",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Delete - Delete All id Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Delete - Delete All id Tracking',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    if(!dataResponse.includes(\"data_error\")){",
+							"        var count = json.data.length;",
+							"        // convert Array to String",
+							"        for(var i = 0; i < count; i++){",
+							"            var allTrackingID = pm.environment.get(\"id_all_tracking\").toString();",
+							"            var listIDTracking = allTrackingID.split(\",\")[i];",
+							"            var idTracking = json.data[i].id;",
+							"            if(listIDTracking === idTracking){",
+							"                msg.description = \"Delete All id Tracking correctly.\";",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"Not found item to delete\";",
+							"                msg.description=\"Delete All id Tracking incorrectly\";",
+							"                break;",
+							"        }",
+							"    }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Show error!\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking/{{id_all_tracking}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking",
+						"{{id_all_tracking}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get - Get All Tracking List - Clean Up",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4cd2be1-7035-495e-b01f-5d1b17ef1246",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Failed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Tracking',",
+							"    title: 'Passed - Get - Get All Tracking List',",
+							"    endpoint: pm.environment.get('version')+\"/tracking\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    pm.environment.unset(\"id_all_tracking\");",
+							"    pm.environment.unset(\"50idTracking[]\");",
+							"    pm.environment.unset(\"idReplied\");",
+							"    pm.environment.unset(\"idWaiting\");",
+							"    pm.environment.unset(\"idNotReplied\");",
+							"    pm.environment.unset(\"updated_date\");",
+							"    pm.environment.unset(\"updated_date_0\");",
+							"    pm.environment.unset(\"minDelID\");",
+							"    pm.environment.unset(\"minDelID_2\");",
+							"    pm.environment.unset(\"minDelID_3\");",
+							"    pm.environment.unset(\"updated_date_2\");",
+							"    pm.environment.unset(\"idItem1\");",
+							"    pm.environment.unset(\"idItem2\");",
+							"    pm.environment.unset(\"updated_date_delete\");",
+							"    for(var i=0; i<50; i++){",
+							"            pm.environment.unset(\"TrackingID-\"+i);",
+							"    }",
+							"",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"tracking"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "4029",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,message_id,emails,status,subject,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "142293",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

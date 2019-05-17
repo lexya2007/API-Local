@@ -1,0 +1,929 @@
+{
+	"info": {
+		"_postman_id": "9b3947a7-5f5d-48d4-8c41-10a473b7fba1",
+		"name": "v2.2 API-Setting",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Pre-Condition - Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "710fc72f-9c01-458d-91e2-999228c54ca0",
+						"exec": [
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig\", hash);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9b65e0a-3805-49b2-a0e8-3b2d205156e2",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+							"postman.setEnvironmentVariable(\"keyapi\", keyapi);",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"pm.test(\"Tokenapi is returned\", function () {pm.expect(pm.response.text()).to.include(\"tokenapi\");});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Setting",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "62f98595-7aa0-4ba0-98af-b287851f7fb6",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Failed - List Setting',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Passed - List Setting',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check data response",
+							"    if(\"setting\" in json){",
+							"        msg = msgPassed;",
+							"        msg.description = \"get list setting success\"",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/settings?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"settings"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pre-Condition - List Projects",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var json = JSON.parse(responseBody);",
+							"pm.environment.set(\"projectid_default\", json.data[0].project.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "34791,34792",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Setting",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0d0f3a09-c6b0-4cdc-aadc-1b57168753d9",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Failed - Update Setting',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Passed - Update Setting',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(\"setting\" in json.data){",
+							"        var update1 = json.data.setting.default_cal;",
+							"        var update2 = json.data.setting.timezone;",
+							"        var update3 = json.data.setting.tz_city;",
+							"        var update4 = json.data.setting.event_duration;",
+							"        var update5 = json.data.setting.background;",
+							"        var update6 = json.data.setting.default_folder;",
+							"        var update7 = json.data.setting.calendar_color;",
+							"        var update8 = json.data.setting.week_start;",
+							"        var update9 = json.data.setting.signature;",
+							"",
+							"        // Check data response",
+							"        if((update1 === \"123456789-fabf-0136-fefe-ABCDEFGH\")&&(update2 === \"Asia/Singapore\")&&(update3 === \"Singapore\")&&(update4 === 3600)&&(update5 === 123)&&(update6 === pm.environment.get(\"projectid_default\"))&&(update7 === \"#4986e7\")&&(update8 === 1)&&(update9 === \"API !@#$%^&*()<>\")){",
+							"            msg = msgPassed;",
+							"            msg.description = \"update setting success\"",
+							"        }",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"setting\": {\n        \"default_cal\": \"123456789-fabf-0136-fefe-ABCDEFGH\",\n        \"timezone\": \"Asia/Singapore\",\n        \"tz_city\": \"Singapore\",\n        \"working_time\": \"[\\n  {\\\"day\\\":\\\"Mon\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Tue\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Wed\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Thu\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Fri\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Sat\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Sun\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ]\",\n        \"event_duration\": 3600,\n        \"alert_default\": 1,\n        \"snooze_default\": 900,\n        \"timezone_support\": 1,\n        \"task_duration\": 1800,\n        \"deadline\": -1,\n        \"due_task\": 0,\n        \"number_stask\": 5,\n        \"total_duration\": 21600,\n        \"buffer_time\": 900,\n        \"hide_stask\": 0,\n        \"background\": 123,\n        \"short_duration\": 30,\n        \"medium_duration\": 60,\n        \"long_duration\": 180,\n        \"default_folder\": {{projectid_default}},\n        \"calendar_color\": \"#4986e7\",\n        \"folder_color\": \"#4986e7\",\n        \"navbar_system\": \"\",\n        \"navbar_custom\": \"\",\n        \"infobox\": \"\",\n        \"infobox_order\": \"[{\\\"type\\\":\\\"event\\\", \\\"order\\\":1},{\\\"type\\\":\\\"todo\\\", \\\"order\\\":2},{\\\"type\\\":\\\"note\\\", \\\"order\\\":3},{\\\"type\\\":\\\"email\\\", \\\"order\\\":4}]\",\n        \"contact_display_name\": 1,\n        \"contact_display_inlist\": 0,\n        \"del_warning\": 1,\n        \"hide_future_task\": 0,\n        \"ics_attachment\": 1,\n        \"mail_auto_download_check\": 0,\n        \"mail_num_time_dont_auto_download\": 6,\n        \"mail_time_dont_auto_download\": 1,\n        \"mail_display_act_button\": 0,\n        \"number_mail_lines_preview\": 4,\n        \"mail_moving_check\": 3,\n        \"mail_size_dont_download\": 10,\n        \"show_nutshell\": 1,\n        \"show_bg_by_weather\": 0,\n        \"week_start\": 1,\n        \"send_and_track\": 2,\n        \"action_icon\": 0,\n        \"emailbox_order\": \"[{\\\"type\\\":\\\"mail\\\", \\\"order\\\":1, \\\"show\\\":1},{\\\"type\\\":\\\"contact\\\", \\\"order\\\":2, \\\"show\\\":1}]\",\n        \"alert_before\": 0,\n        \"send_invite\": 0,\n        \"from_email\": \"\",\n        \"default_ade_alert\": 0,\n        \"default_todo_alert\": 0,\n        \"default_milestone_alert\": 0,\n        \"avatar\": \"\",\n        \"assign_tz_eve\": 1,\n        \"m_show\": 23,\n        \"dw_show\": 17,\n        \"move_email\": 1,\n        \"noti_bear_track\": 3,\n        \"state\": 0,\n        \"recent_tz\": null,\n        \"order_url\": null,\n        \"order_todo\": null,\n        \"keep_state\": \"abc xyz Automation API Testing\",\n        \"omni_cal_id\": \"efea7e60-fabf-0136-ff03-005056030716\",\n        \"url_option\": 0,\n        \"init_planner_st\": 1,\n        \"order_storyboard\": null,\n        \"show_star\": 0,\n        \"signature\": \"API !@#$%^&*()<>\",\n        \"filing_email\": 0\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/settings/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"settings",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Setting - week_start",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0d0f3a09-c6b0-4cdc-aadc-1b57168753d9",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Failed - Update Setting - week_start',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Passed - Update Setting - week_start',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(\"setting\" in json.data){",
+							"        var update1 = json.data.setting.week_start;",
+							"        var update2 = json.data.setting.default_folder;",
+							"",
+							"        // Check data response",
+							"        if((update1 === 0)&&(update2 === pm.environment.get(\"projectid_default\"))){",
+							"            msg = msgPassed;",
+							"            msg.description = \"update setting success\"",
+							"        }",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"setting\": {\n        \"default_cal\": \"123456789-fabf-0136-fefe-ABCDEFGH\",\n        \"timezone\": \"Asia/Singapore\",\n        \"tz_city\": \"Singapore\",\n        \"total_duration\": 21600,\n        \"buffer_time\": 900,\n        \"hide_stask\": 0,\n        \"background\": 123,\n        \"short_duration\": 30,\n        \"medium_duration\": 60,\n        \"long_duration\": 180,\n        \"default_folder\": {{projectid_default}},\n        \"calendar_color\": \"#4986e7\",\n        \"mail_auto_download_check\": 0,\n        \"mail_num_time_dont_auto_download\": 6,\n        \"mail_time_dont_auto_download\": 1,\n        \"mail_display_act_button\": 0,\n        \"number_mail_lines_preview\": 4,\n        \"mail_moving_check\": 3,\n        \"mail_size_dont_download\": 10,\n        \"show_nutshell\": 1,\n        \"show_bg_by_weather\": 0,\n        \"week_start\": 0\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/settings/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"settings",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Setting - background",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0d0f3a09-c6b0-4cdc-aadc-1b57168753d9",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Failed - Update Setting - background',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Passed - Update Setting - background',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(\"setting\" in json.data){",
+							"        var update1 = json.data.setting.background;",
+							"        var update2 = json.data.setting.default_folder;",
+							"",
+							"        // Check data response",
+							"        if((update1 === 45678)&&(update2 === pm.environment.get(\"projectid_default\"))){",
+							"            msg = msgPassed;",
+							"            msg.description = \"update setting success\"",
+							"        }",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"setting\": {\n        \"default_cal\": \"123456789-fabf-0136-fefe-ABCDEFGH\",\n        \"timezone\": \"Asia/Singapore\",\n        \"tz_city\": \"Singapore\",\n        \"working_time\": \"[\\n  {\\\"day\\\":\\\"Mon\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Tue\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Wed\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Thu\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Fri\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Sat\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Sun\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ]\",\n        \"event_duration\": 3600,\n        \"alert_default\": 1,\n        \"snooze_default\": 900,\n        \"timezone_support\": 1,\n        \"task_duration\": 1800,\n        \"deadline\": -1,\n        \"due_task\": 0,\n        \"number_stask\": 5,\n        \"total_duration\": 21600,\n        \"buffer_time\": 900,\n        \"hide_stask\": 0,\n        \"background\": 45678,\n        \"default_folder\": {{projectid_default}}\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/settings/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"settings",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Setting - deadline",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0d0f3a09-c6b0-4cdc-aadc-1b57168753d9",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Failed - Update Setting - deadline',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Passed - Update Setting - deadline',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(\"setting\" in json.data){",
+							"        var update1 = json.data.setting.deadline;",
+							"        var update2 = json.data.setting.default_folder;",
+							"",
+							"        // Check data response",
+							"        if((update1 === 1)&&(update2 === pm.environment.get(\"projectid_default\"))){",
+							"            msg = msgPassed;",
+							"            msg.description = \"update setting success\"",
+							"        }",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"setting\": {\n        \"default_cal\": \"123456789-fabf-0136-fefe-ABCDEFGH\",\n        \"timezone\": \"Asia/Singapore\",\n        \"tz_city\": \"Singapore\",\n        \"working_time\": \"[\\n  {\\\"day\\\":\\\"Mon\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Tue\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Wed\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Thu\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Fri\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Sat\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Sun\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ]\",\n        \"event_duration\": 3600,\n        \"alert_default\": 1,\n        \"snooze_default\": 900,\n        \"timezone_support\": 1,\n        \"task_duration\": 1800,\n        \"deadline\": 1,\n        \"default_folder\": {{projectid_default}}\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/settings/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"settings",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Setting - default_cal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0d0f3a09-c6b0-4cdc-aadc-1b57168753d9",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Failed - Update Setting - default_cal',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Passed - Update Setting - default_cal',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(\"setting\" in json.data){",
+							"        var update1 = json.data.setting.default_cal;",
+							"        var update2 = json.data.setting.default_folder;",
+							"",
+							"        // Check data response",
+							"        if((update1 === \"123456789-fabf-4576-fefe-ABCDEFGH\")&&(update2 === pm.environment.get(\"projectid_default\"))){",
+							"            msg = msgPassed;",
+							"            msg.description = \"update setting success\"",
+							"        }",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"setting\": {\n        \"default_cal\": \"123456789-fabf-4576-fefe-ABCDEFGH\",\n        \"timezone\": \"Asia/Singapore\",\n        \"tz_city\": \"Singapore\",\n        \"working_time\": \"[\\n  {\\\"day\\\":\\\"Mon\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Tue\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Wed\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Thu\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Fri\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Sat\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ,{\\\"day\\\":\\\"Sun\\\",\\\"iMin\\\":32400, \\\"iMax\\\": 64800}\\n  ]\",\n        \"event_duration\": 3600,\n        \"alert_default\": 1,\n        \"snooze_default\": 900,\n        \"timezone_support\": 1,\n        \"task_duration\": 1800,\n        \"deadline\": -1,\n        \"due_task\": 0,\n        \"number_stask\": 5,\n        \"total_duration\": 21600,\n        \"buffer_time\": 900,\n        \"hide_stask\": 0,\n        \"default_folder\": {{projectid_default}}\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/settings/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"settings",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Setting - Error when default_folder not exists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0d0f3a09-c6b0-4cdc-aadc-1b57168753d9",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Failed - Update Setting - Error when default_folder not exists',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Setting\",",
+							"    title: 'Passed - Update Setting - Error when default_folder not exists',",
+							"    endpoint: pm.environment.get(\"version\") + \"/settings\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(\"setting\" in json){",
+							"        var update1 = json.data.setting.default_folder;",
+							"",
+							"        // Check data response",
+							"        if(update1 === pm.environment.get(\"projectid_default\")){",
+							"            msg.description = \"error - update setting success\"",
+							"        }",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgPassed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"setting\": {\n        \"default_cal\": \"123456789-fabf-0136-fefe-ABCDEFGH\",\n        \"default_folder\": 123456\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/settings/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"settings",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

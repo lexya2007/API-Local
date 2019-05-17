@@ -1,0 +1,105 @@
+{
+	"id": "223d527f-50b4-49a8-a17a-952cb57a10b3",
+	"name": "Floware Test Share v2.1.1",
+	"values": [
+		{
+			"key": "server",
+			"value": "test.floware.com",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "port",
+			"value": "4041",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "email_U1",
+			"value": "api_test1@flomail.net",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "password_U1",
+			"value": "123456",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "email_U2",
+			"value": "api_test2@flomail.net",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "password_U2",
+			"value": "123456",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "sabre_port",
+			"value": "8045",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "alias",
+			"value": "cbad944424393cf309efaf0e70f1b125",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "appreg",
+			"value": "e70f1b125cbad944424393cf309efaf0",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "url_report",
+			"value": "http://localhost:3000/report",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "version",
+			"value": "v2.1.1/api",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "sig_U1",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "keyapi_U1",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "sig_U2",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "keyapi_U2",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "v4uuid",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "delete",
+			"value": "",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2019-05-16T08:08:32.375Z",
+	"_postman_exported_using": "Postman/6.7.4"
+}

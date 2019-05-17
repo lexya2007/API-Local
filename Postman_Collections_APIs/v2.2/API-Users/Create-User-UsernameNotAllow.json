@@ -1,0 +1,140 @@
+{
+	"info": {
+		"_postman_id": "4a797d00-f9c9-4b58-97e0-a560e7d7de87",
+		"name": "API-Users-UsernameNotAllow[Data Driven]",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User - SignUp with  username not allow - Data Driven",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9ee6e9e5-233a-4121-8e04-796b0becd333",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var reqBody = JSON.parse(request.data);",
+							"// Get Username inputted",
+							"var emailSignUp =reqBody.email;",
+							"var msgFailed = {",
+							"    collection: \"API_Users\",",
+							"    title: 'Failed - Create User - SignUp with Username is not allowed',",
+							"    endpoint: \"/api/users.json\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:200,",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Users\",",
+							"    title: 'Passed - Create User - SignUp with Username is not allowed',",
+							"    endpoint: \"/api/users.json\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"var i = 0;",
+							"if(statusResponse == 200){",
+							"    i++;",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var body = json.description;",
+							"    if(body ==\"This email name is not allowed.\"){",
+							"        pm.test(\"SignUp with username: \"+emailSignUp, function () {",
+							"        pm.expect(pm.response.text()).to.include(body);",
+							"        });",
+							"        msg.description= body;",
+							"        msg.error = \"SignUp with username: \"+emailSignUp;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.status = statusResponse;",
+							"        msg.description=body;",
+							"        msg.error = \"Description response failed.\\nSignUp with Username: \"+emailSignUp;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"}",
+							"",
+							"// Clear an environment",
+							"pm.environment.unset(\"badwords\");",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "527280e9-2008-4239-b93d-e9826c29a70c",
+						"exec": [
+							"",
+							" var getServer = pm.environment.get(\"server\");",
+							"if(getServer.includes(\"123flo.com\")){",
+							"    pm.environment.set(\"domain\", \"@123flo.com\");",
+							"}else{",
+							"    pm.environment.set(\"domain\", \"@flomail.net\");",
+							"}",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"type": "text",
+						"value": "",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"{{email_signup}}{{domain}}\",\n\t\"password\":\"bJ8jJFfYlti8QeLhwptZ3fy+doPNOPjg89NwY6nrjC35aFwImSiQzCZEk5cSOA/dtmRiu1tyqa8vSmomYwhKQb7xxmRtBewqDUPg7k0u1kHkO+de9HDwQ6mQwXANTLxJgnwR+/CbQqqHXXexpp2O4IB8J4G+B8wiwaCOLx6x/hE=\",\n\t\"alias\":\"cbad944424393cf309efaf0e70f1b125\"\n}\t"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users.json",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users.json"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,303 @@
+Title TC: Test Version: v2.2/api
+Passed - Pretest - Login
+endpoint: v2.2/api/users/token.json
+method: POST
+error: No Error
+status: 200
+response message: Flo
+
+Title TC: Test Version: v2.2/api
+Passed - Pretest - Create Collection
+endpoint: v2.2/api/projects.json
+method: POST
+error: No Error
+status: 200
+response message: Create new Collection has project_id: 82400
+
+Title TC: Passed - Create Kanbans - Only input parameter project_id
+endpoint: v2.2/api/kanban
+method: POST
+error: Create Kanban with parameter 'project_id' successful
+status: 200
+response message: {"data":[{"kanban":{"id":53625,"name":"","updated_date":1558075464.657,"created_date":1558075464.657,"project_id":82400,"color":"","order_number":20,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - Only input parameter name
+endpoint: v2.2/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id'
+status: 200
+response message: The item can not be saved.
+
+Title TC: Passed - Create Kanbans - Only input parameter color
+endpoint: v2.2/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id'
+status: 200
+response message: The item can not be saved.
+
+Title TC: Passed - Create Kanbans - Input parameters project_id and Name
+endpoint: v2.2/api/kanban
+method: POST
+error: Allow create Kanban without parameter 'color'
+status: 200
+response message: {"data":[{"kanban":{"id":53626,"name":"Collection_5786341","updated_date":1558075465.864,"created_date":1558075465.864,"project_id":82400,"color":"","order_number":21,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - Input parameters project_id and Color
+endpoint: v2.2/api/kanban
+method: POST
+error: Allow create Kanban without parameter 'name'
+status: 200
+response message: {"data":[{"kanban":{"id":53627,"name":"","updated_date":1558075466.312,"created_date":1558075466.312,"project_id":82400,"color":"#4986e7","order_number":22,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - Input parameters Name and Color
+endpoint: v2.2/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id'
+status: 200
+response message: The item can not be saved.
+
+Title TC: Passed - Create Kanbans - Input invalid parameter project_id
+endpoint: v2.2/api/kanbans
+method: POST
+error: Cannot create kanban with invalid parameter 'project_id'
+status: 200
+response message: The item can not be saved.
+
+Title TC: Passed - Create Kanbans - Input wrong parameter project_id
+endpoint: v2.2/api/kanbans
+method: POST
+error: Allow create kanban with wrong parameter 'project_id'
+status: 200
+response message: {"data":[{"kanban":{"id":53628,"name":"Collection_9404931","updated_date":1558075467.582,"created_date":1558075467.581,"project_id":121212,"color":"#4986e7","order_number":23,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - Input invalid parameter color
+endpoint: v2.2/api/kanbans
+method: POST
+error: Allow create kanban with invalid parameter 'color'
+status: 200
+response message: {"data":[{"kanban":{"id":53629,"name":"Collection_9407017","updated_date":1558075468.014,"created_date":1558075468.014,"project_id":82400,"color":"123","order_number":24,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - Input invalid parameter name
+endpoint: v2.2/api/kanbans
+method: POST
+error: Allow create kanban with invalid parameter 'name'
+status: 200
+response message: {"data":[{"kanban":{"id":53630,"name":"789456123","updated_date":1558075468.439,"created_date":1558075468.439,"project_id":82400,"color":"#4986e7","order_number":25,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - None parameter project_id in body
+endpoint: v2.2/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id'
+status: 200
+response message: The item can not be saved.
+
+Title TC: Passed - Create Kanbans - None parameter name in body
+endpoint: v2.2/api/kanban
+method: POST
+error: Allow create kanban without parameter 'name'
+status: 200
+response message: {"data":[{"kanban":{"id":53631,"name":"","updated_date":1558075469.207,"created_date":1558075469.207,"project_id":82400,"color":"#4986e7","order_number":26,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - None parameter color in body
+endpoint: v2.2/api/kanban
+method: POST
+error: Allow create kanban without parameter 'color'
+status: 200
+response message: {"data":[{"kanban":{"id":53632,"name":"Collection_9139116","updated_date":1558075469.635,"created_date":1558075469.635,"project_id":82400,"color":"","order_number":27,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - None parameters color and project_id in body
+endpoint: v2.2/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id'
+status: 200
+response message: The item can not be saved.
+
+Title TC: Passed - Create Kanbans - None parameters name and project_id in body
+endpoint: v2.2/api/kanban
+method: POST
+error: Cannot create Kanban without parameter 'project_id'
+status: 200
+response message: The item can not be saved.
+
+Title TC: Passed - Create Kanbans - None parameters color and name in body
+endpoint: v2.2/api/kanban
+method: POST
+error: Allow create kanban without parameter 'color' and 'name'
+status: 200
+response message: {"data":[{"kanban":{"id":53633,"name":"","updated_date":1558075470.821,"created_date":1558075470.821,"project_id":82400,"color":"","order_number":28,"archive_status":1,"order_kbitem":"","show_done_todo":1,"add_new_obj_type":1,"sort_by_type":1,"order_update_time":0.0,"archived_time":null,"kanban_type":0,"ref":""}}]}
+
+Title TC: Passed - Create Kanbans - Success
+endpoint: v2.2/api/kanban
+method: POST
+error: No Error
+status: 200
+response message: Create New Kanban Success!
+
+Title TC: Failed - Create Kanbans - Create Kanban with invalid value inputted
+endpoint: v2.2/api/kanban
+method: POST
+error: Status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Passed - Create 50 Kanbans
+endpoint: v2.2/api/kanban
+method: POST
+error: No Error
+status: 200
+response message: Create 50 kanbans success
+
+Title TC: Passed - Get List Kanban  - Get a kanban created.
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get a kanban created successful
+
+Title TC: Passed - Get List Kanban  -  Get all Kanbans created
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get all Kanbans created successful
+
+Title TC: Passed - Get List Kanban  - Get all Kanbans - pItem = 20
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Show 20 Kanbans in 1 page
+
+Title TC: Passed - Get List Kanban  - Get Change Sync Kanbans with modifiedGTE
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get Change Sync Kanbans with modifiedGTE successful
+
+Title TC: Passed - Update Kanbans - Update invalid id Kanban
+endpoint: v2.2/api/kanban/update
+method: PUT
+error: Update invalid id Kanban
+status: 200
+response message: {"data":[],"data_error":[{"error":10,"description":"The item can not be saved.","attributes":{"id":123,"name":"ko 1","updated_date":1550653239.698,"created_date":1550653239.698,"project_id":34164,"color":"","order_number":7,"archive_status":0,"order_kbitem":"","order_update_time":0,"show_done_todo":1,"add_new_obj_type":0,"sort_by_type":0,"archived_time":0,"kanban_type":0}}]}
+
+Title TC: Passed - Update Kanbans - null project_id
+endpoint: v2.2/api/kanban/update
+method: PUT
+error: Update Kanban with null 'project_id'
+status: 200
+response message: {"data":[],"data_error":[{"error":10,"description":"The item can not be saved.","attributes":{"name":"ko 1","updated_date":1550653239.698,"created_date":1550653239.698,"project_id":null,"color":"","order_number":7,"archive_status":0,"order_kbitem":"","order_update_time":0,"show_done_todo":1,"add_new_obj_type":0,"sort_by_type":0,"archived_time":0,"kanban_type":0}}]}
+
+Title TC: Passed - Update Kanbans - invalid project_id
+endpoint: v2.2/api/kanban/update
+method: PUT
+error: Update Kanban with invalid 'project_id'
+status: 200
+response message: {"data":[],"data_error":[{"error":10,"description":"The item can not be saved.","attributes":{"name":"Update Kanban","created_date":1550653239.696,"project_id":"123a","color":"","order_number":8,"archive_status":0,"order_kbitem":"","order_update_time":0,"show_done_todo":1,"add_new_obj_type":0,"sort_by_type":0,"archived_time":0,"kanban_type":0}}]}
+
+Title TC: Failed - Update Kanbans - Update Kanban with invalid value inputted
+endpoint: v2.2/api/kanban/update
+method: PUT
+error: Status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Passed - Update Kanbans - wrong project_id
+endpoint: v2.2/api/kanban/update
+method: PUT
+error: Update Kanban with wrong 'project_id'
+status: 200
+response message: {"data":[{"kanban":{"id":53634,"name":"Update Kanban","created_date":1550653239.696,"project_id":1892099880,"color":"","order_number":8,"archive_status":0,"order_kbitem":"","order_update_time":0.0,"show_done_todo":1,"add_new_obj_type":0,"sort_by_type":0,"archived_time":0.0,"kanban_type":0,"updated_date":1558075481.435}}]}
+
+Title TC: Passed - Update Kanbans - Update valid id Kanban
+endpoint: v2.2/api/kanban/update
+method: PUT
+error: No Error
+status: 200
+response message: Update Kanban successful
+
+Title TC: Passed - Get List Kanban  - Get Change - a Kanban updated
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get a Kanban updated successful
+
+Title TC: Passed - Update Kanbans - Update 50 kanbans created
+endpoint: v2.2/api/kanban/update
+method: PUT
+error: No Error
+status: 200
+response message: Update 50 Kanbans created successful
+
+Title TC: Passed - Get List Kanban  - Get Change - Show 50 Kanbans updated
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: GET 50 Kanbans updated successful
+
+Title TC: Passed - Get List Kanban  - Get Change - 20 Kanbans updated in 1 page
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: GET 20 Kanbans updated successful
+
+Title TC: Passed - Update Kanbans - Update sort order 2 Kanbans
+endpoint: v2.2/api/kanban/update
+method: PUT
+error: No Error
+status: 200
+response message: Update sort order 2 Kanbans successful
+
+Title TC: Passed - Get List Kanban - Get Change - 2 Kanbans update order
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get order 2 Kanbans successful.
+
+Title TC: Passed - Delete Kanbans - Delete invalid id Kanban
+endpoint: v2.2/api/kanban
+method: DELETE
+error: No Error
+status: 200
+response message: Cannot delete invalid id Kanban
+
+Title TC: Passed - Delete Kanbans - Delete a Kanban
+endpoint: v2.2/api/kanban
+method: DELETE
+error: No Error
+status: 200
+response message: Delete a Kanban successful
+
+Title TC: Passed - Get List Kanban  - Get Changes a Kanbans after deleted
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Data response id Kanban delete correctly
+
+Title TC: Passed - Get List Kanban  -  Get all Kanbans Pre-Test
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Get all Kanbans created
+
+Title TC: Passed - Get List Kanban  - Get Changes all Kanbans after deleted option 1
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Show 20 Kanbans deleted in 1 page, pItem = 20 & has_del = 1 & minDellID
+
+Title TC: Passed - Get List Kanban  - Get Changes all Kanbans after deleted option 2
+endpoint: v2.2/api/kanban
+method: GET
+error: No Error
+status: 200
+response message: Show 10 Kanbans deleted in 1 page, pItem = 10 & has_del = 1 & ModifiedGTE = 1558075539.872
+

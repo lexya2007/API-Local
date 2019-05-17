@@ -1,0 +1,14 @@
+Title TC: Failed - Create Kanbans - Create Kanban with invalid value inputted
+endpoint: v2.2/api/kanban
+method: POST
+error: Status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Update Kanbans - Update Kanban with invalid value inputted
+endpoint: v2.2/api/kanban/update
+method: PUT
+error: Status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+

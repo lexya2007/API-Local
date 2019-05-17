@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "255a01fd-9781-4456-8045-759e29ac9626",
+		"name": "sample",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "pretest - Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6c8359dd-f2be-44e6-8170-73ab96e2261f",
+						"exec": [
+							"",
+							"// input user/pwd to environment for testing",
+							"postman.setEnvironmentVariable(\"password\",\"qwe123\");",
+							"postman.setEnvironmentVariable(\"email\", \"api_test_rrr@123flo.com\");",
+							"",
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig\", hash);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "df181aac-4278-420f-8105-51c9cc5b77b0",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+							"postman.setEnvironmentVariable(\"kpi\", keyapi);",
+							"",
+							"",
+							"var msgFailed = {",
+							"    collection:'cloudstorage',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Login',",
+							"    endpoint: \"/api/users/token.json\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'cloudstorage',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Login',",
+							"    endpoint: \"/api/users/token.json\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var body = json.description;",
+							"    if(body==\"Flo\"){",
+							"        msg.description=body;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=body;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token.json",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Cloud Storages - Normal Full Optional",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0c96b4c0-d6f8-4834-80be-77b0c94a3170",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"     //collection : title collection",
+							"    collection:'API-sample',",
+							"    title: 'Failed - Create Cloud Storages - Normal',",
+							"    endpoint: \"/api/cloud_storages\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    //collection : title collection",
+							"    collection:'API-sample',",
+							"    title: 'Passed - Create Cloud Storages - Normal',",
+							"    endpoint: \"/api/cloud_storages\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var bookmark = json.data[0].cloud_storage.bookmark_data;",
+							"    var real_filename = json.data[0].cloud_storage.real_filename;",
+							"    var ext = json.data[0].cloud_storage.ext;",
+							"    var device_uid = json.data[0].cloud_storage.device_uid;",
+							"    var uid_filename = json.data[0].cloud_storage.uid_filename;",
+							"    var ref = json.data[0].cloud_storage.ref;",
+							"    ",
+							"    if((bookmark==pm.environment.get(\"bookmark_data\"))",
+							"   &&(real_filename==pm.environment.get(\"real_filename\"))",
+							"   &&(ext==pm.environment.get(\"ext\"))",
+							"   &&(device_uid==pm.environment.get(\"device_uid\"))",
+							"   &&(ref==pm.environment.get(\"ref\"))",
+							"    ){",
+							"        msg.description=\"create cloud storage success\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"cloud storage created is not match\";",
+							"        msg.description=\"bookmark_data: \"+ bookmark+\" ,real_filename:\"+ real_filename+\" ,ext:\"+ ext+\" ,device_uid:\"+ device_uid+\" ,ref:\"+ ref;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							"//clean up",
+							"postman.clearEnvironmentVariable(\"bookmark_data\");",
+							"postman.clearEnvironmentVariable(\"real_filename\");",
+							"postman.clearEnvironmentVariable(\"ext\");",
+							"postman.clearEnvironmentVariable(\"device_uid\");",
+							"postman.clearEnvironmentVariable(\"uid_filename\");",
+							"postman.clearEnvironmentVariable(\"ref\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4847c597-0b2c-4e56-a225-808f52e7ccbf",
+						"exec": [
+							"postman.setEnvironmentVariable(\"bookmark_data\", \"Ym9vazwDAAAAAAQQMAAAAJy2yEyU9\");",
+							"postman.setEnvironmentVariable(\"real_filename\", \"test_90\");",
+							"postman.setEnvironmentVariable(\"ext\", \"jpg\");",
+							"postman.setEnvironmentVariable(\"device_uid\", \"my_device\");",
+							"postman.setEnvironmentVariable(\"ref\", \"abc\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cloud_storages\": [\n        {\n            \"bookmark_data\": \"{{bookmark_data}}\",\n            \"real_filename\": \"{{real_filename}}\",\n            \"ext\": \"{{ext}}\",\n            \"device_uid\":\"{{device_uid}}\",\n            \"uid_filename\":\"1234\", \n            \"ref\":\"{{ref}}\"\n        }\n        \n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/cloud_storages?keyapi={{kpi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"cloud_storages"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{kpi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

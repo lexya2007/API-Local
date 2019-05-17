@@ -1,0 +1,3068 @@
+{
+	"info": {
+		"_postman_id": "fdcf5c69-43cb-4419-aa8e-b5bbf96539c7",
+		"name": "API-ContactHistory",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Pre-Condition - Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "710fc72f-9c01-458d-91e2-999228c54ca0",
+						"exec": [
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig\", hash);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9b65e0a-3805-49b2-a0e8-3b2d205156e2",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+							"postman.setEnvironmentVariable(\"keyapi\", keyapi);",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"pm.test(\"Tokenapi is returned\", function () {pm.expect(pm.response.text()).to.include(\"tokenapi\");});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Contact History - Contact have meeting invitee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ff90a814-3e2f-44bb-9e18-17bcf0177be4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - Create Contact History - Contact have meeting invitee',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - Create Contact History - Contact have meeting invitee',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var source_id = json.data[0].history.source_id;",
+							"        var source_type = json.data[0].history.source_type;",
+							"        var obj_id = json.data[0].history.obj_id;",
+							"        var obj_type = json.data[0].history.obj_type;",
+							"        var source_account = json.data[0].history.source_account;",
+							"        var destination_account = json.data[0].history.destination_account;",
+							"        var destination_root_uid = json.data[0].history.destination_root_uid;",
+							"        var source_root_uid = json.data[0].history.source_root_uid;",
+							"        var action = json.data[0].history.action;",
+							"        var ref = json.data[0].history.ref;",
+							"        ",
+							"        // Check data response",
+							"        if ((source_id === \"abc@gmail.com\")&&(source_type === \"INVITEE\")&&(obj_id === pm.environment.get(\"v4uuid\"))&&(obj_type === \"VEVENT\")&&(source_account === 0)&&(destination_account === 0)&&(destination_root_uid === \"/addressbookserver.php/addressbooks/api_test@123flo.com/api_test@123flo.com/\")&&(source_root_uid === \"principals/abcd@123flo.com\")&&(action === 8)&&(ref === 12345)) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create contact history success\"",
+							"",
+							"            pm.environment.set(\"historyid_create\", json.data[0].history.id);",
+							"            pm.environment.set(\"history_obj_id\", json.data[0].history.obj_id);",
+							"            pm.environment.set(\"modifiedTime\", json.data[0].history.updated_date);",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "83982037-2cbb-4ccb-a33f-7e8f18dadefb",
+						"exec": [
+							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"histories\": [\n        {\n            \"source_account\": 0,\n            \"source_id\": \"abc@gmail.com\",\n            \"source_type\": \"INVITEE\",\n            \"obj_id\": \"{{v4uuid}}\",\n            \"obj_type\": \"VEVENT\",\n            \"destination_root_uid\": \"/addressbookserver.php/addressbooks/api_test@123flo.com/api_test@123flo.com/\",\n            \"destination_account\": 0,\n            \"source_root_uid\": \"principals/abcd@123flo.com\",\n            \"action\": 8,\n            \"action_data\": \"aaaa\",\n            \"path\": \"\",\n            \"ref\": 12345\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Contact History - Flo app SENT the new mail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ff90a814-3e2f-44bb-9e18-17bcf0177be4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - Create Contact History - Flo app SENT the new mail',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - Create Contact History - Flo app SENT the new mail',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var source_id = json.data[0].history.source_id;",
+							"        var source_type = json.data[0].history.source_type;",
+							"        var obj_id = json.data[0].history.obj_id;",
+							"        var obj_type = json.data[0].history.obj_type;",
+							"        var source_account = json.data[0].history.source_account;",
+							"        var destination_account = json.data[0].history.destination_account;",
+							"        var destination_root_uid = json.data[0].history.destination_root_uid;",
+							"        var action = json.data[0].history.action;",
+							"        var ref = json.data[0].history.ref;",
+							"        ",
+							"        // Check data response",
+							"        if ((source_id === \"abc@gmail.com\")&&(source_type === \"RECEIVER\")&&(obj_id === pm.environment.get(\"v4uuid\"))&&(obj_type === \"EMAIL\")&&(source_account === 0)&&(destination_account === 0)&&(action === 6)&&(ref === 12345)) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create contact history success\"",
+							"",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "5c465c46-5c8b-4bd7-ab0b-bb3fe03b47ef",
+						"exec": [
+							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"histories\": [\n        {\n            \"source_account\": 0,\n            \"source_id\": \"abc@gmail.com\",\n            \"source_type\": \"RECEIVER\",\n            \"destination_account\": 0,\n            \"obj_id\": \"{{v4uuid}}\",\n            \"obj_type\": \"EMAIL\",\n            \"action\": 6,\n            \"action_data\": \"\",\n            \"path\": \"\",\n            \"ref\": 12345\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Contact History - Flo app RECEIVED the new mail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ff90a814-3e2f-44bb-9e18-17bcf0177be4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - Create Contact History - Flo app RECEIVED the new mail',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - Create Contact History - Flo app RECEIVED the new mail',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var source_id = json.data[0].history.source_id;",
+							"        var source_type = json.data[0].history.source_type;",
+							"        var obj_id = json.data[0].history.obj_id;",
+							"        var obj_type = json.data[0].history.obj_type;",
+							"        var source_account = json.data[0].history.source_account;",
+							"        var destination_account = json.data[0].history.destination_account;",
+							"        var path = json.data[0].history.path;",
+							"        var action = json.data[0].history.action;",
+							"        var ref = json.data[0].history.ref;",
+							"        ",
+							"        // Check data response",
+							"        if ((source_id === \"abc@gmail.com\")&&(source_type === \"SENDER\")&&(obj_id === pm.environment.get(\"v4uuid\"))&&(obj_type === \"EMAIL\")&&(source_account === 0)&&(destination_account === 0)&&(path === \"Inbox\")&&(action === 7)&&(ref === 12345)) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create contact history success\"",
+							"",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"histories\": [\n        {\n            \"source_account\": 0,\n            \"source_id\": \"abc@gmail.com\",\n            \"source_type\": \"SENDER\",\n            \"destination_account\": 0,\n            \"obj_id\": \"{{v4uuid}}\",\n            \"obj_type\": \"EMAIL\",\n            \"action\": 7,\n            \"action_data\": \"\",\n            \"path\": \"Inbox\",\n            \"ref\": 12345\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Contact History - Skype chat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ff90a814-3e2f-44bb-9e18-17bcf0177be4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - Create Contact History - Skype chat',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - Create Contact History - Skype chat',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var source_id = json.data[0].history.source_id;",
+							"        var source_type = json.data[0].history.source_type;",
+							"        var obj_id = json.data[0].history.obj_id;",
+							"        var source_account = json.data[0].history.source_account;",
+							"        var destination_account = json.data[0].history.destination_account;",
+							"        var action = json.data[0].history.action;",
+							"        var source_root_uid = json.data[0].history.source_root_uid;",
+							"        var ref = json.data[0].history.ref;",
+							"        ",
+							"        // Check data response",
+							"        if ((source_id === pm.environment.get(\"v4uuid\"))&&(source_type === \"VCARD\")&&(obj_id === \"apiTest\")&&(source_account === 1)&&(destination_account === 0)&&(action === 4)&&(source_root_uid === \"principals/apiTest@123flo.com\")&&(ref === 12345)) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create contact history success\"",
+							"",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "22eb05a7-1c6a-4984-8c97-f126b0a8b18c",
+						"exec": [
+							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"histories\": [\n        {\n            \"source_account\": 1,\n            \"source_id\": \"{{v4uuid}}\",\n            \"source_type\": \"VCARD\",\n            \"source_root_uid\": \"principals/apiTest@123flo.com\",\n            \"destination_account\": 0,\n            \"obj_id\": \"apiTest\",\n            \"obj_type\": \"\",\n            \"action\": 4,\n            \"action_data\": \"\",\n            \"path\": \"\",\n            \"ref\": 12345\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Contact History - Phone call",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ff90a814-3e2f-44bb-9e18-17bcf0177be4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - Create Contact History - Phone call',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - Create Contact History - Phone call',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var source_id = json.data[0].history.source_id;",
+							"        var source_type = json.data[0].history.source_type;",
+							"        var obj_id = json.data[0].history.obj_id;",
+							"        var source_account = json.data[0].history.source_account;",
+							"        var destination_account = json.data[0].history.destination_account;",
+							"        var action = json.data[0].history.action;",
+							"        var source_root_uid = json.data[0].history.source_root_uid;",
+							"        ",
+							"        // Check data response",
+							"        if ((source_id === pm.environment.get(\"v4uuid\"))&&(source_type === \"VCARD\")&&(obj_id === \"090123456\")&&(source_account === 1)&&(destination_account === 0)&&(action === 9)&&(source_root_uid === \"principals/apiTest@123flo.com\")) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create contact history success\"",
+							"",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4c6bf88e-80a9-4025-8d4a-7006ab2abbc6",
+						"exec": [
+							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"histories\": [\n        {\n            \"source_account\": 1,\n            \"source_id\": \"{{v4uuid}}\",\n            \"source_type\": \"VCARD\",\n            \"source_root_uid\": \"principals/apiTest@123flo.com\",\n            \"destination_account\": 0,\n            \"obj_id\": \"090123456\",\n            \"obj_type\": \"\",\n            \"action\": 9,\n            \"action_data\": \"\",\n            \"path\": \"\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Contact History - 3rd Contact (iCloud /Yahoo /Google contact)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ff90a814-3e2f-44bb-9e18-17bcf0177be4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - Create Contact History - 3rd Contact (iCloud /Yahoo /Google contact)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - Create Contact History - 3rd Contact (iCloud /Yahoo /Google contact)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        var source_id = json.data[0].history.source_id;",
+							"        var source_type = json.data[0].history.source_type;",
+							"        var obj_id = json.data[0].history.obj_id;",
+							"        var obj_type = json.data[0].history.obj_type;",
+							"        var source_account = json.data[0].history.source_account;",
+							"        var destination_account = json.data[0].history.destination_account;",
+							"        var path = json.data[0].history.path;",
+							"        var action = json.data[0].history.action;",
+							"        var ref = json.data[0].history.ref;",
+							"        ",
+							"        // Check data response",
+							"        if ((source_id === \"abc@gmail.com\")&&(source_type === \"SENDER\")&&(obj_id === pm.environment.get(\"v4uuid\"))&&(obj_type === \"EMAIL\")&&(source_account === 1)&&(destination_account === 0)&&(path === \"Sent\")&&(action === 6)&&(ref === 12345)) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create contact history success\"",
+							"",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0119f864-12e8-41fe-89a0-1f02b22a7da8",
+						"exec": [
+							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"histories\": [\n        {\n            \"source_account\": 1,\n            \"source_id\": \"abc@gmail.com\",\n            \"source_type\": \"SENDER\",\n            \"destination_account\": 0,\n            \"obj_id\": \"{{v4uuid}}\",\n            \"obj_type\": \"EMAIL\",\n            \"action\": 6,\n            \"action_data\": \"\",\n            \"path\": \"Sent\",\n            \"ref\": 12345\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Contact History - Duplicated contact history",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ff90a814-3e2f-44bb-9e18-17bcf0177be4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - Create Contact History - No error with duplicated contact history',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - Create Contact History - show error with duplicated contact history',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        // API error ",
+							"        msg = msgFailed;",
+							"        msg.description = \"Error - create contact history success\"",
+							"        ",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgPassed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"histories\": [\n        {\n            \"source_account\": 0,\n            \"source_id\": \"abc@gmail.com\",\n            \"source_type\": \"INVITEE\",\n            \"obj_id\": \"{{history_obj_id}}\",\n            \"obj_type\": \"VEVENT\",\n            \"destination_root_uid\": \"/addressbookserver.php/addressbooks/api_test@123flo.com/api_test@123flo.com/\",\n            \"destination_account\": 0,\n            \"source_root_uid\": \"principals/abcd@123flo.com\",\n            \"action\": 8,\n            \"action_data\": \"aaaa\",\n            \"path\": \"\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "91777d09-9285-45e5-a2af-a9b94295cb9b",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - List Contact History',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - List Contact History',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        // Check data response",
+							"        if(\"history\" in json.data[0]){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list contact history success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "ids",
+							"value": "65711",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "65712",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,source_id,source_type,obj_type,path",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - with modifiedGTE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "19545b38-4161-4cbc-b91a-b3c75a1768dc",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - List Contact History - with modifiedGTE',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - List Contact History - with modifiedGTE',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        var dataResponse = pm.response.text();",
+							"        // Check data response",
+							"        if(dataResponse.includes(pm.environment.get(\"historyid_create\"))){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list contact history success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&modifiedGTE={{modifiedTime}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{modifiedTime}}"
+						},
+						{
+							"key": "ids",
+							"value": "65711",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "65712",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - with modifiedLT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0a181a24-1478-4eda-b72a-cab1fc6460fc",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - List Contact History - with modifiedLT',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - List Contact History - with modifiedLT',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        var dataResponse = pm.response.text();",
+							"        // Check data response",
+							"        if(dataResponse.includes(pm.environment.get(\"historyid_create\"))){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list contact history success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8594e4dc-7cf7-4988-b1a5-c2c368ad498f",
+						"exec": [
+							"var tempTime = pm.environment.get(\"modifiedTime\");",
+							"",
+							"postman.setEnvironmentVariable(\"modifiedLT\", Number(tempTime) + 1);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&modifiedLT={{modifiedLT}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedLT",
+							"value": "{{modifiedLT}}"
+						},
+						{
+							"key": "ids",
+							"value": "65711",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "65712",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - with ids",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bf9a0ccc-c601-44ee-b11f-36106abfe57c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - List Contact History - with ids',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - List Contact History - with ids',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        var history_id = pm.environment.get(\"historyid_create\")",
+							"        // Check data response",
+							"        if((\"history\" in json.data[0])&&(json.data[0].history.id == history_id)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list contact history success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&ids={{historyid_create}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{historyid_create}}"
+						},
+						{
+							"key": "minID",
+							"value": "65712",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - with fields",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8776b3de-6035-4ead-8c9f-51541675c738",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - List Contact History - with fields',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - List Contact History - with fields',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        // Check data response",
+							"        if((\"id\" in json.data[0].history)&&(\"source_id\" in json.data[0].history)&&(\"source_type\" in json.data[0].history)&&(\"path\" in json.data[0].history)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list contact history success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&fields=id,source_id,source_type,obj_type,path",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,source_id,source_type,obj_type,path"
+						},
+						{
+							"key": "ids",
+							"value": "65711",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "65712",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - with minID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c39929a8-4e0e-4f5b-b51f-ce4219adec47",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - List Contact History - with minID',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - List Contact History - with minID',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        // Check data response",
+							"        var minID = pm.environment.get(\"minID\");",
+							"        var flag = 1;",
+							"        for(var i = 0; i< count; i++){",
+							"            if(minID >= json.data[i].history.id)",
+							"                flag = 0;",
+							"        }",
+							"        //console.log(flag);",
+							"        if(flag === 1){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list contact history success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ae3eecde-e737-42f5-b6e0-1aa165fcdcd4",
+						"exec": [
+							"var tempId = pm.environment.get(\"historyid_create\");",
+							"",
+							"postman.setEnvironmentVariable(\"minID\", Number(tempId) - 1);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&minID={{minID}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{minID}}"
+						},
+						{
+							"key": "ids",
+							"value": "65711",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - with pItem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "89df053c-3d2b-4e2e-a408-8cabb10b1561",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Failed - List Contact History - with pItem',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - List Contact History - with pItem',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count === 2){",
+							"        msg = msgPassed;",
+							"        msg.description = \"get list contact history success\"",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&pItem=2",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "pItem",
+							"value": "2"
+						},
+						{
+							"key": "ids",
+							"value": "65711",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "65712",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - with has_del",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "143c6a6f-325e-4617-9ba3-79c69f31f52a",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - List Contact History - with has_del',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - List Contact History - with has_del',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check response data",
+							"    if(\"data_del\" in json){",
+							"        msg = msgPassed;",
+							"        msg.description = \"get list contact history success\"",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "ids",
+							"value": "65711",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "65712",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Contact History - Precondition for get",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ff90a814-3e2f-44bb-9e18-17bcf0177be4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var json = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"historyid_get\", json.data[0].history.id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "83982037-2cbb-4ccb-a33f-7e8f18dadefb",
+						"exec": [
+							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"histories\": [\n        {\n            \"source_account\": 0,\n            \"source_id\": \"abc@gmail.com\",\n            \"source_type\": \"INVITEE\",\n            \"obj_id\": \"{{v4uuid}}\",\n            \"obj_type\": \"VEVENT\",\n            \"destination_root_uid\": \"abcdef\",\n            \"destination_account\": 0,\n            \"source_root_uid\": \"abcdef\",\n            \"action\": 8,\n            \"action_data\": \"aaaa\",\n            \"path\": \"\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Contact History - 1 Contact History",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4f73868e-d2cf-4b9b-a743-fec00a8dc747",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - Delete Contact History - 1 Contact History',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - Delete Contact History - 1 Contact History',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        var historyid_get = pm.environment.get(\"historyid_get\")",
+							"        // Check data response",
+							"        if(json.data[0].id == historyid_get){",
+							"            msg = msgPassed;",
+							"            msg.description = \"delete contact history success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories/{{historyid_get}}?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories",
+						"{{historyid_get}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - Precondition get minDelID All",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8d317429-481f-4eb1-94fe-e2a65e50190b",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var json = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"minDelID\", json.data_del[0].deleted_item.id -1);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&ids={{historyid_get}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{historyid_get}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "fields",
+							"value": "id,item_id,item_type",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - with minDelID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "54c1422a-3cf1-4110-900e-72853fa484e4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - List Contact History - with minDelID',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - List Contact History - with minDelID',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count_data_del = json.data_del.length;",
+							"    ",
+							"    if((count_data_del !== 0)){",
+							"        // Check data response",
+							"        var minDelID = pm.environment.get(\"minDelID\");",
+							"        //console.log(minDelID)",
+							"        var flag = 1;",
+							"        ",
+							"        for(var i = 0; i< count_data_del; i++){",
+							"            if(minDelID >= json.data_del[i].deleted_item.id)",
+							"                flag = 0;",
+							"        }",
+							"        //console.log(flag);",
+							"        if(flag === 1){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list contact history success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&minDelID={{minDelID}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelID}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "ids",
+							"value": "65711",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "65712",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - get All paging (minID, minDelID)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "57ac36ea-57c1-4dca-9a29-cdadb15c31c2",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - List Contact History - get All paging (minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - List Contact History - get All paging (minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count_data = json.data.length;",
+							"    var count_data_del = json.data_del.length;",
+							"    ",
+							"    if((count_data !== 0)&&(count_data_del !== 0)){",
+							"        // Check data response",
+							"        var minID = pm.environment.get(\"minID\");",
+							"        var minDelID = pm.environment.get(\"minDelID\");",
+							"        //console.log(minID +\" \"+ minDelID)",
+							"        var flag = 1;",
+							"        ",
+							"        for(var i = 0; i< count_data; i++){",
+							"            if(minID >= json.data[i].history.id)",
+							"                flag = 0;",
+							"        }",
+							"        ",
+							"        for(var i = 0; i< count_data_del; i++){",
+							"            if(minDelID >= json.data_del[i].deleted_item.id)",
+							"                flag = 0;",
+							"        }",
+							"        //console.log(flag);",
+							"        if(flag === 1){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list contact history success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&minDelID={{minDelID}}&has_del=1&minID={{minID}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelID}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minID",
+							"value": "{{minID}}"
+						},
+						{
+							"key": "ids",
+							"value": "65711",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Contact History - Limit 50 items",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ff90a814-3e2f-44bb-9e18-17bcf0177be4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - Create Contact History - Limit 50 items',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - Create Contact History - Limit 50 items',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        // check number item",
+							"        if(count === 50){",
+							"            msg = msgPassed;",
+							"            msg.description = \"create 50 contact histories success\";",
+							"        }else{",
+							"            msg.description = \"number of created contact history is not correct\";",
+							"        }",
+							"        ",
+							"        // clean up contact history",
+							"        var historyid50 =[];",
+							"        for(var i=0; i<count; i++){",
+							"            historyid50[i] = json.data[i].history.id;",
+							"        }",
+							"        ",
+							"        pm.environment.set(\"historyid50\", historyid50);",
+							"        pm.environment.set(\"modifiedGTE_cre\", json.data[0].history.updated_date);",
+							"        pm.environment.set(\"minID_cre\", json.data[0].history.id);",
+							"    }",
+							"    // fail - not canvas data response",
+							"    else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0a4ee3a7-b301-46f4-aad9-cecc8f923d9f",
+						"exec": [
+							"postman.setEnvironmentVariable(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"histories\": [\n    {\n      \"source_account\": 1,\n      \"source_id\": \"1{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"2{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"3{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"4{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"5{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"6{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"7{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"8{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"9{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"10{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"11{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"12{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"13{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"14{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"15{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"16{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"17{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"18{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"19{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"20{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"21{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"22{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"23{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"24{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"25{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"26{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"27{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"28{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"29{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"30{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"31{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"32{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"33{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"34{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"35{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"36{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"37{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"38{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"39{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"40{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"41{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"42{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"43{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"44{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"45{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"46{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"47{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"48{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"49{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"50{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    },\n    {\n      \"source_account\": 1,\n      \"source_id\": \"51{{v4uuid}}\",\n      \"source_type\": \"VCARD\",\n      \"source_root_uid\": \"principals/linhnguyen001@123flo.com\",\n      \"destination_account\": 0,\n      \"obj_id\": \"tqcong2004\",\n      \"obj_type\": \"\",\n      \"action\": 4,\n      \"action_data\": \"\",\n      \"path\": \"\",\n      \"ref\": 123\n    }\n  ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - get Change Update Paging (modifiedGTE, minID, minDelID)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7362e7fd-725d-4cf7-ba65-5d4d993bcf71",
+						"exec": [
+							"var tempId = pm.environment.get(\"minID_cre\");",
+							"",
+							"pm.environment.set(\"minID_cre-1\", Number(tempId) - 1);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b6760832-216c-471a-bf86-8826383d4dcb",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - List Contact History - get Change Create Paging (modifiedGTE, minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - List Contact History - get Change Create Paging (modifiedGTE, minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count_data = json.data.length;",
+							"    ",
+							"    if((count_data === 50)){",
+							"       var minID = Number(pm.environment.get(\"minID_cre\"));",
+							"       ",
+							"        //console.log(minID)",
+							"        // Check data response",
+							"        if((json.data[0].history.id === minID)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list contact history success\";",
+							"            ",
+							"            postman.clearEnvironmentVariable(\"minID_cre-1\");",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE_cre}}&minID={{minID_cre-1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{modifiedGTE_cre}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{minID_cre-1}}"
+						},
+						{
+							"key": "minDelID",
+							"value": "176039",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "65711",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Contact History - Many Contact History",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4f73868e-d2cf-4b9b-a743-fec00a8dc747",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - Delete Contact History - Many Contact History',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status:\"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Canvas\",",
+							"    title: 'Passed - Delete Contact History - Many Contact History',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count === 50){",
+							"        // convert Array to String",
+							"        var countExpect = pm.environment.get(\"historyid50\").toString().split(\",\").length;",
+							"        // Check data response",
+							"        if(count === countExpect){",
+							"            msg = msgPassed;",
+							"            msg.description = \"delete many contact histories success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories/{{historyid50}}?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories",
+						"{{historyid50}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - Precondition get minDelID Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8d317429-481f-4eb1-94fe-e2a65e50190b",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var json = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"minDelID_del\", json.data_del[0].deleted_item.id);",
+							"postman.setEnvironmentVariable(\"modifiedGTE_del\", json.data_del[0].deleted_item.updated_date);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&ids={{minID_cre}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{minID_cre}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "fields",
+							"value": "id,item_id,item_type",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Contact History - get Change Delete Paging (modifiedGTE, minID, minDelID)",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e32bbe42-a16e-4fd5-a3ea-c98f850cfd51",
+						"exec": [
+							"var tempId = pm.environment.get(\"minDelID_del\");",
+							"",
+							"pm.environment.set(\"minDelID_del-1\", Number(tempId) - 1);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "4a64755e-bd9b-49ed-879d-f422f9a30fd7",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Failed - List Contact History - get Change Delete Paging (modifiedGTE, minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_ContactHistory\",",
+							"    title: 'Passed - List Contact History - get Change Delete Paging (modifiedGTE, minID, minDelID)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/histories\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count_data_del = json.data_del.length;",
+							"    ",
+							"    if((count_data_del === 50)){",
+							"       var minDelID = Number(pm.environment.get(\"minDelID_del\"));",
+							"       ",
+							"       //console.log(minDelID)",
+							"        // Check data response",
+							"        if((json.data_del[0].deleted_item.id === minDelID)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list contact history success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});",
+							"",
+							"// Clear all variables for API - Contact History",
+							"postman.clearEnvironmentVariable(\"minDelID_del-1\");",
+							"postman.clearEnvironmentVariable(\"minDelID_del\");",
+							"postman.clearEnvironmentVariable(\"modifiedGTE_del\");",
+							"postman.clearEnvironmentVariable(\"modifiedGTE_cre\");",
+							"postman.clearEnvironmentVariable(\"minID_cre\");",
+							"postman.clearEnvironmentVariable(\"modifiedTime\");",
+							"postman.clearEnvironmentVariable(\"modifiedLT\");",
+							"postman.clearEnvironmentVariable(\"historyid50\");",
+							"postman.clearEnvironmentVariable(\"minID\");",
+							"postman.clearEnvironmentVariable(\"minDelID\");",
+							"postman.clearEnvironmentVariable(\"history_obj_id\");",
+							"postman.clearEnvironmentVariable(\"historyid_get\");",
+							"postman.clearEnvironmentVariable(\"historyid_create\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/histories?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE_del}}&minDelID={{minDelID_del-1}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"histories"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{modifiedGTE_del}}"
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelID_del-1}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "minID",
+							"value": "3107",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "65711",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,56 @@
+Title TC: Failed - Update Order - Update order 2 object with invalid value inputted (objtype = 2) 
+endpoint: v2.1.1/api/objorder/update
+method: PUT
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Update Order - Update object type = 1
+endpoint: v2.1.1/api/objorder/update
+method: PUT
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Update Order - Update without parameter objtype
+endpoint: v2.1.1/api/objorder/update
+method: PUT
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Update Order - Update without parameter obj_id
+endpoint: v2.1.1/api/objorder/update
+method: PUT
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Update Order - Update without parameter required objtype and obj_id
+endpoint: v2.1.1/api/objorder/update
+method: PUT
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Search Object Order - with param obj_ids as type int
+endpoint: v2.1.1/api/objorder/search
+method: POST
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Update Order - Update order 2 object with invalid value inputted (objtype = 2) 
+endpoint: v2.1.1/api/objorder/update
+method: PUT
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Update Order - Update object type = 1
+endpoint: v2.1.1/api/objorder/update
+method: PUT
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+

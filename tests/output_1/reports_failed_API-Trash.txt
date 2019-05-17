@@ -1,0 +1,14 @@
+Title TC: Failed - Update Trash - Update with invalid value inputted
+endpoint: v2.1.1/api/trash/update
+method: PUT
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+
+Title TC: Failed - Recover Trash - Invalid type param "re_ids" (int)
+endpoint: v2.1.1/api/trash/0
+method: DELETE
+error: status response failed
+status: 500
+response message: {"status":500,"error":"Internal Server Error"}
+

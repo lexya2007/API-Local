@@ -1,7 +1,0 @@
-Title TC: Failed - Update - Update tracking with incorrect value inputted
-endpoint: /api/tracking/update
-method: PUT
-error: Status response failed
-status: 500
-response message: {"status":500,"error":"Internal Server Error"}
-

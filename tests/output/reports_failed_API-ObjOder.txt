@@ -1,7 +1,0 @@
-Title TC: Failed - Update Order - Update order 2 object with invalid value inputted (objtype = 2) 
-endpoint: v2.2/api/objorder/update
-method: PUT
-error: status response failed
-status: 500
-response message: {"status":500,"error":"Internal Server Error"}
-

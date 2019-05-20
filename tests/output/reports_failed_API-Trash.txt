@@ -1,7 +1,0 @@
-Title TC: Failed - Update Trash - Update with invalid value inputted
-endpoint: v2.2/api/trash/update
-method: PUT
-error: status response failed
-status: 500
-response message: {"status":500,"error":"Internal Server Error"}
-

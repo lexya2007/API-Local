@@ -1,6 +1,7 @@
 var fs = require('fs');
 var nodemailer = require('nodemailer');
-var parse = require('csv').parse
+// var parse = require('csv').parse;
+var csv = require('csv-parser');
 var results = [];
 var fileReportUri = "../tests/output/reports_failed.csv";
 console.log('URI File csv report: '+fileReportUri);
@@ -33,11 +34,12 @@ var mailOptions = {
 var msg;
 if (fs.existsSync(fileReportUri)){
     fs.createReadStream(fileReportUri)
-        .pipe(parse())
+        .pipe(csv())
         .on('data', (data) => results.push(data.Summary))
         .on('end', () => {
             msg = mailOptions;
             var count = results.length;
+            console.log("Testcase: "+results);
             console.log("Testcase Failed: "+count);
             var string = results.toString();
             var anotherString = string.replace(/\,\[/g,'\n - [');
@@ -72,6 +74,7 @@ if (fs.existsSync(fileReportUri)){
             });
         });
 }else{
+    console.log('URI File csv report: 1');
     transporter.sendMail(mailOptions, function(error, info){
         if (error) {
             console.log("Send email not successful!");

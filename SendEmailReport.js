@@ -1,6 +1,5 @@
 var fs = require('fs');
 var nodemailer = require('nodemailer');
-// var parse = require('csv').parse;
 var csv = require('csv-parser');
 var results = [];
 var fileReportUri = "../tests/output/reports_failed.csv";

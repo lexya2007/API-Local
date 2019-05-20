@@ -27,10 +27,10 @@ environment=../Postman_environment/v2.2/environment_TestServer.json
 # echo "Environment: $environment"
 # newman run $objorder_collection -e $environment --insecure
 
-# settingaccounts_collection=../Postman_Collections_APIs/v2.2/API-SettingAccounts.json
-# echo "Collection: $settingaccounts_collection"
-# echo "Environment: $environment"
-# newman run $settingaccounts_collection -e $environment --insecure
+ settingaccounts_collection=../Postman_Collections_APIs/v2.2/API-SettingAccounts.json
+ echo "Collection: $settingaccounts_collection"
+ echo "Environment: $environment"
+ newman run $settingaccounts_collection -e $environment --insecure
 
  tracking_collection=../Postman_Collections_APIs/v2.2/API-Tracking.json
  echo "Collection: $tracking_collection"

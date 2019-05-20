@@ -32,10 +32,10 @@ environment=../Postman_environment/v2.2/environment_TestServer.json
 # echo "Environment: $environment"
 # newman run $settingaccounts_collection -e $environment --insecure
 
-# tracking_collection=../Postman_Collections_APIs/v2.2/API-Tracking.json
-# echo "Collection: $tracking_collection"
-# echo "Environment: $environment"
-# newman run $tracking_collection -e $environment --insecure
+ tracking_collection=../Postman_Collections_APIs/v2.2/API-Tracking.json
+ echo "Collection: $tracking_collection"
+ echo "Environment: $environment"
+ newman run $tracking_collection -e $environment --insecure
 
 #trash_collection=../Postman_Collections_APIs/v2.2/API-Trash.json
 #echo "Collection: $trash_collection"

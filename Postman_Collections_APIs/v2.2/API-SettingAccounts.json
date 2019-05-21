@@ -1430,7 +1430,7 @@
 							"var numberRandom = Math.floor(Math.random()*10000000);",
 							"var stringJson = \"\";",
 							"for(var i = 0; i< 50; i++){",
-							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"user_income\":\"bi_api'+i+'@123flo.com\",\"account_type\":3,\"description\":\"123 FLO ACCOUNT\" '+'}';",
+							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"user_income\":\"bi_api'+i+'@123flo.com\",\"account_type\":2,\"description\":\"123 FLO ACCOUNT\" '+'}';",
 							"}",
 							"pm.environment.set(\"CreateSettingAccount\", stringJson);"
 						],
@@ -1566,10 +1566,6 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&fields=account_sync,id,created_date,updated_date,email_address,user_income",
 					"protocol": "https",
@@ -1717,10 +1713,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&pItem=20",
 					"protocol": "https",
@@ -1866,10 +1858,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?fields=account_sync,id,created_date,updated_date,email_address,user_income&keyapi={{keyapi}}&ids={{idGoogle}}",
 					"protocol": "https",
@@ -2024,10 +2012,6 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?pItem=10&keyapi={{keyapi}}&minID={{idGoogle}}",
 					"protocol": "https",
@@ -2971,10 +2955,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&modifiedGTE={{updated_date}}",
 					"protocol": "https",
@@ -3119,7 +3099,7 @@
 							"for(var i = 0; i<count; i++){",
 							"    var listIDAccount = idAccounts.split(\",\")[i];",
 							"    pm.environment.set(\"Accountid-\"+i,listIDAccount);",
-							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"id\":'+listIDAccount+',\"pass_income\":\"string hash RSA\",\"account_type\": 3,\"port_income\": \"456\",\"port_smtp\": \"123\",\"full_name\": \"TEST API - '+listIDAccount+'\" '+'}';",
+							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"id\":'+listIDAccount+',\"pass_income\":\"string hash RSA\",\"account_type\": 2,\"port_income\": \"456\",\"port_smtp\": \"123\",\"full_name\": \"TEST API - '+listIDAccount+'\" '+'}';",
 							"}",
 							"pm.environment.set(\"UpdateSettingAccount\", stringJson);"
 						],
@@ -3260,10 +3240,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&modifiedGTE={{updated_date_0}}",
 					"protocol": "https",
@@ -3413,10 +3389,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&fields=account_sync,id,created_date,updated_date,email_address,user_income&minID={{minID[29]}}&pItem=10&modifiedGTE={{updated_date_0}}",
 					"protocol": "https",
@@ -3814,10 +3786,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&has_del=1&ids={{idGoogle}},{{idYahoo}}",
 					"protocol": "https",
@@ -4094,10 +4062,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?has_del=1&pItem=50&minDelID={{minDElID}}&keyapi={{keyapi}}&modifiedGTE={{updated_date_0}}",
 					"protocol": "https",
@@ -4242,10 +4206,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?pItem=10&minDelID={{minDelID[29]}}&keyapi={{keyapi}}&has_del=1",
 					"protocol": "https",
@@ -4383,10 +4343,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&fields=account_sync,id,created_date,updated_date,email_address,user_income",
 					"protocol": "https",
@@ -4654,10 +4610,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&minDelID={{minDElID}}&has_del=1",
 					"protocol": "https",
@@ -4871,10 +4823,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&fields=account_sync,id,created_date,updated_date,email_address,user_income",
 					"protocol": "https",

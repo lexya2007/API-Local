@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ff050c0e-7681-44b5-b7d7-96669d353813",
+		"_postman_id": "8965a2a5-0d25-40bf-b30b-96d3dc95d7c8",
 		"name": "API - Kanbans Version 3.0 Shared",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -232,7 +232,7 @@
 							"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"{{nameCollection}}\",\n            \"proj_type\": 3\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/projects.json",
+							"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -240,7 +240,13 @@
 							"port": "{{port}}",
 							"path": [
 								"{{version}}",
-								"projects.json"
+								"projects"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
 							]
 						}
 					},
@@ -347,7 +353,7 @@
 							"raw": "{\n    \"projects_users\": [\n        \n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"email\": \"{{email_U2}}\",\n            \"card_uid\": \"/htmh99@flomail.net/XXXXXXXX-1D1F-451D-A716-84CB64FDE0CF.vcf\",\n            \"href\": \"/htmh99@flomail.net/D9B4AB89-1D1F-451D-A716-84CB64FDE0CF.vcf\"\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/projects/invite",
+							"raw": "https://{{server}}:{{port}}/{{version}}/projects/invite?keyapi={{keyapi}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -357,6 +363,12 @@
 								"{{version}}",
 								"projects",
 								"invite"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
 							]
 						}
 					},
@@ -582,7 +594,7 @@
 							"raw": "\n{\n    \"projects\": [\n        {\n            \"id\": \"{{idProjectCreated}}\"\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/projects/accept_invite?",
+							"raw": "https://{{server}}:{{port}}/{{version}}/projects/accept_invite?keyapi={{keyapi_U2}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -594,6 +606,10 @@
 								"accept_invite"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								},
 								{
 									"key": "kpi",
 									"value": "{{keyapi_U2}}",
@@ -711,7 +727,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\":\"{{nameCollection}}\",\n            \"color\":\"#4986e7\",\n            \"order_number\":1,\n            \"archive_status\":0,\n            \"order_update_time\":1547534092.088,\n            \"show_done_todo\":1,\n            \"add_new_obj_type\":1,\n            \"sort_by_type\":1,\n            \"kanban_type\":0,\n            \"ref\":\"\"\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -720,6 +736,12 @@
 							"path": [
 								"{{version}}",
 								"kanbans"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
 							]
 						}
 					},
@@ -832,7 +854,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\":\"{{nameCollection}}\",\n            \"color\":\"#4986e7\",\n            \"order_number\":1,\n            \"archive_status\":0,\n            \"order_update_time\":1547534092.088,\n            \"show_done_todo\":1,\n            \"add_new_obj_type\":1,\n            \"sort_by_type\":1,\n            \"kanban_type\":0,\n            \"ref\":\"\"\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -841,6 +863,12 @@
 							"path": [
 								"{{version}}",
 								"kanbans"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								}
 							]
 						}
 					},
@@ -965,7 +993,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {{CreateKanban}}\n    ]\n}\n"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -974,6 +1002,12 @@
 							"path": [
 								"{{version}}",
 								"kanbans"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
 							]
 						}
 					},
@@ -1072,7 +1106,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?ids={{id_Kanban_member}}&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&ids={{id_Kanban_member}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -1083,6 +1117,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								},
 								{
 									"key": "ids",
 									"value": "{{id_Kanban_member}}"
@@ -1184,7 +1222,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?ids={{id_Kanban}}&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&ids={{id_Kanban}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -1195,6 +1233,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								},
 								{
 									"key": "ids",
 									"value": "{{id_Kanban}}"
@@ -1296,7 +1338,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?ids={{id_Kanban_member}}&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&ids={{id_Kanban_member}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -1307,6 +1349,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
 								{
 									"key": "ids",
 									"value": "{{id_Kanban_member}}"
@@ -1408,7 +1454,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?ids={{id_Kanban}}&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&ids={{id_Kanban}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -1419,6 +1465,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
 								{
 									"key": "ids",
 									"value": "{{id_Kanban}}"
@@ -1528,7 +1578,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?project_ids[]={{idProjectCreated}}&has_del=0",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&project_ids[]={{idProjectCreated}}&has_del=0",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -1539,6 +1589,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
 								{
 									"key": "project_ids[]",
 									"value": "{{idProjectCreated}}"
@@ -1648,7 +1702,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?project_ids[]={{idProjectCreated}}&has_del=0",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&project_ids[]={{idProjectCreated}}&has_del=0",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -1659,6 +1713,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								},
 								{
 									"key": "project_ids[]",
 									"value": "{{idProjectCreated}}"
@@ -1773,7 +1831,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?minID=&pItem=20&fields=project_id,name,color,updated_date,created_date,id&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&pItem=20&fields=project_id,name,color,updated_date,created_date,id&project_ids[]={{idProjectCreated}}&minID=",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -1785,18 +1843,8 @@
 							],
 							"query": [
 								{
-									"key": "minID",
-									"value": ""
-								},
-								{
-									"key": "modifiedGTE",
-									"value": "",
-									"disabled": true
-								},
-								{
-									"key": "ids",
-									"value": "",
-									"disabled": true
+									"key": "keyapi",
+									"value": "{{keyapi}}"
 								},
 								{
 									"key": "pItem",
@@ -1811,9 +1859,23 @@
 									"value": "{{idProjectCreated}}"
 								},
 								{
+									"key": "modifiedGTE",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "ids",
+									"value": "",
+									"disabled": true
+								},
+								{
 									"key": "minDelID",
 									"value": "",
 									"disabled": true
+								},
+								{
+									"key": "minID",
+									"value": ""
 								}
 							]
 						}
@@ -1924,7 +1986,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?modifiedGTE={{ModifiedGTE}}&has_del=1&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=1&project_ids[]={{idProjectCreated}}&modifiedGTE={{ModifiedGTE}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -1939,10 +2001,6 @@
 									"key": "minID",
 									"value": "",
 									"disabled": true
-								},
-								{
-									"key": "modifiedGTE",
-									"value": "{{ModifiedGTE}}"
 								},
 								{
 									"key": "ids",
@@ -1960,17 +2018,25 @@
 									"disabled": true
 								},
 								{
-									"key": "has_del",
-									"value": "1"
-								},
-								{
 									"key": "minDelID",
 									"value": "",
 									"disabled": true
 								},
 								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
+								{
+									"key": "has_del",
+									"value": "1"
+								},
+								{
 									"key": "project_ids[]",
 									"value": "{{idProjectCreated}}"
+								},
+								{
+									"key": "modifiedGTE",
+									"value": "{{ModifiedGTE}}"
 								}
 							]
 						}
@@ -2078,7 +2144,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {\n            \"id\": \"{{id_Kanban_member}}\",\n            \"name\": \"Update Kanban from Owner\",\n            \"created_date\": 1550653239.696,\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"color\": \"#F492B3\",\n            \"order_number\": 8,\n            \"archive_status\": 0,\n            \"order_kbitem\": \"\",\n            \"order_update_time\": 0,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 0,\n            \"sort_by_type\": 0,\n            \"archived_time\": 0,\n            \"kanban_type\": 0\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update?keyapi={{keyapi}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -2088,6 +2154,12 @@
 								"{{version}}",
 								"kanbans",
 								"update"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
 							]
 						}
 					},
@@ -2180,7 +2252,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?modifiedGTE={{modifiedGTE_1}}&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&modifiedGTE={{modifiedGTE_1}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -2191,6 +2263,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								},
 								{
 									"key": "modifiedGTE",
 									"value": "{{modifiedGTE_1}}"
@@ -2300,7 +2376,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {\n            \"id\": \"{{id_Kanban}}\",\n            \"name\": \"Update Kanban from Member\",\n            \"created_date\": 1550653239.696,\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"color\": \"#F492B3\",\n            \"order_number\": 8,\n            \"archive_status\": 0,\n            \"order_kbitem\": \"\",\n            \"order_update_time\": 0,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 0,\n            \"sort_by_type\": 0,\n            \"archived_time\": 0,\n            \"kanban_type\": 0\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update?keyapi={{keyapi_U2}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -2310,6 +2386,12 @@
 								"{{version}}",
 								"kanbans",
 								"update"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								}
 							]
 						}
 					},
@@ -2402,7 +2484,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?modifiedGTE={{modifiedGTE}}&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -2413,6 +2495,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
 								{
 									"key": "modifiedGTE",
 									"value": "{{modifiedGTE}}"
@@ -2554,7 +2640,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {{UpdateKanban}}\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update?keyapi={{keyapi_U2}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -2564,6 +2650,12 @@
 								"{{version}}",
 								"kanbans",
 								"update"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								}
 							]
 						}
 					},
@@ -2677,7 +2769,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?minID=&modifiedGTE={{modifiedGTE-0}}&fields=project_id,name,color,updated_date,created_date,id&has_del=0&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE-0}}&fields=project_id,name,color,updated_date,created_date,id&has_del=0&project_ids[]={{idProjectCreated}}&minID=",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -2689,12 +2781,24 @@
 							],
 							"query": [
 								{
-									"key": "minID",
-									"value": ""
+									"key": "keyapi",
+									"value": "{{keyapi}}"
 								},
 								{
 									"key": "modifiedGTE",
 									"value": "{{modifiedGTE-0}}"
+								},
+								{
+									"key": "fields",
+									"value": "project_id,name,color,updated_date,created_date,id"
+								},
+								{
+									"key": "has_del",
+									"value": "0"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
 								},
 								{
 									"key": "ids",
@@ -2707,21 +2811,13 @@
 									"disabled": true
 								},
 								{
-									"key": "fields",
-									"value": "project_id,name,color,updated_date,created_date,id"
-								},
-								{
-									"key": "has_del",
-									"value": "0"
-								},
-								{
 									"key": "minDelID",
 									"value": "",
 									"disabled": true
 								},
 								{
-									"key": "project_ids[]",
-									"value": "{{idProjectCreated}}"
+									"key": "minID",
+									"value": ""
 								}
 							]
 						}
@@ -2729,7 +2825,7 @@
 					"response": []
 				},
 				{
-					"name": "Get List Kanban  - Get Change - 20 Kanbans updated in 1 page",
+					"name": "Get List Kanban  - [Owner] Get Change - 20 Kanbans updated in 1 page",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -2825,7 +2921,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?minID=&modifiedGTE={{modifiedGTE-0}}&pItem=20&fields=project_id,name,color,updated_date,created_date,id&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE-0}}&pItem=20&fields=project_id,name,color,updated_date,created_date,id&project_ids[]={{idProjectCreated}}&minID=",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -2837,17 +2933,12 @@
 							],
 							"query": [
 								{
-									"key": "minID",
-									"value": ""
+									"key": "keyapi",
+									"value": "{{keyapi}}"
 								},
 								{
 									"key": "modifiedGTE",
 									"value": "{{modifiedGTE-0}}"
-								},
-								{
-									"key": "ids",
-									"value": "",
-									"disabled": true
 								},
 								{
 									"key": "pItem",
@@ -2856,6 +2947,15 @@
 								{
 									"key": "fields",
 									"value": "project_id,name,color,updated_date,created_date,id"
+								},
+								{
+									"key": "project_ids[]",
+									"value": "{{idProjectCreated}}"
+								},
+								{
+									"key": "ids",
+									"value": "",
+									"disabled": true
 								},
 								{
 									"key": "has_del",
@@ -2868,8 +2968,8 @@
 									"disabled": true
 								},
 								{
-									"key": "project_ids[]",
-									"value": "{{idProjectCreated}}"
+									"key": "minID",
+									"value": ""
 								}
 							]
 						}
@@ -2877,7 +2977,7 @@
 					"response": []
 				},
 				{
-					"name": "Update Kanbans - Update sort order 2 Kanbans",
+					"name": "Update Kanbans - [Owner] Update sort order 2 Kanbans",
 					"event": [
 						{
 							"listen": "test",
@@ -2960,13 +3060,13 @@
 							{
 								"key": "Content-Type",
 								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
+								"type": "text",
+								"value": "application/json"
 							},
 							{
 								"key": "token",
-								"value": "{{keyapi}}",
-								"type": "text"
+								"type": "text",
+								"value": "{{keyapi}}"
 							}
 						],
 						"body": {
@@ -2974,7 +3074,7 @@
 							"raw": "{\n    \"kanbans\": [{\n        \"name\":\"my kanban 2\",\n        \"project_id\":\"{{idProjectCreated}}\",\n        \"id\": \"{{kanbanid-8}}\",\n        \"order_number\": 2\n    },\n    {\n        \"name\":\"my kanban 3\",\n        \"project_id\":\"{{idProjectCreated}}\",\n        \"id\": \"{{kanbanid-9}}\",\n        \"order_number\": 3\n}]}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update?keyapi={{keyapi}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -2984,13 +3084,19 @@
 								"{{version}}",
 								"kanbans",
 								"update"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Get List Kanban - Get Change - 2 Kanbans update order",
+					"name": "Get List Kanban - [Owner] Get Change - 2 Kanbans update order",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -3093,7 +3199,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?modifiedGTE={{modifiedGTE-Order}}&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&project_ids[]={{idProjectCreated}}&modifiedGTE={{modifiedGTE-Order}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -3108,10 +3214,6 @@
 									"key": "minID",
 									"value": "",
 									"disabled": true
-								},
-								{
-									"key": "modifiedGTE",
-									"value": "{{modifiedGTE-Order}}"
 								},
 								{
 									"key": "ids",
@@ -3139,8 +3241,16 @@
 									"disabled": true
 								},
 								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
+								{
 									"key": "project_ids[]",
 									"value": "{{idProjectCreated}}"
+								},
+								{
+									"key": "modifiedGTE",
+									"value": "{{modifiedGTE-Order}}"
 								}
 							]
 						}
@@ -3248,7 +3358,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {\n            \"id\": \"{{id_Kanban}}\",\n            \"name\": \"Update Archived Kanban from Member\",\n            \"created_date\": 1550653239.696,\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"color\": \"#F492B3\",\n            \"order_number\": 8,\n            \"archive_status\": 1,\n            \"order_kbitem\": \"\",\n            \"order_update_time\": 0,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 0,\n            \"sort_by_type\": 0,\n            \"archived_time\": 0,\n            \"kanban_type\": 0\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update?keyapi={{keyapi_U2}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -3258,6 +3368,12 @@
 								"{{version}}",
 								"kanbans",
 								"update"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								}
 							]
 						}
 					},
@@ -3350,7 +3466,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?modifiedGTE={{modifiedGTE}}&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -3362,6 +3478,10 @@
 								"archived"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
 								{
 									"key": "modifiedGTE",
 									"value": "{{modifiedGTE}}"
@@ -3471,7 +3591,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {\n            \"id\": \"{{id_Kanban_member}}\",\n            \"name\": \"Update Archived Kanban from Owner\",\n            \"created_date\": 1550653239.696,\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"color\": \"#F492B3\",\n            \"order_number\": 8,\n            \"archive_status\": 1,\n            \"order_kbitem\": \"\",\n            \"order_update_time\": 0,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 0,\n            \"sort_by_type\": 0,\n            \"archived_time\": 0,\n            \"kanban_type\": 0\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update?keyapi={{keyapi}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -3481,6 +3601,12 @@
 								"{{version}}",
 								"kanbans",
 								"update"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
 							]
 						}
 					},
@@ -3573,7 +3699,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?modifiedGTE={{modifiedGTE_1}}&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?keyapi={{keyapi_U2}}&modifiedGTE={{modifiedGTE_1}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -3585,6 +3711,10 @@
 								"archived"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								},
 								{
 									"key": "modifiedGTE",
 									"value": "{{modifiedGTE_1}}"
@@ -3706,7 +3836,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\":\"{{nameCollection}}\",\n            \"color\":\"#4986e7\",\n            \"order_number\":1,\n            \"archive_status\":1,\n            \"order_update_time\":1547534092.088,\n            \"show_done_todo\":1,\n            \"add_new_obj_type\":1,\n            \"sort_by_type\":1,\n            \"kanban_type\":0,\n            \"ref\":\"1\"\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -3715,6 +3845,12 @@
 							"path": [
 								"{{version}}",
 								"kanbans"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								}
 							]
 						}
 					},
@@ -3828,7 +3964,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\":\"{{nameCollection}}\",\n            \"color\":\"#4986e7\",\n            \"order_number\":1,\n            \"archive_status\":1,\n            \"order_update_time\":1547534092.088,\n            \"show_done_todo\":1,\n            \"add_new_obj_type\":1,\n            \"sort_by_type\":1,\n            \"kanban_type\":0,\n            \"ref\":\"1\"\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -3837,6 +3973,12 @@
 							"path": [
 								"{{version}}",
 								"kanbans"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
 							]
 						}
 					},
@@ -3928,7 +4070,14 @@
 								"id": "a8d3e205-8120-4350-acb1-0505faa8b0da",
 								"exec": [
 									"var numberRandom = Math.floor(Math.random()*10000000);",
-									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);"
+									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);",
+									"",
+									"var stringJson = \"\";",
+									"for(var i = 0; i< 10; i++){",
+									"   stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"project_id\": \"{{idProjectCreated}}\",\"name\":\"{{nameCollection}}\",\"color\":\"#4986e7\",\"order_number\":1,\"archive_status\":1,\"order_update_time\":1547534092.088,\"show_done_todo\":1,\"add_new_obj_type\":1,\"sort_by_type\":1,\"kanban_type\":0,\"ref\":1 '+'}';",
+									"}",
+									"",
+									"pm.environment.set(\"Create10Kanban\", stringJson);"
 								],
 								"type": "text/javascript"
 							}
@@ -3951,10 +4100,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        },\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"name\": \"{{nameCollection}}\",\n            \"color\": \"#4986e7\",\n            \"order_number\": 1,\n            \"archive_status\": 1,\n            \"order_update_time\": 1547534092.088,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 1,\n            \"sort_by_type\": 1,\n            \"kanban_type\": 0,\n            \"ref\": \"\"\n        }\n    ]\n}\n"
+							"raw": "{\n    \"kanbans\": [\n        {{Create10Kanban}}\n    ]\n}\n"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -3963,6 +4112,12 @@
 							"path": [
 								"{{version}}",
 								"kanbans"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
 							]
 						}
 					},
@@ -4066,7 +4221,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?has_del=0&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?keyapi={{keyapi}}&has_del=0&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -4078,6 +4233,10 @@
 								"archived"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
 								{
 									"key": "has_del",
 									"value": "0"
@@ -4189,7 +4348,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"id\": \"{{id_Kanban_member}}\"\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -4197,8 +4356,13 @@
 							"port": "{{port}}",
 							"path": [
 								"{{version}}",
-								"kanbans",
-								""
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
 							]
 						}
 					},
@@ -4297,7 +4461,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"id\": \"{{id_Kanban}}\"\n        }\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/{{id_Kanban}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/{{id_Kanban}}?keyapi={{keyapi_U2}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -4307,6 +4471,12 @@
 								"{{version}}",
 								"kanbans",
 								"{{id_Kanban}}"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								}
 							]
 						}
 					},
@@ -4401,7 +4571,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=1&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&project_ids[]={{idProjectCreated}}&has_del=1",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -4412,10 +4582,6 @@
 								"kanbans"
 							],
 							"query": [
-								{
-									"key": "has_del",
-									"value": "1"
-								},
 								{
 									"key": "minDelID",
 									"value": "",
@@ -4432,8 +4598,16 @@
 									"disabled": true
 								},
 								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								},
+								{
 									"key": "project_ids[]",
 									"value": "{{idProjectCreated}}"
+								},
+								{
+									"key": "has_del",
+									"value": "1"
 								}
 							]
 						}
@@ -4531,7 +4705,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=1&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&project_ids[]={{idProjectCreated}}&has_del=1",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -4542,10 +4716,6 @@
 								"kanbans"
 							],
 							"query": [
-								{
-									"key": "has_del",
-									"value": "1"
-								},
 								{
 									"key": "minDelID",
 									"value": "",
@@ -4562,8 +4732,16 @@
 									"disabled": true
 								},
 								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
+								{
 									"key": "project_ids[]",
 									"value": "{{idProjectCreated}}"
+								},
+								{
+									"key": "has_del",
+									"value": "1"
 								}
 							]
 						}
@@ -4665,7 +4843,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=0&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=0&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -4676,6 +4854,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
 								{
 									"key": "has_del",
 									"value": "0"
@@ -4811,7 +4993,7 @@
 							"raw": "{\n    \"kanbans\": [\n        {{idKanban}}\n    ]\n}"
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -4820,6 +5002,12 @@
 							"path": [
 								"{{version}}",
 								"kanbans"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
 							]
 						}
 					},
@@ -4913,7 +5101,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=1&minDelID={{minDellID}}&pItem=20&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&has_del=1&minDelID={{minDellID}}&pItem=20&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -4924,6 +5112,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi_U2}}"
+								},
 								{
 									"key": "has_del",
 									"value": "1"
@@ -5034,7 +5226,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=1&minDelID={{minDellID}}&pItem=10&modifiedGTE={{modifiedGTE-1}}&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=1&minDelID={{minDellID}}&pItem=10&modifiedGTE={{modifiedGTE-1}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -5045,6 +5237,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
 								{
 									"key": "has_del",
 									"value": "1"
@@ -5082,13 +5278,15 @@
 									"var array =[];",
 									"var count = json.data.length;",
 									"if(count>0){",
-									"        for(var i=0; i<count; i++){",
-									"        array[i] = json.data[i].project.id;",
+									"    for(var i=0; i<count; i++){",
+									"        if(json.data[i].project.proj_type == 3){",
+									"            array[i] = json.data[i].project.id;",
 									"        }",
 									"        pm.environment.set(\"allIDProjects[]\",array);",
-									"    }else{",
-									"        pm.environment.set(\"allIDProjects[]\",null);",
-									"    }"
+									"    }",
+									"}else{",
+									"    pm.environment.set(\"allIDProjects[]\",null);",
+									"}"
 								],
 								"type": "text/javascript"
 							}
@@ -5166,7 +5364,7 @@
 					"response": []
 				},
 				{
-					"name": "Detele Projects - All project",
+					"name": "Detele Projects - All Shared Collection",
 					"event": [
 						{
 							"listen": "test",
@@ -5183,15 +5381,17 @@
 							"script": {
 								"id": "14d6e68e-faba-40da-b159-eef947e01312",
 								"exec": [
-									"var projectid50 = pm.environment.get(\"allIDProjects[]\").toString();",
+									"var projectids = pm.environment.get(\"allIDProjects[]\").toString();",
 									"var count = pm.environment.get(\"allIDProjects[]\").length;",
-									"",
 									"var stringJson = \"\";",
-									"for(var i = 0; i< count; i++){",
-									"   stringJson = (stringJson === \"\" ? stringJson : stringJson +', ') +' { \"id\" : ' +projectid50.split(\",\")[i]+ '}';",
+									"for(var i = 0; i<count; i++){",
+									"    if(projectids.split(\",\")[i] !== \"\"){",
+									"        stringJson = (stringJson === \"\" ? stringJson : stringJson +', ') +' { \"id\" : ' +projectids.split(\",\")[i]+ '}';",
+									"    }",
+									"    pm.environment.set(\"stringJson\", stringJson);",
 									"}",
 									"",
-									"pm.environment.set(\"stringJson\", stringJson);"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -5291,7 +5491,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?has_del=0&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=0&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -5302,6 +5502,10 @@
 								"kanbans"
 							],
 							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								},
 								{
 									"key": "has_del",
 									"value": "0"

@@ -16,6 +16,15 @@
 							"script": {
 								"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
 								"exec": [
+									"var email_U1 = pm.environment.get(\"email_U1\");",
+									"var email = pm.environment.get(\"email\");",
+									"if(email_U1 === undefined){",
+									"    pm.environment.set(\"email\",email);",
+									"    pm.environment.set(\"password\",pm.environment.get(\"password\"));",
+									"}else{",
+									"    pm.environment.set(\"email\",email_U1);",
+									"    pm.environment.set(\"password\",pm.environment.get(\"password_U1\"));",
+									"}",
 									"// Use the CryptoJS",
 									"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
 									"",
@@ -2709,10 +2718,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&ids={{id_Kanban}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -2827,10 +2832,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&ids={{id_Kanban}}",
 							"protocol": "https",
@@ -2952,10 +2953,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&project_ids[]={{idProjectCreated}}&has_del=0",
 							"protocol": "https",
@@ -3081,10 +3078,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&pItem=20&fields=project_id,name,color,updated_date,created_date,id&project_ids[]={{idProjectCreated}}&minID=",
 							"protocol": "https",
@@ -3236,10 +3229,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=1&project_ids[]={{idProjectCreated}}&modifiedGTE={{ModifiedGTE}}",
 							"protocol": "https",
@@ -4078,10 +4067,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -4363,10 +4348,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE-0}}&fields=project_id,name,color,updated_date,created_date,id&has_del=0&project_ids[]={{idProjectCreated}}&minID=",
 							"protocol": "https",
@@ -4515,10 +4496,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE-0}}&pItem=20&fields=project_id,name,color,updated_date,created_date,id&project_ids[]={{idProjectCreated}}&minID=",
 							"protocol": "https",
@@ -4793,10 +4770,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&project_ids[]={{idProjectCreated}}&modifiedGTE={{modifiedGTE-Order}}",
 							"protocol": "https",
@@ -5735,10 +5708,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&project_ids[]={{idProjectCreated}}&has_del=1",
 							"protocol": "https",
@@ -5873,10 +5842,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=0&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -6131,10 +6096,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=1&minDelID={{minDellID}}&pItem=20&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -6256,10 +6217,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=1&minDelID={{minDellID}}&pItem=10&modifiedGTE={{modifiedGTE-1}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -6658,10 +6615,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?keyapi={{keyapi}}&has_del=0&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -6737,10 +6690,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=0&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",

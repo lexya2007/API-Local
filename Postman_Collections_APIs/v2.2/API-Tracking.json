@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a8425b18-44c4-4e43-9491-116a257fa1f8",
+		"_postman_id": "0fe2b5b1-0ac3-4472-a49d-a45477e70630",
 		"name": "API-Tracking Version 2.2",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,6 +13,15 @@
 					"script": {
 						"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
 						"exec": [
+							"var email_U1 = pm.environment.get(\"email_U1\");",
+							"var email = pm.environment.get(\"email\");",
+							"if(email_U1 === undefined){",
+							"    pm.environment.set(\"email\",email);",
+							"    pm.environment.set(\"password\",pm.environment.get(\"password\"));",
+							"}else{",
+							"    pm.environment.set(\"email\",email_U1);",
+							"    pm.environment.set(\"password\",pm.environment.get(\"password_U1\"));",
+							"}",
 							"// Use the CryptoJS",
 							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
 							"",
@@ -888,10 +897,6 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?",
 					"protocol": "https",
@@ -1799,10 +1804,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?fields=id,message_id,emails,status,subject,updated_date&modifiedGTE={{updated_date}}",
 					"protocol": "https",
@@ -2089,10 +2090,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?minID={{idNotReplied}}&pItem=50&fields=id,message_id,emails,status,subject,updated_date&modifiedGTE={{updated_date_0}}",
 					"protocol": "https",
@@ -2457,10 +2454,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?ids={{idReplied}},{{idWaiting}},{{idNotReplied}}&has_del=1",
 					"protocol": "https",
@@ -2601,10 +2594,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?has_del=1&modifiedGTE={{updated_date_2}}",
 					"protocol": "https",
@@ -2744,10 +2733,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?",
 					"protocol": "https",
@@ -3005,10 +2990,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?has_del=1&minDelID={{minDelID}}",
 					"protocol": "https",
@@ -3156,10 +3137,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?pItem=50&has_del=1&minDelID={{minDelID_2}}",
 					"protocol": "https",
@@ -3305,10 +3282,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?pItem=10&has_del=1&minDelID={{minDelID_3}}&modifiedGTE={{updated_date_delete}}",
 					"protocol": "https",
@@ -3449,10 +3422,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/tracking?",
 					"protocol": "https",

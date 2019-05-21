@@ -1,18 +1,14 @@
 #!/usr/bin/env bash
 
 #create variables
-environment=../Postman_environment/v2.2/environment_123Server.json
-
-#run script for each APIs
-
+environment=../Postman_environment/v2.2/environment_TestServer.json
 # Bi's scripts
-
-# users_collection=../Postman_Collections_APIs/v2.2/API-Users.json
+# users_collection=../Postman_Collections_APIs/v2.0/API-Users.json
 # echo "Collection: $users_collection"
 # echo "Environment: $environment"
 # newman run $users_collection -e $environment --insecure
 
-file_collection=../Postman_Collections_APIs/v2.2/API-File.json
+file_collection=../Postman_Collections_APIs/v2.0/API-File.json
 echo "Collection: $file_collection"
 echo "Environment: $environment"
 newman run $file_collection -e $environment --insecure
@@ -22,12 +18,12 @@ echo "Collection: $kanban_collection"
 echo "Environment: $environment"
 newman run $kanban_collection -e $environment --insecure
 
-objorder_collection=../Postman_Collections_APIs/v2.2/API-ObjOrder.json
+objorder_collection=../Postman_Collections_APIs/v2.0/API-ObjOrder.json
 echo "Collection: $objorder_collection"
 echo "Environment: $environment"
 newman run $objorder_collection -e $environment --insecure
 
-settingaccounts_collection=../Postman_Collections_APIs/v2.2/API-SettingAccounts.json
+settingaccounts_collection=../Postman_Collections_APIs/v2.0/API-SettingAccounts.json
 echo "Collection: $settingaccounts_collection"
 echo "Environment: $environment"
 newman run $settingaccounts_collection -e $environment --insecure
@@ -37,10 +33,11 @@ echo "Collection: $tracking_collection"
 echo "Environment: $environment"
 newman run $tracking_collection -e $environment --insecure
 
-trash_collection=../Postman_Collections_APIs/v2.2/API-Trash.json
+trash_collection=../Postman_Collections_APIs/v2.0/API-Trash.json
 echo "Collection: $trash_collection"
 echo "Environment: $environment"
 newman run $trash_collection -e $environment --insecure
+
 
 
 

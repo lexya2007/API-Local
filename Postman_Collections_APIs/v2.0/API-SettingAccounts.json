@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4de02e46-d0e2-4ecd-b138-d5738785e445",
+		"_postman_id": "3e36851f-8b57-496b-97af-82e15aaf5a97",
 		"name": "API - Setting Accounts Version 2.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,6 +13,15 @@
 					"script": {
 						"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
 						"exec": [
+							"var email_U1 = pm.environment.get(\"email_U1\");",
+							"var email = pm.environment.get(\"email\");",
+							"if(email_U1 === undefined){",
+							"    pm.environment.set(\"email\",email);",
+							"    pm.environment.set(\"password\",pm.environment.get(\"password\"));",
+							"}else{",
+							"    pm.environment.set(\"email\",email_U1);",
+							"    pm.environment.set(\"password\",pm.environment.get(\"password_U1\"));",
+							"}",
 							"// Use the CryptoJS",
 							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
 							"",
@@ -210,7 +219,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n        \"user_income\": \"test_api@gmail.com\",\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"test_api@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
+					"raw": "[\n    {\n        \"user_income\": \"automationqcflo@gmail.com\",\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"automationqcflo@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
 				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts.json?keyapi={{keyapi}}",
@@ -322,7 +331,117 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n        \"user_income\": \"test_api@yahoo.com\",\n        \"server_income\": \"imap.mail.yahoo.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.mail.yahoo.com\",\n        \"user_smtp\": \"test_api@yahoo.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://caldav.calendar.yahoo.com\",\n        \"server_path_caldav\": \"\\/dav\\/test_api@yahoo.com\\/Calendar\\/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 2,\n        \"account_sync\": \"{\\\"Email\\\":1,\\\"Calendar\\\":1}\",\n        \"auth_key\":0,\n        \"full_name\": \"Yahoo\",\n        \"description\": \"Yahoo - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
+					"raw": "[\n    {\n        \"user_income\": \"bibu001@yahoo.com\",\n        \"server_income\": \"imap.mail.yahoo.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.mail.yahoo.com\",\n        \"user_smtp\": \"bibu001@yahoo.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://caldav.calendar.yahoo.com\",\n        \"server_path_caldav\": \"\\/dav\\/bibu001@yahoo.com\\/Calendar\\/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 2,\n        \"account_sync\": \"{\\\"Email\\\":1,\\\"Calendar\\\":1}\",\n        \"auth_key\":0,\n        \"full_name\": \"Yahoo\",\n        \"description\": \"Yahoo - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts.json?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"setaccounts.json"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Setting Account - Create account with invalid value inputted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e42c0c6d-16fd-4f1d-af84-7864ea2c0d96",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var msgFailed = {",
+							"    collection:'API-SettingAccounts',",
+							"    title: 'Failed - Create Setting Account - Create account with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/setaccounts\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-SettingAccounts',",
+							"    title: 'Passed - Create Setting Account - Create account with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/setaccounts\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.error = \"Cannot create setting account with invalid value inputted!\";",
+							"        msg.description = dataResponse",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Allow to create setting account with invalid value inputted!\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n        \"user_income\": \"bibu001@yahoo.com\",\n        \"server_income\": \"imap.mail.yahoo.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.mail.yahoo.com\",\n        \"user_smtp\": \"bibu001@yahoo.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://caldav.calendar.yahoo.co12automationqcflo@gmail.automationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comm\",\n        \"server_path_caldav\": \"\\/dav\\/bibu001@yahoo.com\\/Calendar\\/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 2,\n        \"account_sync\": \"{\\\"Email\\\":1,\\\"Calendar\\\":1}\",\n        \"auth_key\":0,\n        \"full_name\": \"Yahoo\",\n        \"description\": \"Yahoo - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
 				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts.json?keyapi={{keyapi}}",
@@ -432,10 +551,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n        \"user_income\": null,\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"test_api@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
+					"raw": "[\n    {\n        \"user_income\": null,\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"automationqcflo@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -444,6 +563,12 @@
 					"path": [
 						"{{version}}",
 						"setaccounts"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -536,7 +661,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n        \n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"test_api@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
+					"raw": "[\n    {\n        \n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"automationqcflo@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
 				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts.json?keyapi={{keyapi}}",
@@ -646,7 +771,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n        \n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"test_api@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
+					"raw": "[\n    {\n        \n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"automationqcflo@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
 				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts.json?keyapi={{keyapi}}",
@@ -755,10 +880,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n        \"user_income\": 123,\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"test_api@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
+					"raw": "[\n    {\n        \"user_income\": 123,\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"automationqcflo@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts.json",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -766,7 +891,13 @@
 					"port": "{{port}}",
 					"path": [
 						"{{version}}",
-						"setaccounts.json"
+						"setaccounts"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -859,10 +990,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n        \"user_income\": \"api_test\",\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"test_api@gmail.com\",\n        \"port_smtp\": \"465\",\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
+					"raw": "[\n    {\n        \"user_income\": \"automationqcflo\",\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"automationqcflo@gmail.com\",\n        \"port_smtp\": \"465\",\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts.json",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -870,7 +1001,13 @@
 					"port": "{{port}}",
 					"path": [
 						"{{version}}",
-						"setaccounts.json"
+						"setaccounts"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -963,10 +1100,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n        \"user_income\": \"test_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"test_api@gmail.com\",\n        \"port_smtp\": \"465\",\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
+					"raw": "[\n    {\n        \"user_income\": \"test_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.comtest_api@gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"automationqcflo@gmail.com\",\n        \"port_smtp\": \"465\",\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/undefined/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"Dinh Nguyen\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n    }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts.json",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -974,7 +1111,13 @@
 					"port": "{{port}}",
 					"path": [
 						"{{version}}",
-						"setaccounts.json"
+						"setaccounts"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1070,7 +1213,7 @@
 					"raw": "[\n    {\n    \t\"user_income\":\"{{user_income_Yahoo}}\"\n        \n    },\n    {\n    \t\"user_income\":\"{{user_income_Yahoo}}\"\n        \n    }\n    \n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1079,6 +1222,12 @@
 					"path": [
 						"{{version}}",
 						"setaccounts"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1182,10 +1331,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n        \"useSSL_income\":1,\n        \"account_type\":2,\n        \"server_path_caldav\":\"\\/dav\\/{{user_income_random}}\\/Calendar\\/\",\n        \"auth_type_smtp\":0,\n        \"user_caldav\":\"{{user_income_random}}\",\n        \"server_caldav\":\"https://caldav.calendar.yahoo.com\",\n        \"user_income\":\"{{user_income_random}}\",\n        \"auth_key\":\"\",\n        \"user_smtp\":\"{{user_income_random}}\",\n        \"useSSL_smtp\":1,\n        \"port_caldav\":\"\",\n        \"auth_type\":0,\n        \"useKerberos_caldav\":0,\n        \"full_name\":\"\",\n        \"port_smtp\":\"465\",\n        \"port_income\":\"993\",\n        \"useSSL_caldav\":0,\n        \"ref\":\"55582AD2-0968-4E93-B963-F6E1C842F741\",\n        \"email_address\":\"thi.tran22@yahoo.com\",\n        \"description\":\"Yahoo\"\n    }\n]"
+					"raw": "[\n    {\n        \"useSSL_income\":1,\n        \"account_type\":2,\n        \"server_path_caldav\":\"\\/dav\\/bibu004@yahoo.com\\/Calendar\\/\",\n        \"auth_type_smtp\":0,\n        \"user_caldav\":\"bibu004@yahoo.com\",\n        \"server_caldav\":\"https://caldav.calendar.yahoo.com\",\n        \"user_income\":\"bibu004@yahoo.com\",\n        \"auth_key\":\"\",\n        \"user_smtp\":\"bibu004@yahoo.com\",\n        \"useSSL_smtp\":1,\n        \"port_caldav\":\"\",\n        \"auth_type\":0,\n        \"useKerberos_caldav\":0,\n        \"full_name\":\"\",\n        \"port_smtp\":\"465\",\n        \"port_income\":\"993\",\n        \"useSSL_caldav\":0,\n        \"ref\":\"55582AD2-0968-4E93-B963-F6E1C842F741\",\n        \"email_address\":\"bibu004@yahoo.com\",\n        \"description\":\"Yahoo\"\n    }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts.json",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1193,7 +1342,13 @@
 					"port": "{{port}}",
 					"path": [
 						"{{version}}",
-						"setaccounts.json"
+						"setaccounts"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1282,11 +1437,11 @@
 						"id": "ecb352fb-f477-42da-945c-00063a5b8bf8",
 						"exec": [
 							"var numberRandom = Math.floor(Math.random()*10000000);",
-							"for(var i=0;i<50;i++){",
-							"    pm.environment.set(\"user_income_random\"+i,\"api_test\"+numberRandom+i+\"@yahoo.com\");",
+							"var stringJson = \"\";",
+							"for(var i = 0; i< 50; i++){",
+							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"user_income\":\"bi_api'+i+'@123flo.com\",\"account_type\":2,\"description\":\"123 FLO ACCOUNT\" '+'}';",
 							"}",
-							"",
-							""
+							"pm.environment.set(\"CreateSettingAccount\", stringJson);"
 						],
 						"type": "text/javascript"
 					}
@@ -1307,10 +1462,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n    \t\"user_income\":\"{{user_income_random0}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random1}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random2}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random3}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random4}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random5}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random6}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random7}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random8}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random9}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random10}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random11}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random12}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random13}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random14}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random15}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random16}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random17}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random18}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random19}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random20}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random21}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random22}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random23}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random24}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random25}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random26}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random27}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random28}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random29}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random30}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random31}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random32}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random33}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random34}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random35}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random36}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random37}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random38}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random39}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random40}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random41}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random42}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random43}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random44}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random45}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random46}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random47}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random48}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    },\n    {\n    \t\"user_income\":\"{{user_income_random49}}\",\n        \"account_type\":2,\n        \"description\":\"Yahoo\"\n    }\n]"
+					"raw": "[\n    {{CreateSettingAccount}}\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1319,6 +1474,12 @@
 					"path": [
 						"{{version}}",
 						"setaccounts"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1414,12 +1575,8 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?fields=account_sync,id,created_date,updated_date,email_address,user_income",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&fields=account_sync,id,created_date,updated_date,email_address,user_income",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1441,10 +1598,6 @@
 							"disabled": true
 						},
 						{
-							"key": "fields",
-							"value": "account_sync,id,created_date,updated_date,email_address,user_income"
-						},
-						{
 							"key": "has_del",
 							"value": "",
 							"disabled": true
@@ -1463,6 +1616,14 @@
 							"key": "minDelID",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "account_sync,id,created_date,updated_date,email_address,user_income"
 						}
 					]
 				}
@@ -1561,12 +1722,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?pItem=20",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&pItem=20",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1603,13 +1760,17 @@
 							"disabled": true
 						},
 						{
-							"key": "pItem",
-							"value": "20"
-						},
-						{
 							"key": "minDelID",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "pItem",
+							"value": "20"
 						}
 					]
 				}
@@ -1706,12 +1867,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?ids={{idGoogle}}&fields=account_sync,id,created_date,updated_date,email_address,user_income",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?fields=account_sync,id,created_date,updated_date,email_address,user_income&keyapi={{keyapi}}&ids={{idGoogle}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1726,10 +1883,6 @@
 							"key": "modifiedGTE",
 							"value": "",
 							"disabled": true
-						},
-						{
-							"key": "ids",
-							"value": "{{idGoogle}}"
 						},
 						{
 							"key": "fields",
@@ -1754,6 +1907,14 @@
 							"key": "minDelID",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{idGoogle}}"
 						}
 					]
 				}
@@ -1860,12 +2021,8 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?minID={{idGoogle}}&pItem=10",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?pItem=10&keyapi={{keyapi}}&minID={{idGoogle}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1897,10 +2054,6 @@
 							"disabled": true
 						},
 						{
-							"key": "minID",
-							"value": "{{idGoogle}}"
-						},
-						{
 							"key": "pItem",
 							"value": "10"
 						},
@@ -1908,6 +2061,14 @@
 							"key": "minDelID",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{idGoogle}}"
 						}
 					]
 				}
@@ -2004,10 +2165,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[{\n\t\"id\":12743,\n\t\"user_income\":\"tu_qa1@abc.com\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n\t\"server_income\": \"mail.abc.com\",\n    \"port_income\": \"456\",\n    \"useSSL_income\": \"mail.abc.com\",\n    \"server_smtp\": \"mail.abc.com\",\n    \"user_smtp\": \"tu_qa1@abc.com\",\n    \"port_smtp\": \"123\",\n    \"server_caldav\": \"https://apidata.googleusercontent.com\",\n    \"server_path_caldav\": \"/caldav/v2/path/\",\n    \"full_name\": \"TEST API\",\n    \"description\": \"Description API\",\n    \"refresh_token\": \"\",\n    \"provider\": \"\",\n    \"icloud_user_id\": \"\",\n    \"user_caldav\": \"\",\n    \"email_address\": \"tu_qa1@abc.com\"\n}]"
+					"raw": "\n[{\n\t\"id\":12345,\n\t\"user_income\": \"automationqcflo@gmail.com\",\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"automationqcflo@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"API - SETTING ACCOUNTS\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"google account\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n}]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2017,6 +2178,125 @@
 						"{{version}}",
 						"setaccounts",
 						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Setting Account - Update setting account with invalid value inputted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "92b0c938-9acc-47d8-8ed5-9add4ac94728",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var msgFailed = {",
+							"    collection: \"API-SettingAccounts\",",
+							"    title: 'Failed - Update Setting Account - Update setting account with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/setaccounts/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API-SettingAccounts\",",
+							"    title: 'Passed - Update Setting Account - Update setting account with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/setaccounts/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.description = dataResponse;",
+							"        msg.error = \"Cannot update setting account with invalid value inputted\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Allow to update setting account with invalid value inputted\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\n\t\"id\":\"{{idGoogle}}\",\n\t\"user_income\": \"automationqcflo@gmail.com\",\n    \"server_income\": \"imap.gmail.com\",\n    \"port_income\": 993,\n    \"pass_income\":\"password\",\n    \"useSSL_income\": 1,\n    \"type_income\": 1,\n    \"server_smtp\": \"smtp.gmail.com\",\n    \"user_smtp\": \"automationqcflo@gmail.com\",\n    \"port_smtp\": 465,\n    \"pass_smtp\":\"password\",\n    \"useSSL_smtp\": 1,\n    \"auth_type_smtp\": 256,\n    \"server_caldav\":  \"https://apidata.googleusercontent.com\",\n    \"server_path_caldav\": \"/caldav/v2/\",\n    \"port_caldav\": 443,\n    \"useSSL_caldav\": 1,\n    \"useKerberos_caldav\": 0,\n    \"auth_type\": 256,\n    \"account_type\": 1,\n    \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n    \"auth_key\":0,\n    \"full_name\": \"API - SETTING ACCOUNTS\",\n    \"description\": \"12automationqcflo@gmail.automationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comm\",\n    \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n    \"provider\": \"\",\n    \"icloud_user_id\": \"\",\n    \"user_caldav\": \"\",\n    \"email_address\": null,\n    \"token_expire\": 0,\n    \"activated_push\": 0,\n    \"signature\": \"google account\",\n    \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n}]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"setaccounts",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2111,10 +2391,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[{\n\t\"id\":\"\",\n\t\"user_income\":\"tu_qa1@abc.com\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n\t\"server_income\": \"mail.abc.com\",\n    \"port_income\": \"456\",\n    \"useSSL_income\": \"mail.abc.com\",\n    \"server_smtp\": \"mail.abc.com\",\n    \"user_smtp\": \"tu_qa1@abc.com\",\n    \"port_smtp\": \"123\",\n    \"server_caldav\": \"https://apidata.googleusercontent.com\",\n    \"server_path_caldav\": \"/caldav/v2/path/\",\n    \"full_name\": \"TEST API\",\n    \"description\": \"Description API\",\n    \"refresh_token\": \"\",\n    \"provider\": \"\",\n    \"icloud_user_id\": \"\",\n    \"user_caldav\": \"\",\n    \"email_address\": \"tu_qa1@abc.com\"\n}]"
+					"raw": "[{\n\t\"id\":\"\",\n\t\"user_income\": \"automationqcflo@gmail.com\",\n    \"server_income\": \"imap.gmail.com\",\n    \"port_income\": 993,\n    \"pass_income\":\"password\",\n    \"useSSL_income\": 1,\n    \"type_income\": 1,\n    \"server_smtp\": \"smtp.gmail.com\",\n    \"user_smtp\": \"automationqcflo@gmail.com\",\n    \"port_smtp\": 465,\n    \"pass_smtp\":\"password\",\n    \"useSSL_smtp\": 1,\n    \"auth_type_smtp\": 256,\n    \"server_caldav\":  \"https://apidata.googleusercontent.com\",\n    \"server_path_caldav\": \"/caldav/v2/\",\n    \"port_caldav\": 443,\n    \"useSSL_caldav\": 1,\n    \"useKerberos_caldav\": 0,\n    \"auth_type\": 256,\n    \"account_type\": 1,\n    \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n    \"auth_key\":0,\n    \"full_name\": \"API - SETTING ACCOUNTS\",\n    \"description\": \"Google - Test API\",\n    \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n    \"provider\": \"\",\n    \"icloud_user_id\": \"\",\n    \"user_caldav\": \"\",\n    \"email_address\": null,\n    \"token_expire\": 0,\n    \"activated_push\": 0,\n    \"signature\": \"google account\",\n    \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n}]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2124,6 +2404,12 @@
 						"{{version}}",
 						"setaccounts",
 						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2219,10 +2505,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "\n[\n    {\n        \"user_income\":\"cong@gmail.com\",\n        \"pass_income\":\"123456\",\n        \"account_sync\":\"abc\"\n    }\n]"
+					"raw": "[{\n\t\"user_income\": \"automationqcflo@gmail.com\",\n    \"server_income\": \"imap.gmail.com\",\n    \"port_income\": 993,\n    \"pass_income\":\"password\",\n    \"useSSL_income\": 1,\n    \"type_income\": 1,\n    \"server_smtp\": \"smtp.gmail.com\",\n    \"user_smtp\": \"automationqcflo@gmail.com\",\n    \"port_smtp\": 465,\n    \"pass_smtp\":\"password\",\n    \"useSSL_smtp\": 1,\n    \"auth_type_smtp\": 256,\n    \"server_caldav\":  \"https://apidata.googleusercontent.com\",\n    \"server_path_caldav\": \"/caldav/v2/\",\n    \"port_caldav\": 443,\n    \"useSSL_caldav\": 1,\n    \"useKerberos_caldav\": 0,\n    \"auth_type\": 256,\n    \"account_type\": 1,\n    \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n    \"auth_key\":0,\n    \"full_name\": \"API - SETTING ACCOUNTS\",\n    \"description\": \"Google - Test API\",\n    \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n    \"provider\": \"\",\n    \"icloud_user_id\": \"\",\n    \"user_caldav\": \"\",\n    \"email_address\": null,\n    \"token_expire\": 0,\n    \"activated_push\": 0,\n    \"signature\": \"google account\",\n    \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n}]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2232,6 +2518,12 @@
 						"{{version}}",
 						"setaccounts",
 						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2326,10 +2618,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[{\n\t\"id\":\"{{idGoogle}}\",\n\t\"user_income\": \"\",\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"test_api@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"API - SETTING ACCOUNTS\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n}]"
+					"raw": "[{\n\t\"id\":\"{{idGoogle}}\",\n\t\"user_income\": \"\",\n    \"server_income\": \"imap.gmail.com\",\n    \"port_income\": 993,\n    \"pass_income\":\"password\",\n    \"useSSL_income\": 1,\n    \"type_income\": 1,\n    \"server_smtp\": \"smtp.gmail.com\",\n    \"user_smtp\": \"automationqcflo@gmail.com\",\n    \"port_smtp\": 465,\n    \"pass_smtp\":\"password\",\n    \"useSSL_smtp\": 1,\n    \"auth_type_smtp\": 256,\n    \"server_caldav\":  \"https://apidata.googleusercontent.com\",\n    \"server_path_caldav\": \"/caldav/v2/\",\n    \"port_caldav\": 443,\n    \"useSSL_caldav\": 1,\n    \"useKerberos_caldav\": 0,\n    \"auth_type\": 256,\n    \"account_type\": 1,\n    \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n    \"auth_key\":0,\n    \"full_name\": \"API - SETTING ACCOUNTS\",\n    \"description\": \"Google - Test API\",\n    \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n    \"provider\": \"\",\n    \"icloud_user_id\": \"\",\n    \"user_caldav\": \"\",\n    \"email_address\": null,\n    \"token_expire\": 0,\n    \"activated_push\": 0,\n    \"signature\": \"google account\",\n    \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n}]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2339,6 +2631,12 @@
 						"{{version}}",
 						"setaccounts",
 						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2433,10 +2731,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[{\n\t\"id\":\"{{idGoogle}}\",\n\t\"user_income\": 123,\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"test_api@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"API - SETTING ACCOUNTS\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n}]"
+					"raw": "[{\n\t\"id\":\"{{idGoogle}}\",\n\t\"user_income\": 123,\n    \"server_income\": \"imap.gmail.com\",\n    \"port_income\": 993,\n    \"pass_income\":\"password\",\n    \"useSSL_income\": 1,\n    \"type_income\": 1,\n    \"server_smtp\": \"smtp.gmail.com\",\n    \"user_smtp\": \"automationqcflo@gmail.com\",\n    \"port_smtp\": 465,\n    \"pass_smtp\":\"password\",\n    \"useSSL_smtp\": 1,\n    \"auth_type_smtp\": 256,\n    \"server_caldav\":  \"https://apidata.googleusercontent.com\",\n    \"server_path_caldav\": \"/caldav/v2/\",\n    \"port_caldav\": 443,\n    \"useSSL_caldav\": 1,\n    \"useKerberos_caldav\": 0,\n    \"auth_type\": 256,\n    \"account_type\": 1,\n    \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n    \"auth_key\":0,\n    \"full_name\": \"API - SETTING ACCOUNTS\",\n    \"description\": \"Google - Test API\",\n    \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n    \"provider\": \"\",\n    \"icloud_user_id\": \"\",\n    \"user_caldav\": \"\",\n    \"email_address\": null,\n    \"token_expire\": 0,\n    \"activated_push\": 0,\n    \"signature\": \"google account\",\n    \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n}]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2446,6 +2744,12 @@
 						"{{version}}",
 						"setaccounts",
 						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2541,10 +2845,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[{\n\t\"id\":\"{{idGoogle}}\",\n\t\"user_income\": \"test_api@gmail.com\",\n        \"server_income\": \"imap.gmail.com\",\n        \"port_income\": 993,\n        \"pass_income\":\"password\",\n        \"useSSL_income\": 1,\n        \"type_income\": 1,\n        \"server_smtp\": \"smtp.gmail.com\",\n        \"user_smtp\": \"test_api@gmail.com\",\n        \"port_smtp\": 465,\n        \"pass_smtp\":\"password\",\n        \"useSSL_smtp\": 1,\n        \"auth_type_smtp\": 256,\n    \t\"server_caldav\":  \"https://apidata.googleusercontent.com\",\n        \"server_path_caldav\": \"/caldav/v2/\",\n        \"port_caldav\": 443,\n        \"useSSL_caldav\": 1,\n        \"useKerberos_caldav\": 0,\n        \"auth_type\": 256,\n        \"account_type\": 1,\n        \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n        \"auth_key\":0,\n        \"full_name\": \"API - SETTING ACCOUNTS\",\n        \"description\": \"Google - Test API\",\n        \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n        \"provider\": \"\",\n        \"icloud_user_id\": \"\",\n        \"user_caldav\": \"\",\n        \"email_address\": null,\n        \"token_expire\": 0,\n        \"activated_push\": 0,\n        \"signature\": \"google account\",\n        \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n}]"
+					"raw": "[{\n\t\"id\":\"{{idGoogle}}\",\n\t\"user_income\": \"automationqcflo@gmail.com\",\n    \"server_income\": \"imap.gmail.com\",\n    \"port_income\": 993,\n    \"pass_income\":\"password\",\n    \"useSSL_income\": 1,\n    \"type_income\": 1,\n    \"server_smtp\": \"smtp.gmail.com\",\n    \"user_smtp\": \"automationqcflo@gmail.com\",\n    \"port_smtp\": 465,\n    \"pass_smtp\":\"password\",\n    \"useSSL_smtp\": 1,\n    \"auth_type_smtp\": 256,\n    \"server_caldav\":  \"https://apidata.googleusercontent.com\",\n    \"server_path_caldav\": \"/caldav/v2/\",\n    \"port_caldav\": 443,\n    \"useSSL_caldav\": 1,\n    \"useKerberos_caldav\": 0,\n    \"auth_type\": 256,\n    \"account_type\": 1,\n    \"account_sync\": \"{\\\"Email\\\":0,\\\"Calendar\\\":0}\",\n    \"auth_key\":0,\n    \"full_name\": \"API - SETTING ACCOUNTS\",\n    \"description\": \"Google - Test API\",\n    \"refresh_token\": \"1/Xhm5PtkTy9P9ogGTV-V6MXaDoeFVLrJA719O0AOC6D0\",\n    \"provider\": \"\",\n    \"icloud_user_id\": \"\",\n    \"user_caldav\": \"\",\n    \"email_address\": null,\n    \"token_expire\": 0,\n    \"activated_push\": 0,\n    \"signature\": \"google account\",\n    \"ref\": \"55582AD2-0968-4E93-B963-F6E1C842F741\"\n}]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2554,6 +2858,12 @@
 						"{{version}}",
 						"setaccounts",
 						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2654,12 +2964,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?modifiedGTE={{updated_date}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&modifiedGTE={{updated_date}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2670,10 +2976,6 @@
 						"setaccounts"
 					],
 					"query": [
-						{
-							"key": "modifiedGTE",
-							"value": "{{updated_date}}"
-						},
 						{
 							"key": "ids",
 							"value": "",
@@ -2693,6 +2995,14 @@
 							"key": "minDelID",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}"
 						}
 					]
 				}
@@ -2794,10 +3104,13 @@
 							"var count = Array_50idAccounts.length;",
 							"// convert Array to String",
 							"var idAccounts = Array_50idAccounts.toString();",
+							"var stringJson = \"\";",
 							"for(var i = 0; i<count; i++){",
 							"    var listIDAccount = idAccounts.split(\",\")[i];",
 							"    pm.environment.set(\"Accountid-\"+i,listIDAccount);",
-							"}"
+							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"id\":'+listIDAccount+',\"pass_income\":\"string hash RSA\",\"account_type\": 2,\"port_income\": \"456\",\"port_smtp\": \"123\",\"full_name\": \"TEST API - '+listIDAccount+'\" '+'}';",
+							"}",
+							"pm.environment.set(\"UpdateSettingAccount\", stringJson);"
 						],
 						"type": "text/javascript"
 					}
@@ -2818,10 +3131,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n\t{\n\t\"id\":\"{{Accountid-0}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-0}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-1}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-1}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-2}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-2}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-3}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-3}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-4}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-4}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-5}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-5}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-6}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-6}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-7}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-7}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-8}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-8}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-9}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-9}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-10}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-10}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-11}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-11}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-12}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-12}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-13}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-13}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-14}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-14}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-15}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-15}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-16}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-16}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-17}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-17}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-18}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-18}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-19}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-19}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-20}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-20}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-21}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-21}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-22}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-22}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-23}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-23}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-24}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-24}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-25}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-25}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-26}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-26}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-27}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-27}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-28}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-28}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-29}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-29}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-30}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-30}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-31}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-31}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-32}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-32}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-33}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-33}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-34}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-34}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-35}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-35}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-36}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-36}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-37}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-37}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-38}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-38}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-39}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-39}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-40}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-40}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-41}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-41}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-42}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-42}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-43}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-43}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-44}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-44}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-45}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-45}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-46}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-46}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-47}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-47}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-48}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-48}}\"\n\t},\n\t{\n\t\"id\":\"{{Accountid-49}}\",\n\t\"pass_income\":\"string hash RSA\",\n\t\"account_sync\":\"{\\\"Email Updated\\\":1,\\\"Calendar\\\":1}\",\n\t\"account_type\": 1,\n    \"port_income\": \"456\",\n    \"port_smtp\": \"123\",\n    \"full_name\": \"TEST API {{Accountid-49}}\"\n\t}\n]"
+					"raw": "[\n\t{{UpdateSettingAccount}}\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/update?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2831,6 +3144,12 @@
 						"{{version}}",
 						"setaccounts",
 						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2930,12 +3249,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?modifiedGTE={{updated_date_0}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&modifiedGTE={{updated_date_0}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2946,10 +3261,6 @@
 						"setaccounts"
 					],
 					"query": [
-						{
-							"key": "modifiedGTE",
-							"value": "{{updated_date_0}}"
-						},
 						{
 							"key": "ids",
 							"value": "",
@@ -2979,6 +3290,14 @@
 							"key": "minDelID",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date_0}}"
 						}
 					]
 				}
@@ -3079,12 +3398,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?modifiedGTE={{updated_date_0}}&fields=account_sync,id,created_date,updated_date,email_address,user_income&minID={{minID[29]}}&pItem=10",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&fields=account_sync,id,created_date,updated_date,email_address,user_income&minID={{minID[29]}}&pItem=10&modifiedGTE={{updated_date_0}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3096,22 +3411,12 @@
 					],
 					"query": [
 						{
-							"key": "modifiedGTE",
-							"value": "{{updated_date_0}}"
-						},
-						{
-							"key": "ids",
-							"value": "",
-							"disabled": true
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						},
 						{
 							"key": "fields",
 							"value": "account_sync,id,created_date,updated_date,email_address,user_income"
-						},
-						{
-							"key": "has_del",
-							"value": "",
-							"disabled": true
 						},
 						{
 							"key": "minID",
@@ -3122,9 +3427,23 @@
 							"value": "10"
 						},
 						{
+							"key": "ids",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "",
+							"disabled": true
+						},
+						{
 							"key": "minDelID",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date_0}}"
 						}
 					]
 				}
@@ -3231,7 +3550,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/{{idGoogle}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/{{idGoogle}}?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3241,6 +3560,12 @@
 						"{{version}}",
 						"setaccounts",
 						"{{idGoogle}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -3346,7 +3671,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/{{idYahoo}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/{{idYahoo}}?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3356,6 +3681,12 @@
 						"{{version}}",
 						"setaccounts",
 						"{{idYahoo}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -3464,12 +3795,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?ids={{idGoogle}},{{idYahoo}}&has_del=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&has_del=1&ids={{idGoogle}},{{idYahoo}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3486,17 +3813,9 @@
 							"disabled": true
 						},
 						{
-							"key": "ids",
-							"value": "{{idGoogle}},{{idYahoo}}"
-						},
-						{
 							"key": "fields",
 							"value": "account_sync,id,created_date,updated_date,email_address,user_income",
 							"disabled": true
-						},
-						{
-							"key": "has_del",
-							"value": "1"
 						},
 						{
 							"key": "minID",
@@ -3507,6 +3826,18 @@
 							"key": "minDelID",
 							"value": null,
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "ids",
+							"value": "{{idGoogle}},{{idYahoo}}"
 						}
 					]
 				}
@@ -3623,7 +3954,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/{{50idAccounts[]}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/{{50idAccounts[]}}?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3633,6 +3964,12 @@
 						"{{version}}",
 						"setaccounts",
 						"{{50idAccounts[]}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -3734,12 +4071,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?modifiedGTE={{updated_date_0}}&has_del=1&pItem=50&minDelID={{minDElID}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?has_del=1&pItem=50&minDelID={{minDElID}}&keyapi={{keyapi}}&modifiedGTE={{updated_date_0}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3750,10 +4083,6 @@
 						"setaccounts"
 					],
 					"query": [
-						{
-							"key": "modifiedGTE",
-							"value": "{{updated_date_0}}"
-						},
 						{
 							"key": "ids",
 							"value": "",
@@ -3780,6 +4109,14 @@
 						{
 							"key": "minDelID",
 							"value": "{{minDElID}}"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date_0}}"
 						}
 					]
 				}
@@ -3878,12 +4215,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?has_del=1&pItem=10&minDelID={{minDelID[29]}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?pItem=10&minDelID={{minDelID[29]}}&keyapi={{keyapi}}&has_del=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3905,10 +4238,6 @@
 							"disabled": true
 						},
 						{
-							"key": "has_del",
-							"value": "1"
-						},
-						{
 							"key": "minID",
 							"value": "",
 							"disabled": true
@@ -3920,6 +4249,14 @@
 						{
 							"key": "minDelID",
 							"value": "{{minDelID[29]}}"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
 						}
 					]
 				}
@@ -4015,12 +4352,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?fields=account_sync,id,created_date,updated_date,email_address,user_income",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&fields=account_sync,id,created_date,updated_date,email_address,user_income",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4042,10 +4375,6 @@
 							"disabled": true
 						},
 						{
-							"key": "fields",
-							"value": "account_sync,id,created_date,updated_date,email_address,user_income"
-						},
-						{
 							"key": "has_del",
 							"value": "",
 							"disabled": true
@@ -4064,6 +4393,14 @@
 							"key": "minDelID",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "account_sync,id,created_date,updated_date,email_address,user_income"
 						}
 					]
 				}
@@ -4171,7 +4508,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/{{allIDAccounts[]}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/{{allIDAccounts[]}}?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4181,6 +4518,12 @@
 						"{{version}}",
 						"setaccounts",
 						"{{allIDAccounts[]}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -4276,12 +4619,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?has_del=1&minDelID={{minDElID}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&minDelID={{minDElID}}&has_del=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4308,17 +4647,21 @@
 							"disabled": true
 						},
 						{
-							"key": "has_del",
-							"value": "1"
-						},
-						{
 							"key": "pItem",
 							"value": "1",
 							"disabled": true
 						},
 						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
 							"key": "minDelID",
 							"value": "{{minDElID}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
 						}
 					]
 				}
@@ -4422,7 +4765,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/0",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts/0?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4432,6 +4775,12 @@
 						"{{version}}",
 						"setaccounts",
 						"0"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -4459,6 +4808,10 @@
 							"pm.environment.unset(\"50idAccounts[]\");",
 							"pm.environment.unset(\"10idAccounts[]\");",
 							"pm.environment.unset(\"user_income_random\");",
+							"pm.environment.unset(\"UpdateSettingAccount\");",
+							"pm.environment.unset(\"CreateSettingAccount\");",
+							"",
+							"",
 							"for(var i = 0; i<50; i++){",
 							"    pm.environment.unset(\"user_income_random\"+i);",
 							"    pm.environment.unset(\"Accountid-\"+i);",
@@ -4479,12 +4832,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?fields=account_sync,id,created_date,updated_date,email_address,user_income",
+					"raw": "https://{{server}}:{{port}}/{{version}}/setaccounts?keyapi={{keyapi}}&fields=account_sync,id,created_date,updated_date,email_address,user_income",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4506,10 +4855,6 @@
 							"disabled": true
 						},
 						{
-							"key": "fields",
-							"value": "account_sync,id,created_date,updated_date,email_address,user_income"
-						},
-						{
 							"key": "has_del",
 							"value": "1",
 							"disabled": true
@@ -4523,6 +4868,14 @@
 							"key": "minDelID",
 							"value": "{{minDElID}}",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "account_sync,id,created_date,updated_date,email_address,user_income"
 						}
 					]
 				}

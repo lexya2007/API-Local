@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "dc7085f5-7b64-4aa1-9a47-f22b44c4ded6",
+		"_postman_id": "78b1c183-326a-4e87-aa8e-70e74b810432",
 		"name": "API-Trash Version 2.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,6 +13,15 @@
 					"script": {
 						"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
 						"exec": [
+							"var email_U1 = pm.environment.get(\"email_U1\");",
+							"var email = pm.environment.get(\"email\");",
+							"if(email_U1 === undefined){",
+							"    pm.environment.set(\"email\",email);",
+							"    pm.environment.set(\"password\",pm.environment.get(\"password\"));",
+							"}else{",
+							"    pm.environment.set(\"email\",email_U1);",
+							"    pm.environment.set(\"password\",pm.environment.get(\"password_U1\"));",
+							"}",
 							"// Use the CryptoJS",
 							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
 							"",
@@ -211,7 +220,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {   \n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -220,6 +229,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -315,7 +330,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"12abc\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -324,6 +339,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -418,7 +439,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":null,\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -427,6 +448,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -523,7 +550,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"123a\",\n            \"obj_type\":null,\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -532,6 +559,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -628,7 +661,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"email-1\",\n            \"obj_type\":\"EMAIL\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -637,6 +670,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -732,7 +771,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"canvas-1\",\n            \"obj_type\":\"CANVAS\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -741,6 +780,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -836,7 +881,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"history-1\",\n            \"obj_type\":\"HISTORY\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -845,6 +890,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -937,10 +988,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"vcard-1\",\n            \"obj_type\":\"VCARD\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
+					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"0AFD229E-1F91-4913-87C5-2BA8602D8F48\",\n            \"obj_type\":\"VCARD\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1554455333.5669641,\n            \"ref\":6\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -949,6 +1000,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1044,7 +1101,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"suggested_collection-1\",\n            \"obj_type\":\"SUGGESTED_COLLECTION\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1053,6 +1110,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1148,7 +1211,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"csFile-1\",\n            \"obj_type\":\"CSFILE\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1157,6 +1220,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1252,7 +1321,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"order-object-1\",\n            \"obj_type\":\"ORDER_OBJ\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1261,6 +1330,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1356,7 +1431,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"set-3rd-account\",\n            \"obj_type\":\"SET_3RD_ACC\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1365,6 +1440,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1457,10 +1538,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"trashs\": [{\n\t\t\"obj_type\": \"VEVENT\",\n\t\t\"obj_id\": \"0bcc0200-31bf-0137-0f75-005056030716\"\n\t}]\n}"
+					"raw": "{\n\t\"trashs\":[\n\t\t{\n\t\t\t\"obj_type\":\"VEVENT\",\n\t\t\t\"id\":\"\",\n\t\t\t\"obj_id\":\"A4729386-32A3-4EF2-887B-3E1C60575F55\",\n\t\t\t\"trash_time\":1554455310.292959,\n\t\t\t\"ref\":2\n\t\t}\n\t]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1469,6 +1550,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1564,7 +1651,7 @@
 					"raw": "{\n\t\"trashs\":[\n\t\t{\n\t\t\t\"obj_type\":\"VTODO\",\n\t\t\t\"id\":\"\",\n\t\t\t\"obj_id\":\"A81B9148-8874-4380-B197-96F9E938EE19\",\n\t\t\t\"trash_time\":1554455327.8329921,\n\t\t\t\"ref\":4\n\t\t}\n\t]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1573,6 +1660,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1665,10 +1758,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"trashs\": [{\n\t\t\"obj_type\": \"VJOURNAL\",\n\t\t\"obj_id\": \"9d2d42e3-1467-4bdf-8849-81998ed17993\"\n\t}]\n}"
+					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"241a52a7-d7c5-4e94-adf3-ffe90da0766a\",\n            \"obj_type\":\"VJOURNAL\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1554455333.5669641,\n            \"ref\":8\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1677,6 +1770,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1772,7 +1871,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"Vcalendar-1\",         \n            \"obj_type\":\"VCALENDAR\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1781,6 +1880,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1873,10 +1978,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"folder-1\",         \n            \"obj_type\":\"FOLDER\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
+					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"80094\",         \n            \"obj_type\":\"FOLDER\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1554455385.1215491,\n            \"ref\":14\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1885,6 +1990,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1980,7 +2091,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"link-1\",         \n            \"obj_type\":\"LINK\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1989,6 +2100,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2081,10 +2198,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"url-1\",         \n            \"obj_type\":\"URL\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
+					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"1037925\",         \n            \"obj_type\":\"URL\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1554455343.989552,\n            \"ref\":10\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2093,6 +2210,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2188,7 +2311,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"track-1\",         \n            \"obj_type\":\"TRACK\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2197,6 +2320,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2289,10 +2418,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"file-1\",         \n            \"obj_type\":\"FILE\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
+					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"99749\",         \n            \"obj_type\":\"FILE\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1554455349.224787,\n            \"ref\":12\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2301,6 +2430,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2396,7 +2531,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"trash-1\",         \n            \"obj_type\":\"TRASH\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2405,6 +2540,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2500,7 +2641,7 @@
 					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"Kanban-1\",         \n            \"obj_type\":\"KANBAN\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2509,6 +2650,123 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Trash - Create trash item with invalid value inputted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "05a37179-91b1-4a5c-a438-86c953a52446",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var msgFailed = {",
+							"    collection:'API-Trash',",
+							"    title: 'Failed - Create Trash - Create trash item with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/trash\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Trash',",
+							"    title: 'Passed - Create Trash - Create trash item with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/trash\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.description = dataResponse;",
+							"        msg.error = \"Cannot create trash item with invalid value inputted\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = dataResponse;",
+							"        msg.error = \"Allow to create trash item with invalid value inputted\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"Kanban-1\",         \n            \"obj_type\":\"12automationqcflo@gmail.automationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comm\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2603,10 +2861,14 @@
 					"script": {
 						"id": "2af82208-2f2d-4102-ac40-5d7d7224cc8c",
 						"exec": [
-							"for(var i = 0 ; i <50; i++){",
+							"var stringJson = \"\";",
+							"for(var i = 0; i< 50; i++){",
 							"    var id_trashed = \"item trashed - \"+i;",
 							"    pm.environment.set(\"id-\"+i,id_trashed)",
-							"}"
+							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"obj_id\":\"item trashed - '+i+'\",\"obj_type\":\"VTODO\",\"status\":1,\"sync_token\":0,\"trash_time\":1,\"ref\":1 '+'}';",
+							"}",
+							"pm.environment.set(\"CreateTrash\", stringJson);",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -2629,10 +2891,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"{{id-0}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-1}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-2}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-3}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-4}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-5}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-6}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-7}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-8}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-9}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-10}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-11}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-12}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-13}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-14}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-15}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-16}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-17}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-18}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-19}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-20}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-21}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-22}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-23}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-24}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-25}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-26}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-27}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-28}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-29}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-30}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-31}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-32}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-33}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-34}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-35}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-36}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-37}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-38}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-39}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-40}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-41}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-42}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-43}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-44}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-45}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-46}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-47}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-48}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-49}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
+					"raw": "{\n    \"trashs\":\n    [\n        {{CreateTrash}}\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2641,6 +2903,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2734,12 +3002,8 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash?",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2789,6 +3053,10 @@
 							"key": "has_del",
 							"value": "1",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						}
 					]
 				}
@@ -2874,12 +3142,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash?ids={{IDS}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}&ids={{IDS}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2901,10 +3165,6 @@
 							"disabled": true
 						},
 						{
-							"key": "ids",
-							"value": "{{IDS}}"
-						},
-						{
 							"key": "minID",
 							"value": "53526",
 							"disabled": true
@@ -2923,6 +3183,14 @@
 							"key": "minDelID",
 							"value": "1053666",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{IDS}}"
 						}
 					]
 				}
@@ -3018,12 +3286,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash?pItem=10&minID={{MinID}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}&minID={{MinID}}&pItem=10",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3040,17 +3304,9 @@
 							"disabled": true
 						},
 						{
-							"key": "pItem",
-							"value": "10"
-						},
-						{
 							"key": "ids",
 							"value": "325430",
 							"disabled": true
-						},
-						{
-							"key": "minID",
-							"value": "{{MinID}}"
 						},
 						{
 							"key": "modifiedGTE",
@@ -3066,6 +3322,18 @@
 							"key": "minDelID",
 							"value": "1053666",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{MinID}}"
+						},
+						{
+							"key": "pItem",
+							"value": "10"
 						}
 					]
 				}
@@ -3110,7 +3378,7 @@
 							"    msg = msgPassed;",
 							"    msg.status = 200;",
 							"    var count = json.data.length;",
-							"    if(count==15 ){",
+							"    if(count==15){",
 							"        msg.description=\"Get  15 Items Trashed - ModifiedGTE successful\";",
 							"        var id = [];",
 							"        for(var i = 0; i < count; i++){",
@@ -3159,12 +3427,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash?pItem=15&minID={{MinID}}&modifiedGTE={{ModifiedGTE1}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}&minID={{MinID}}&modifiedGTE={{ModifiedGTE1}}&pItem=15",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3181,21 +3445,9 @@
 							"disabled": true
 						},
 						{
-							"key": "pItem",
-							"value": "15"
-						},
-						{
 							"key": "ids",
 							"value": "325430",
 							"disabled": true
-						},
-						{
-							"key": "minID",
-							"value": "{{MinID}}"
-						},
-						{
-							"key": "modifiedGTE",
-							"value": "{{ModifiedGTE1}}"
 						},
 						{
 							"key": "modifiedLT",
@@ -3206,6 +3458,22 @@
 							"key": "minDelID",
 							"value": "1053666",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{MinID}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{ModifiedGTE1}}"
+						},
+						{
+							"key": "pItem",
+							"value": "15"
 						}
 					]
 				}
@@ -3532,6 +3800,112 @@
 			"response": []
 		},
 		{
+			"name": "Update Trash - Update with invalid value inputted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "58d7f85a-dd54-47a2-9a8d-ea9d79a4cbbf",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Trash',",
+							"    title: 'Failed - Update Trash - Update with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/trash/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Trash',",
+							"    title: 'Passed - Update Trash - Update with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/trash/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    if(dataResponse.includes(\"data_error\")){",
+							"        msg.error=\"Cannot update with invalid value inputted\";",
+							"        msg.description=dataResponse;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Allow to update with invalid value inputted\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"id\": \"{{idEmail}}\",\n        \"obj_id\":\"link-1\",         \n        \"obj_type\":\"12automationqcflo@gmail.automationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.com\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n \n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"trash",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Update Trash - Update with invalid type of id",
 			"event": [
 				{
@@ -3834,12 +4208,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash?modifiedGTE={{ModifiedGTE1}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}&modifiedGTE={{ModifiedGTE1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3871,10 +4241,6 @@
 							"disabled": true
 						},
 						{
-							"key": "modifiedGTE",
-							"value": "{{ModifiedGTE1}}"
-						},
-						{
 							"key": "modifiedLT",
 							"value": "1536200806",
 							"disabled": true
@@ -3883,6 +4249,14 @@
 							"key": "minDelID",
 							"value": "1053666",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{ModifiedGTE1}}"
 						}
 					]
 				}
@@ -3969,6 +4343,27 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4b05ec73-906f-4eb6-9dfd-99405e1c94c1",
+						"exec": [
+							"var Array_50idTrash = pm.environment.get(\"50_id_trash\");",
+							"var count = Array_50idTrash.length;",
+							"// convert Array to String",
+							"var idTrash = Array_50idTrash.toString();",
+							"var stringJson = \"\";",
+							"for(var i = 0; i< count; i++){",
+							"    var listIDTrash = idTrash.split(\",\")[i];",
+							"    // pm.environment.set(\"kanbanid-\"+i,listIDTrash);",
+							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"id\":'+listIDTrash+',\"obj_id\":\"123d\",\"obj_type\":\"VTODO\",\"status\":1,\"sync_token\":0,\"trash_time\":1,\"ref\":123123123123123123123123'+'}';",
+							"}",
+							"",
+							"pm.environment.set(\"UpdateTrash\", stringJson);"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -3983,7 +4378,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n    {\n    \t\"id\":\"{{id-0}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VTODO\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-1}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VEVENT\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-2}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"KANBAN\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-3}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VJOURNAL\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-4}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VCALENDAR\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-5}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"FOLDER\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-6}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"URL\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-7}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"TRACK\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-8}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"FILE\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-9}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VCARD\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-10}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VTODO\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-11}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VEVENT\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-12}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"KANBAN\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-13}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VJOURNAL\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-14}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VCALENDAR\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-15}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"FOLDER\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-16}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"URL\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-17}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"TRACK\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-18}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"FILE\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-19}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VCARD\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-20}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VTODO\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-21}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VEVENT\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-22}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"KANBAN\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-23}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VJOURNAL\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-24}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VCALENDAR\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-25}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"FOLDER\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-26}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"URL\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-27}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"TRACK\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-28}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"FILE\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-29}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VCARD\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-30}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VTODO\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-31}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VEVENT\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-32}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"KANBAN\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-33}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VJOURNAL\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-34}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VCALENDAR\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-35}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"FOLDER\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-36}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"URL\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-37}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"TRACK\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-38}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"FILE\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-39}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VCARD\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-40}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VTODO\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-41}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VEVENT\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-42}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"KANBAN\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-43}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VJOURNAL\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-44}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VCALENDAR\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-45}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"FOLDER\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-46}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"URL\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-47}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"TRACK\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-48}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"FILE\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    },\n    {\n    \t\"id\":\"{{id-49}}\",\n        \"obj_id\":\"123d\",         \n        \"obj_type\":\"VCARD\",\n        \"status\":1,\n        \"sync_token\":0,\n        \"trash_time\":1,\n        \"ref\":123123123123123123123123\n    }\n]"
+					"raw": "[\n    {{UpdateTrash}}\n]"
 				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/trash/update?keyapi={{keyapi}}",
@@ -4099,12 +4494,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash?modifiedGTE={{updated_date_0}}&has_del=0",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}&has_del=0&modifiedGTE={{updated_date_0}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4136,10 +4527,6 @@
 							"disabled": true
 						},
 						{
-							"key": "modifiedGTE",
-							"value": "{{updated_date_0}}"
-						},
-						{
 							"key": "modifiedLT",
 							"value": "1536200806",
 							"disabled": true
@@ -4150,8 +4537,16 @@
 							"disabled": true
 						},
 						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
 							"key": "has_del",
 							"value": "0"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date_0}}"
 						}
 					]
 				}
@@ -4241,7 +4636,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash/121",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/121?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4251,6 +4646,12 @@
 						"{{version}}",
 						"trash",
 						"121"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -4339,7 +4740,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash/{{IDS}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/{{IDS}}?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4349,6 +4750,12 @@
 						"{{version}}",
 						"trash",
 						"{{IDS}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -4434,12 +4841,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash?ids={{IDS}}&has_del=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}&has_del=1&ids={{IDS}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4459,10 +4862,6 @@
 							"key": "pItem",
 							"value": "10",
 							"disabled": true
-						},
-						{
-							"key": "ids",
-							"value": "{{IDS}}"
 						},
 						{
 							"key": "minID",
@@ -4485,8 +4884,16 @@
 							"disabled": true
 						},
 						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
 							"key": "has_del",
 							"value": "1"
+						},
+						{
+							"key": "ids",
+							"value": "{{IDS}}"
 						}
 					]
 				}
@@ -4593,7 +5000,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash/{{10_id_trash}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/{{10_id_trash}}?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4603,6 +5010,12 @@
 						"{{version}}",
 						"trash",
 						"{{10_id_trash}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -4695,12 +5108,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash?pItem=10&modifiedGTE={{ModifiedGTE1}}&has_del=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}&modifiedGTE={{ModifiedGTE1}}&has_del=1&pItem=10",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4717,10 +5126,6 @@
 							"disabled": true
 						},
 						{
-							"key": "pItem",
-							"value": "10"
-						},
-						{
 							"key": "ids",
 							"value": "325430",
 							"disabled": true
@@ -4729,10 +5134,6 @@
 							"key": "minID",
 							"value": "57702",
 							"disabled": true
-						},
-						{
-							"key": "modifiedGTE",
-							"value": "{{ModifiedGTE1}}"
 						},
 						{
 							"key": "modifiedLT",
@@ -4745,8 +5146,20 @@
 							"disabled": true
 						},
 						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{ModifiedGTE1}}"
+						},
+						{
 							"key": "has_del",
 							"value": "1"
+						},
+						{
+							"key": "pItem",
+							"value": "10"
 						}
 					]
 				}
@@ -4844,7 +5257,7 @@
 					"raw": "{\n\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4854,6 +5267,12 @@
 						"{{version}}",
 						"trash",
 						"0"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -4951,7 +5370,7 @@
 					"raw": "{\n    \"re_ids\": \"123\"\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4961,6 +5380,12 @@
 						"{{version}}",
 						"trash",
 						"0"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -5058,7 +5483,7 @@
 					"raw": "{\n    \"re_ids\": 123\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -5068,6 +5493,12 @@
 						"{{version}}",
 						"trash",
 						"0"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -5168,7 +5599,7 @@
 					"raw": "{\n    \"re_ids\": \"{{15_id_trash}}\"\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -5178,6 +5609,12 @@
 						"{{version}}",
 						"trash",
 						"0"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -5275,7 +5712,7 @@
 					"raw": "{\n    \"re_ids\": \"{{idEmail}}\"\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0?",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -5289,8 +5726,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}",
-							"disabled": true
+							"value": "{{keyapi}}"
 						}
 					]
 				}
@@ -5386,12 +5822,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash?",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -5441,6 +5873,10 @@
 							"key": "has_del",
 							"value": "1",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						}
 					]
 				}
@@ -5544,7 +5980,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash/{{id_all_trash}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/{{id_all_trash}}?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -5554,6 +5990,12 @@
 						"{{version}}",
 						"trash",
 						"{{id_all_trash}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -5570,7 +6012,7 @@
 							"var json = JSON.parse(responseBody);",
 							"var msgFailed = {",
 							"    collection:'API-Trash',",
-							"    title: 'Failed - Create Trash - Create 50 items trashed Pre-Test',",
+							"    title: 'Failed - Create Trash - Create 50 items trashed',",
 							"    endpoint: pm.environment.get('version')+\"/trash\",",
 							"    method: \"POST\",",
 							"    error: \"Has Error\",",
@@ -5579,7 +6021,7 @@
 							"};",
 							"var msgPassed = {",
 							"    collection:'API-Trash',",
-							"    title: 'Passed - Create Trash - Create 50 items trashed Pre-Test',",
+							"    title: 'Passed - Create Trash - Create 50 items trashed',",
 							"    endpoint: pm.environment.get('version')+\"/trash\",",
 							"    method: \"POST\",",
 							"    error: \"No Error\",",
@@ -5648,10 +6090,14 @@
 					"script": {
 						"id": "2af82208-2f2d-4102-ac40-5d7d7224cc8c",
 						"exec": [
-							"for(var i = 0 ; i <50; i++){",
+							"var stringJson = \"\";",
+							"for(var i = 0; i< 50; i++){",
 							"    var id_trashed = \"item trashed - \"+i;",
 							"    pm.environment.set(\"id-\"+i,id_trashed)",
-							"}"
+							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"obj_id\":\"item trashed - '+i+'\",\"obj_type\":\"VTODO\",\"status\":1,\"sync_token\":0,\"trash_time\":1,\"ref\":1 '+'}';",
+							"}",
+							"pm.environment.set(\"CreateTrash\", stringJson);",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -5674,10 +6120,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"trashs\":\n    [\n        {\n        \t\"obj_id\":\"{{id-0}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-1}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-2}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-3}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-4}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-5}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-6}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-7}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-8}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-9}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-10}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-11}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-12}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-13}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-14}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-15}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-16}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-17}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-18}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-19}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-20}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-21}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-22}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-23}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-24}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-25}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-26}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-27}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-28}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-29}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-30}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-31}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-32}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-33}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-34}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-35}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-36}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-37}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-38}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-39}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-40}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-41}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-42}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-43}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-44}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-45}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-46}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-47}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-48}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        },\n        {\n        \t\"obj_id\":\"{{id-49}}\",\n            \"obj_type\":\"VTODO\",\n            \"status\":1,\n            \"sync_token\":0,\n            \"trash_time\":1,\n            \"ref\":1\n        }\n    ]\n}"
+					"raw": "{\n    \"trashs\":\n    [\n        {{CreateTrash}}\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -5686,6 +6132,12 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -5794,7 +6246,7 @@
 					"raw": "{\n    \"re_ids\": \"{{50_id_trash}}\"\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0?",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/0?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -5808,8 +6260,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}",
-							"disabled": true
+							"value": "{{keyapi}}"
 						}
 					]
 				}
@@ -5836,6 +6287,8 @@
 							"pm.environment.unset(\"updated_date_0\");",
 							"pm.environment.unset(\"minID[29]\");",
 							"pm.environment.unset(\"minDell\");",
+							"pm.environment.unset(\"CreateTrash\");",
+							"pm.environment.unset(\"UpdateTrash\");",
 							"",
 							"for(var i = 0; i<50; i++){",
 							"    pm.environment.unset(\"id-\"+i);",
@@ -5857,12 +6310,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/trash?",
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -5912,6 +6361,10 @@
 							"key": "has_del",
 							"value": "1",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						}
 					]
 				}

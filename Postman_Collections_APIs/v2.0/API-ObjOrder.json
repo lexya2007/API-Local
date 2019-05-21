@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "52b6664e-9292-4631-b0bd-729f09dd813f",
+		"_postman_id": "22741945-2d99-4310-a8bd-0a5698667edb",
 		"name": "API - Obj Order Version 2.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,6 +13,15 @@
 					"script": {
 						"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
 						"exec": [
+							"var email_U1 = pm.environment.get(\"email_U1\");",
+							"var email = pm.environment.get(\"email\");",
+							"if(email_U1 === undefined){",
+							"    pm.environment.set(\"email\",email);",
+							"    pm.environment.set(\"password\",pm.environment.get(\"password\"));",
+							"}else{",
+							"    pm.environment.set(\"email\",email_U1);",
+							"    pm.environment.set(\"password\",pm.environment.get(\"password_U1\"));",
+							"}",
 							"// Use the CryptoJS",
 							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
 							"",
@@ -218,7 +227,7 @@
 					"raw": "[{\n        \"obj_id\": \"d67d64f4-2c66-4dbf-8405-bb31b5d8e4a1\"\n}, {\n        \"obj_id\": \"6039d27c-2f77-4f55-92d7-9d84e1a8812e\"\n}]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?objtype=2&returnRes=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?keyapi={{keyapi}}&returnRes=1&objtype=2",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -244,149 +253,18 @@
 							"key": "source_account",
 							"value": "11",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "returnRes",
+							"value": "1"
 						},
 						{
 							"key": "objtype",
 							"value": "2"
-						},
-						{
-							"key": "returnRes",
-							"value": "1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Order - Update object type = 1",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-ObjOder',",
-							"    title: 'Failed - Update Order - Update object type = 1',",
-							"    endpoint: pm.environment.get('version')+\"/objorder/update\",",
-							"    method: \"PUT\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-ObjOder',",
-							"    title: 'Passed - Update Order - Update object type = 1',",
-							"    endpoint: pm.environment.get('version')+\"/objorder/update\",",
-							"    method: \"PUT\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"",
-							"var msg;",
-							"if(statusResponse == 200){",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"    });",
-							"    var count = json.data.length;",
-							"    if(count===0){",
-							"        msg.error=\"Cannot update object order with type = 1\";",
-							"        msg.description=dataResponse;",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"Update object order with type = 1\";",
-							"        msg.description=dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"}",
-							"",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							""
-						],
-						"id": "2e115e5e-acd7-46d9-b314-cee3af6caa67",
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					},
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?objtype=1&returnRes=1",
-					"protocol": "https",
-					"host": [
-						"{{server}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{version}}",
-						"objorder",
-						"update"
-					],
-					"query": [
-						{
-							"key": "top",
-							"value": "1",
-							"disabled": true
-						},
-						{
-							"key": "bottom",
-							"value": "1",
-							"disabled": true
-						},
-						{
-							"key": "source_account",
-							"value": "11",
-							"disabled": true
-						},
-						{
-							"key": "objtype",
-							"value": "1"
-						},
-						{
-							"key": "returnRes",
-							"value": "1"
 						}
 					]
 				}
@@ -487,7 +365,7 @@
 					"raw": "[{\n        \"obj_id\": \"d67d64f4-2c66-4dbf-8405-bb31b5d8e4a1\"\n}, {\n        \"obj_id\": \"12automationqcflo@gmail.automationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.com\"\n}]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?objtype=2&returnRes=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?keyapi={{keyapi}}&returnRes=1&objtype=2",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -515,11 +393,154 @@
 							"disabled": true
 						},
 						{
-							"key": "objtype",
-							"value": "2"
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						},
 						{
 							"key": "returnRes",
+							"value": "1"
+						},
+						{
+							"key": "objtype",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Order - Update object type = 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2e115e5e-acd7-46d9-b314-cee3af6caa67",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-ObjOder',",
+							"    title: 'Failed - Update Order - Update object type = 1',",
+							"    endpoint: pm.environment.get('version')+\"/objorder/update\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-ObjOder',",
+							"    title: 'Passed - Update Order - Update object type = 1',",
+							"    endpoint: pm.environment.get('version')+\"/objorder/update\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    var count = json.data.length;",
+							"    if(count===0){",
+							"        msg.error=\"Cannot update object order with type = 1\";",
+							"        msg.description=dataResponse;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Update object order with type = 1\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n\n\t{ \n\t\t\"obj_id\":\"11\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"12\",\n\t\t\"source_account\":0\n\t}\n\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?keyapi={{keyapi}}&returnRes=1&objtype=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"objorder",
+						"update"
+					],
+					"query": [
+						{
+							"key": "top",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "bottom",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "source_account",
+							"value": "11",
+							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "returnRes",
+							"value": "1"
+						},
+						{
+							"key": "objtype",
 							"value": "1"
 						}
 					]
@@ -622,7 +643,7 @@
 					"raw": "[\n    {\n        \"obj_id\":\"71f77c16-6c9c-4a34-be17-829c29910cff\"\n    },\n    {\n        \"obj_id\":\"fa99b0e9-b08b-460a-bcd7-8b16baf005b4\"\n    }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?returnRes=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?keyapi={{keyapi}}&returnRes=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -648,6 +669,10 @@
 							"key": "source_account",
 							"value": "11",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						},
 						{
 							"key": "returnRes",
@@ -753,7 +778,7 @@
 					"raw": "[\n        {\n               \"source_account\":0\n        }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?objtype=2&returnRes=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?keyapi={{keyapi}}&returnRes=1&objtype=2",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -765,6 +790,14 @@
 						"update"
 					],
 					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "returnRes",
+							"value": "1"
+						},
 						{
 							"key": "bottom",
 							"value": "1",
@@ -778,10 +811,6 @@
 						{
 							"key": "objtype",
 							"value": "2"
-						},
-						{
-							"key": "returnRes",
-							"value": "1"
 						}
 					]
 				}
@@ -883,7 +912,7 @@
 					"raw": "[\n        {\n                \"source_account\":1\n        }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?returnRes=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?keyapi={{keyapi}}&returnRes=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -904,6 +933,10 @@
 							"key": "source_account",
 							"value": "11",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						},
 						{
 							"key": "returnRes",
@@ -1013,7 +1046,7 @@
 					"raw": "[\n\n\t{ \n\t\t\"obj_id\":\"1\",\n\t\t\"source_account\":1\n\t},\n\t{ \n\t\t\"obj_id\":\"2\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"3\",\n\t\t\"source_account\":1\n\t},\n\t{ \n\t\t\"obj_id\":\"4\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"5\",\n\t\t\"source_account\":1\n\t},\n\t{ \n\t\t\"obj_id\":\"6\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"7\",\n\t\t\"source_account\":1\n\t},\n\t{ \n\t\t\"obj_id\":\"8\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"9\",\n\t\t\"source_account\":1\n\t},\n\t{ \n\t\t\"obj_id\":\"10\",\n\t\t\"source_account\":0\n\t}\n\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?returnRes=1&objtype=2",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?keyapi={{keyapi}}&objtype=2&returnRes=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1025,14 +1058,6 @@
 						"update"
 					],
 					"query": [
-						{
-							"key": "returnRes",
-							"value": "1"
-						},
-						{
-							"key": "objtype",
-							"value": "2"
-						},
 						{
 							"key": "top",
 							"value": "1",
@@ -1047,6 +1072,18 @@
 							"key": "source_account",
 							"value": "11",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "objtype",
+							"value": "2"
+						},
+						{
+							"key": "returnRes",
+							"value": "1"
 						}
 					]
 				}
@@ -1136,12 +1173,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?fields=id,obj_type,obj_id,source_account,updated_date,order_number&modifiedGTE={{updatedTime-7}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?keyapi={{keyapi}}&modifiedGTE={{updatedTime-7}}&fields=id,obj_type,obj_id,source_account,updated_date,order_number",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1153,13 +1186,17 @@
 					],
 					"query": [
 						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updatedTime-7}}"
+						},
+						{
 							"key": "bottom",
 							"value": "1",
 							"disabled": true
-						},
-						{
-							"key": "fields",
-							"value": "id,obj_type,obj_id,source_account,updated_date,order_number"
 						},
 						{
 							"key": "pItem",
@@ -1167,8 +1204,8 @@
 							"disabled": true
 						},
 						{
-							"key": "modifiedGTE",
-							"value": "{{updatedTime-7}}"
+							"key": "fields",
+							"value": "id,obj_type,obj_id,source_account,updated_date,order_number"
 						}
 					]
 				}
@@ -1269,7 +1306,7 @@
 					"raw": "[\n\n\t{ \n\t\t\"obj_id\":\"11\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"12\",\n\t\t\"source_account\":0\n\t}\n\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?returnRes=1&objtype=2",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?keyapi={{keyapi}}&objtype=2&returnRes=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1281,14 +1318,6 @@
 						"update"
 					],
 					"query": [
-						{
-							"key": "returnRes",
-							"value": "1"
-						},
-						{
-							"key": "objtype",
-							"value": "2"
-						},
 						{
 							"key": "top",
 							"value": "1",
@@ -1303,6 +1332,18 @@
 							"key": "source_account",
 							"value": "11",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "objtype",
+							"value": "2"
+						},
+						{
+							"key": "returnRes",
+							"value": "1"
 						}
 					]
 				}
@@ -1391,12 +1432,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?fields=id,obj_type,obj_id,source_account,updated_date,order_number&modifiedGTE={{updatedTimeNewest}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?keyapi={{keyapi}}&modifiedGTE={{updatedTimeNewest}}&fields=id,obj_type,obj_id,source_account,updated_date,order_number",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1408,13 +1445,17 @@
 					],
 					"query": [
 						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updatedTimeNewest}}"
+						},
+						{
 							"key": "bottom",
 							"value": "1",
 							"disabled": true
-						},
-						{
-							"key": "fields",
-							"value": "id,obj_type,obj_id,source_account,updated_date,order_number"
 						},
 						{
 							"key": "pItem",
@@ -1422,8 +1463,8 @@
 							"disabled": true
 						},
 						{
-							"key": "modifiedGTE",
-							"value": "{{updatedTimeNewest}}"
+							"key": "fields",
+							"value": "id,obj_type,obj_id,source_account,updated_date,order_number"
 						}
 					]
 				}
@@ -1489,6 +1530,7 @@
 							"            msg.description=dataResponse;",
 							"        }",
 							"    }else{",
+							"        msg = msgFailed;",
 							"        msg.error = \"Response null data\";",
 							"        msg.description=dataResponse;",
 							"    }",
@@ -1526,12 +1568,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?bottom=1&objtype=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?keyapi={{keyapi}}&bottom=1&objtype=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1542,6 +1580,10 @@
 						"objorder"
 					],
 					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
 						{
 							"key": "bottom",
 							"value": "1"
@@ -1656,12 +1698,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?bottom=1&objtype=3",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?keyapi={{keyapi}}&bottom=1&objtype=3",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1672,6 +1710,10 @@
 						"objorder"
 					],
 					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
 						{
 							"key": "bottom",
 							"value": "1"
@@ -1786,12 +1828,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?bottom=1&objtype=4",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?keyapi={{keyapi}}&bottom=1&objtype=4",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1802,6 +1840,10 @@
 						"objorder"
 					],
 					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
 						{
 							"key": "bottom",
 							"value": "1"
@@ -1917,12 +1959,8 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?bottom=1&objtype=2",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?keyapi={{keyapi}}&bottom=1&objtype=2",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1933,6 +1971,10 @@
 						"objorder"
 					],
 					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
 						{
 							"key": "bottom",
 							"value": "1"
@@ -2045,7 +2087,7 @@
 					"raw": "{\n    \"objtype\": 2,\n    \"obj_ids\": 2\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2101,6 +2143,10 @@
 							"key": "minDelID",
 							"value": "141163",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						}
 					]
 				}
@@ -2210,7 +2256,7 @@
 					"raw": "{\n    \"objtype\": 2,\n    \"obj_ids\": \"3\"\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?pItem=2",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?keyapi={{keyapi}}&pItem=2",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2243,10 +2289,6 @@
 							"disabled": true
 						},
 						{
-							"key": "pItem",
-							"value": "2"
-						},
-						{
 							"key": "ids",
 							"value": "13074",
 							"disabled": true
@@ -2265,6 +2307,14 @@
 							"key": "minDelID",
 							"value": "141163",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "pItem",
+							"value": "2"
 						}
 					]
 				}
@@ -2370,7 +2420,7 @@
 					"raw": "{\n    \"objtype\": 2\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?pItem=5",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?keyapi={{keyapi}}&pItem=5",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2403,10 +2453,6 @@
 							"disabled": true
 						},
 						{
-							"key": "pItem",
-							"value": "5"
-						},
-						{
 							"key": "ids",
 							"value": "13074",
 							"disabled": true
@@ -2425,6 +2471,14 @@
 							"key": "minDelID",
 							"value": "141163",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "pItem",
+							"value": "5"
 						}
 					]
 				}
@@ -2530,7 +2584,7 @@
 					"raw": "{\n    \"objtype\": 2\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?modifiedGTE={{modifiedGTE_Search}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE_Search}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2573,10 +2627,6 @@
 							"disabled": true
 						},
 						{
-							"key": "modifiedGTE",
-							"value": "{{modifiedGTE_Search}}"
-						},
-						{
 							"key": "modifiedLT",
 							"value": "1547786717",
 							"disabled": true
@@ -2585,159 +2635,14 @@
 							"key": "minDelID",
 							"value": "141163",
 							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Search Object Order - with param obj_type = 2 - has_del 1 and pItem = 2",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "5db8a560-78da-4730-a721-befab297b71b",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"var msgFailed = {",
-							"    collection:'API-ObjOder',",
-							"    title: 'Failed - Search Object Order - with param obj_type = 2 - has_del 1 and pItem = 2',",
-							"    endpoint: pm.environment.get('version')+\"/objorder/search\",",
-							"    method: \"POST\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-ObjOder',",
-							"    title: 'Passed - Search Object Order - with param obj_type = 2 - has_del 1 and pItem = 2',",
-							"    endpoint: pm.environment.get('version')+\"/objorder/search\",",
-							"    method: \"POST\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg;",
-							"",
-							"if(statusResponse == 200){",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"    });",
-							"    var count = json.data_del.length;",
-							"    if(!dataResponse.includes(\"error\") && count == 2){",
-							"    msg.description=\"Search Object Order - with param obj_type = 2 - has_del 1 and pItem = 2 successful\";",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"Search Object Order - with param obj_type = 2 - has_del 1 and pItem = 2 not successful\";",
-							"        msg.description=dataResponse;",
-							"    }",
-							"    ",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"}",
-							"",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					},
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"objtype\": 2\n}"
-				},
-				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?has_del=1&objtype=2&pItem=2",
-					"protocol": "https",
-					"host": [
-						"{{server}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{version}}",
-						"objorder",
-						"search"
-					],
-					"query": [
-						{
-							"key": "has_del",
-							"value": "1"
 						},
 						{
-							"key": "fields",
-							"value": "id",
-							"disabled": true
-						},
-						{
-							"key": "objtype",
-							"value": "2"
-						},
-						{
-							"key": "obj_ids",
-							"value": "eff94a50-fabf-0136-ff05-005056030716",
-							"disabled": true
-						},
-						{
-							"key": "pItem",
-							"value": "2"
-						},
-						{
-							"key": "ids",
-							"value": "13074",
-							"disabled": true
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						},
 						{
 							"key": "modifiedGTE",
-							"value": "1547784396",
-							"disabled": true
-						},
-						{
-							"key": "modifiedLT",
-							"value": "1547786717",
-							"disabled": true
-						},
-						{
-							"key": "minDelID",
-							"value": "141163",
-							"disabled": true
+							"value": "{{modifiedGTE_Search}}"
 						}
 					]
 				}
@@ -2842,7 +2747,7 @@
 					"raw": "{\n    \"objtype\": 1\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?pItem=2",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?keyapi={{keyapi}}&pItem=2",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2875,10 +2780,6 @@
 							"disabled": true
 						},
 						{
-							"key": "pItem",
-							"value": "2"
-						},
-						{
 							"key": "ids",
 							"value": "13074",
 							"disabled": true
@@ -2897,6 +2798,14 @@
 							"key": "minDelID",
 							"value": "141163",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "pItem",
+							"value": "2"
 						}
 					]
 				}
@@ -3001,7 +2910,7 @@
 					"raw": "{\n    \"objtype\": 2\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?pItem=2",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?keyapi={{keyapi}}&pItem=2",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3034,10 +2943,6 @@
 							"disabled": true
 						},
 						{
-							"key": "pItem",
-							"value": "2"
-						},
-						{
 							"key": "ids",
 							"value": "13074",
 							"disabled": true
@@ -3056,6 +2961,14 @@
 							"key": "minDelID",
 							"value": "141163",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "pItem",
+							"value": "2"
 						}
 					]
 				}
@@ -3160,7 +3073,7 @@
 					"raw": "{\n    \"objtype\": 3\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?pItem=2",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?keyapi={{keyapi}}&pItem=2",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3193,10 +3106,6 @@
 							"disabled": true
 						},
 						{
-							"key": "pItem",
-							"value": "2"
-						},
-						{
 							"key": "ids",
 							"value": "13074",
 							"disabled": true
@@ -3215,6 +3124,14 @@
 							"key": "minDelID",
 							"value": "141163",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "pItem",
+							"value": "2"
 						}
 					]
 				}
@@ -3263,7 +3180,7 @@
 							"    });",
 							"    var count = json.data.length;",
 							"    if(count > 0){",
-							"        if(!dataResponse.includes(\"error\")){",
+							"        if(!dataResponse.includes(\"error\") && dataResponse.includes(\"item_card_order\")){",
 							"            msg.description=\"Search Object Order - with param obj_type = 4 - CANVAS successful\";",
 							"        }else{",
 							"            msg = msgFailed;",
@@ -3319,7 +3236,7 @@
 					"raw": "{\n    \"objtype\": 4\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?pItem=2",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?keyapi={{keyapi}}&pItem=2",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3352,10 +3269,6 @@
 							"disabled": true
 						},
 						{
-							"key": "pItem",
-							"value": "2"
-						},
-						{
 							"key": "ids",
 							"value": "13074",
 							"disabled": true
@@ -3374,6 +3287,14 @@
 							"key": "minDelID",
 							"value": "141163",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "pItem",
+							"value": "2"
 						}
 					]
 				}
@@ -3478,7 +3399,7 @@
 					"raw": "{\n    \"objtype\": \"4\"\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?pItem=2",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/search?keyapi={{keyapi}}&pItem=2",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3511,10 +3432,6 @@
 							"disabled": true
 						},
 						{
-							"key": "pItem",
-							"value": "2"
-						},
-						{
 							"key": "ids",
 							"value": "13074",
 							"disabled": true
@@ -3533,6 +3450,14 @@
 							"key": "minDelID",
 							"value": "141163",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "pItem",
+							"value": "2"
 						}
 					]
 				}
@@ -3627,7 +3552,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/123",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/123?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3637,6 +3562,12 @@
 						"{{version}}",
 						"objorder",
 						"123"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -3729,7 +3660,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/{{idItem1}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/{{idItem1}}?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3739,6 +3670,12 @@
 						"{{version}}",
 						"objorder",
 						"{{idItem1}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -3841,12 +3778,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?bottom=1&fields=id,obj_type,obj_id,source_account,updated_date,order_number",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?keyapi={{keyapi}}&bottom=1&fields=id,obj_type,obj_id,source_account,updated_date,order_number",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3857,6 +3790,10 @@
 						"objorder"
 					],
 					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
 						{
 							"key": "bottom",
 							"value": "1"
@@ -3971,7 +3908,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/{{id_all_order}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/{{id_all_order}}?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3981,6 +3918,12 @@
 						"{{version}}",
 						"objorder",
 						"{{id_all_order}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -4068,12 +4011,8 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?fields=id,obj_type,obj_id,source_account,updated_date,order_number&ids={{ids1}}&has_del=1&pItem=3",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?keyapi={{keyapi}}&fields=id,obj_type,obj_id,source_account,updated_date,order_number&ids={{ids1}}&has_del=1&pItem=3",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4085,9 +4024,8 @@
 					],
 					"query": [
 						{
-							"key": "bottom",
-							"value": "1",
-							"disabled": true
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						},
 						{
 							"key": "fields",
@@ -4104,6 +4042,11 @@
 						{
 							"key": "pItem",
 							"value": "3"
+						},
+						{
+							"key": "bottom",
+							"value": "1",
+							"disabled": true
 						}
 					]
 				}
@@ -4207,12 +4150,8 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?fields=id,obj_type,obj_id,source_account,updated_date,order_number&has_del=1&minDelID={{id_del_min}}&pItem=5",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?keyapi={{keyapi}}&fields=id,obj_type,obj_id,source_account,updated_date,order_number&has_del=1&minDelID={{id_del_min}}&pItem=5",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4224,9 +4163,8 @@
 					],
 					"query": [
 						{
-							"key": "bottom",
-							"value": "1",
-							"disabled": true
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						},
 						{
 							"key": "fields",
@@ -4243,6 +4181,11 @@
 						{
 							"key": "pItem",
 							"value": "5"
+						},
+						{
+							"key": "bottom",
+							"value": "1",
+							"disabled": true
 						}
 					]
 				}
@@ -4345,12 +4288,8 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?fields=id,obj_type,obj_id,source_account,updated_date,order_number&has_del=1&pItem=5&modifiedGTE={{GTE}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?keyapi={{keyapi}}&has_del=1&pItem=5&modifiedGTE={{GTE}}&fields=id,obj_type,obj_id,source_account,updated_date,order_number",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4362,22 +4301,12 @@
 					],
 					"query": [
 						{
-							"key": "bottom",
-							"value": "1",
-							"disabled": true
-						},
-						{
-							"key": "fields",
-							"value": "id,obj_type,obj_id,source_account,updated_date,order_number"
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						},
 						{
 							"key": "has_del",
 							"value": "1"
-						},
-						{
-							"key": "minDelID",
-							"value": "",
-							"disabled": true
 						},
 						{
 							"key": "pItem",
@@ -4386,6 +4315,20 @@
 						{
 							"key": "modifiedGTE",
 							"value": "{{GTE}}"
+						},
+						{
+							"key": "bottom",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,obj_type,obj_id,source_account,updated_date,order_number"
 						}
 					]
 				}
@@ -4439,12 +4382,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?bottom=1&fields=id,obj_type,obj_id,source_account,updated_date,order_number",
+					"raw": "https://{{server}}:{{port}}/{{version}}/objorder?keyapi={{keyapi}}&bottom=1&fields=id,obj_type,obj_id,source_account,updated_date,order_number",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4455,6 +4394,10 @@
 						"objorder"
 					],
 					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
 						{
 							"key": "bottom",
 							"value": "1"

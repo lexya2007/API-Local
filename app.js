@@ -77,7 +77,7 @@ app.post('/report', function(req, res) {
 });
 
 
-var port = 3000;
+var port = 3020;
 app.listen(port);
 console.log('Report service started on port %d ...!!', port);
 console.log("listening...\n.\n.\n");

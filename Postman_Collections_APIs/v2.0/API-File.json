@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "31d28e2c-be45-4208-9a54-894a8abe99c8",
+		"_postman_id": "cf8efece-20d4-4244-b770-96c7fa690e17",
 		"name": "API - File Version 2.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,6 +13,15 @@
 					"script": {
 						"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
 						"exec": [
+							"var email_U1 = pm.environment.get(\"email_U1\");",
+							"var email = pm.environment.get(\"email\");",
+							"if(email_U1 === undefined){",
+							"    pm.environment.set(\"email\",email);",
+							"    pm.environment.set(\"password\",pm.environment.get(\"password\"));",
+							"}else{",
+							"    pm.environment.set(\"email\",email_U1);",
+							"    pm.environment.set(\"password\",pm.environment.get(\"password_U1\"));",
+							"}",
 							"// Use the CryptoJS",
 							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
 							"",
@@ -106,1069 +115,19 @@
 					"mode": "raw",
 					"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
 				},
-				"url": "https://{{server}}:{{port}}/{{version}}/users/token.json"
-			},
-			"response": []
-		},
-		{
-			"name": "Upload - update a file",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Upload - update a file',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Upload - update a file',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text(); ",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg ;",
-							"if(statusResponse == 200){",
-							"    ",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    var description = json.description;",
-							"    if(description==\"Upload successful.\"){",
-							"        msg.description=description;",
-							"        pm.environment.set(\"clientID\",json.file.client_id);",
-							"        pm.environment.set(\"DateUploadFile\",json.file.updated_date);",
-							"        pm.environment.set(\"UID\",json.file.uid);",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"upload not successful\";",
-							"        msg.description=description;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"    ",
-							"}",
-							" ",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "token",
-						"value": "{{keyapi}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "./Postman_Collections_APIs/FilesForUpload/file.pdf"
-						}
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token.json",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token.json"
 					]
-				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
-			},
-			"response": []
-		},
-		{
-			"name": "Upload - update a file 1",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Upload - update a file 1',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Upload - update a file 1',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg ;",
-							"if(statusResponse == 200){",
-							"    ",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    var description = json.description;",
-							"    if(description==\"Upload successful.\"){",
-							"        msg.description= \"Upload file 1 successful\";",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"upload file not successful\";",
-							"        msg.description = dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"    ",
-							"}",
-							" ",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
 				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "./Postman_Collections_APIs/FilesForUpload/file1.pdf"
-						}
-					]
-				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
-			},
-			"response": []
-		},
-		{
-			"name": "Upload - update a file 2",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Upload - update a file 2',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Upload - update a file 2',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg ;",
-							"if(statusResponse == 200){",
-							"    ",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    var description = json.description;",
-							"    if(description==\"Upload successful.\"){",
-							"        msg.description= \"Upload file 2 successful\";",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"upload file not successful\";",
-							"        msg.description = dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"    ",
-							"}",
-							" ",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "./Postman_Collections_APIs/FilesForUpload/file2.csv"
-						}
-					]
-				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
-			},
-			"response": []
-		},
-		{
-			"name": "Upload - update a file 3",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Upload - update a file 3',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Upload - update a file 3',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg ;",
-							"if(statusResponse == 200){",
-							"    ",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    var description = json.description;",
-							"    if(description==\"Upload successful.\"){",
-							"        msg.description= \"Upload file 3 successful\";",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"upload file not successful\";",
-							"        msg.description = dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"    ",
-							"}",
-							" ",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "./Postman_Collections_APIs/FilesForUpload/file3.doc"
-						}
-					]
-				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
-			},
-			"response": []
-		},
-		{
-			"name": "Upload - update a file 4",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Upload - update a file 4',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Upload - update a file 4',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg ;",
-							"if(statusResponse == 200){",
-							"    ",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    var description = json.description;",
-							"    if(description==\"Upload successful.\"){",
-							"        msg.description= \"Upload file 4 successful\";",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"upload file not successful\";",
-							"        msg.description = dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"    ",
-							"}",
-							" ",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "./Postman_Collections_APIs/FilesForUpload/file4.png"
-						}
-					]
-				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
-			},
-			"response": []
-		},
-		{
-			"name": "Upload - update a file 5",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Upload - update a file 5',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Upload - update a file 5',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg ;",
-							"if(statusResponse == 200){",
-							"    ",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    var description = json.description;",
-							"    if(description==\"Upload successful.\"){",
-							"        msg.description= \"Upload file 5 successful\";",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"upload file not successful\";",
-							"        msg.description = dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"    ",
-							"}",
-							" ",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "./Postman_Collections_APIs/FilesForUpload/file5.jpg"
-						}
-					]
-				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
-			},
-			"response": []
-		},
-		{
-			"name": "Upload - update a file 6",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Upload - update a file 6',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Upload - update a file 6',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg ;",
-							"if(statusResponse == 200){",
-							"    ",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    var description = json.description;",
-							"    if(description==\"Upload successful.\"){",
-							"        msg.description= \"Upload file 6 successful\";",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"upload file not successful\";",
-							"        msg.description = dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"    ",
-							"}",
-							" ",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "./Postman_Collections_APIs/FilesForUpload/file6.mp3"
-						}
-					]
-				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
-			},
-			"response": []
-		},
-		{
-			"name": "Upload - update a file 7",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Upload - update a file 7',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Upload - update a file 7',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg ;",
-							"if(statusResponse == 200){",
-							"    ",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    var description = json.description;",
-							"    if(description==\"Upload successful.\"){",
-							"        msg.description= \"Upload file 7 successful\";",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"upload file not successful\";",
-							"        msg.description = dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"    ",
-							"}",
-							" ",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "./Postman_Collections_APIs/FilesForUpload/file7.xlsx"
-						}
-					]
-				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
-			},
-			"response": []
-		},
-		{
-			"name": "Upload - update a file 8",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Upload - update a file 8',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Upload - update a file 8',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg ;",
-							"if(statusResponse == 200){",
-							"    ",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    var description = json.description;",
-							"    if(description==\"Upload successful.\"){",
-							"        msg.description= \"Upload file 8 successful\";",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"upload file not successful\";",
-							"        msg.description = dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"    ",
-							"}",
-							" ",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "./Postman_Collections_APIs/FilesForUpload/file8.pdf"
-						}
-					]
-				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
-			},
-			"response": []
-		},
-		{
-			"name": "Upload - update a file 9",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Upload - update a file 9',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Upload - update a file 9',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"POST\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg ;",
-							"if(statusResponse == 200){",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    var description = json.description;",
-							"    if(description==\"Upload successful.\"){",
-							"        msg.description= \"Upload file 9 successful\";",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"upload file not successful\";",
-							"        msg.description = dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"    ",
-							"}",
-							" ",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							"",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "formdata",
-					"formdata": [
-						{
-							"key": "file",
-							"type": "file",
-							"src": "./Postman_Collections_APIs/FilesForUpload/file9.docx"
-						}
-					]
-				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
 			},
 			"response": []
 		},
@@ -1275,7 +234,1425 @@
 						}
 					]
 				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload - update a file",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Upload - update a file',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Upload - update a file',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text(); ",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var description = json.description;",
+							"    if(description==\"Upload successful.\"){",
+							"        msg.description=description;",
+							"        pm.environment.set(\"clientID\",json.file.client_id);",
+							"        pm.environment.set(\"DateUploadFile\",json.file.updated_date);",
+							"        pm.environment.set(\"UID\",json.file.uid);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"upload not successful\";",
+							"        msg.description=description;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"    ",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"value": "{{keyapi}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "../Postman_Collections_APIs/FilesForUpload/file.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get List File - Get a file uploaded",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e0b649d3-357f-41af-b625-249da38c8018",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Get List File - Get a file uploaded',",
+							"    endpoint: pm.environment.get('version')+\"/files\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Get List File - Get a file uploaded',",
+							"    endpoint: pm.environment.get('version')+\"/files\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var uid = pm.environment.get(\"UID\");",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    if(dataResponse.includes(\"files\") && uid == json.data[0].files.uid){",
+							"        msg.description=\"Get file updated successful\";",
+							"        pm.environment.set(\"id_1\",json.data[0].files.id-1);",
+							"        ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Get file updated not successful\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "{{keyapi}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&modifiedGTE={{DateUploadFile}}&fields=id,uid,filename,updated_date,client_id,ext&client_ids={{clientID}}&uids={{UID}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "obj_ids",
+							"value": "aa5bcede-017b-45f1-a6d4-16f85ab76957",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "140793",
+							"disabled": true
+						},
+						{
+							"key": "ref",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{DateUploadFile}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,uid,filename,updated_date,client_id,ext"
+						},
+						{
+							"key": "client_ids",
+							"value": "{{clientID}}"
+						},
+						{
+							"key": "uids",
+							"value": "{{UID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload - update a file 1",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Upload - update a file 1',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Upload - update a file 1',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var description = json.description;",
+							"    if(description==\"Upload successful.\"){",
+							"        msg.description= \"Upload file 1 successful\";",
+							"        ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"upload file not successful\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"    ",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "../Postman_Collections_APIs/FilesForUpload/file1.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload - update a file 2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Upload - update a file 2',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Upload - update a file 2',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var description = json.description;",
+							"    if(description==\"Upload successful.\"){",
+							"        msg.description= \"Upload file 2 successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"upload file not successful\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"    ",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "../Postman_Collections_APIs/FilesForUpload/file2.csv"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload - update a file 3",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Upload - update a file 3',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Upload - update a file 3',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var description = json.description;",
+							"    if(description==\"Upload successful.\"){",
+							"        msg.description= \"Upload file 3 successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"upload file not successful\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"    ",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "../Postman_Collections_APIs/FilesForUpload/file3.doc"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload - update a file 4",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Upload - update a file 4',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Upload - update a file 4',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var description = json.description;",
+							"    if(description==\"Upload successful.\"){",
+							"        msg.description= \"Upload file 4 successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"upload file not successful\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"    ",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "../Postman_Collections_APIs/FilesForUpload/file4.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload - update a file 5",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Upload - update a file 5',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Upload - update a file 5',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var description = json.description;",
+							"    if(description==\"Upload successful.\"){",
+							"        msg.description= \"Upload file 5 successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"upload file not successful\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"    ",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "../Postman_Collections_APIs/FilesForUpload/file5.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload - update a file 6",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Upload - update a file 6',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Upload - update a file 6',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var description = json.description;",
+							"    if(description==\"Upload successful.\"){",
+							"        msg.description= \"Upload file 6 successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"upload file not successful\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"    ",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "../Postman_Collections_APIs/FilesForUpload/file6.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload - update a file 7",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Upload - update a file 7',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Upload - update a file 7',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var description = json.description;",
+							"    if(description==\"Upload successful.\"){",
+							"        msg.description= \"Upload file 7 successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"upload file not successful\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"    ",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "../Postman_Collections_APIs/FilesForUpload/file7.xlsx"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload - update a file 8",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Upload - update a file 8',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Upload - update a file 8',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    ",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var description = json.description;",
+							"    if(description==\"Upload successful.\"){",
+							"        msg.description= \"Upload file 8 successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"upload file not successful\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"    ",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "../Postman_Collections_APIs/FilesForUpload/file8.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload - update a file 9",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9dcec43-86c7-46d2-a9e2-1cbb3793c411",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Upload - update a file 9',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Upload - update a file 9',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var description = json.description;",
+							"    if(description==\"Upload successful.\"){",
+							"        msg.description= \"Upload file 9 successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"upload file not successful\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"    ",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "../Postman_Collections_APIs/FilesForUpload/file9.docx"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -1367,11 +1744,29 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "./Postman_Collections_APIs/FilesForUpload/file_app_FLOM.dmg"
+							"src": "../Postman_Collections_APIs/FilesForUpload/file_app_FLOM.dmg"
 						}
 					]
 				},
-				"url": "https://{{server}}:{{port}}/{{version}}/files/upload"
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
 			},
 			"response": []
 		},
@@ -1467,7 +1862,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files?minID=-1&keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&fields=id,uid,filename,updated_date,client_id,ext&minID={{id_1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1480,26 +1875,22 @@
 					"query": [
 						{
 							"key": "uids",
-							"value": "fba885dd-dca4-4e4e-8cd2-659942ec034b",
+							"value": "1f20bb8f-ddb3-41e7-918e-cbd7e63f5231",
 							"disabled": true
 						},
 						{
 							"key": "ids",
-							"value": "3020",
+							"value": "",
 							"disabled": true
 						},
 						{
-							"key": "minID",
-							"value": "-1"
-						},
-						{
 							"key": "pItem",
-							"value": "1",
+							"value": "",
 							"disabled": true
 						},
 						{
 							"key": "modifiedGTE",
-							"value": "123",
+							"value": "{{DateUploadFile}}",
 							"disabled": true
 						},
 						{
@@ -1508,18 +1899,13 @@
 							"disabled": true
 						},
 						{
-							"key": "fields",
-							"value": "id",
-							"disabled": true
-						},
-						{
 							"key": "has_del",
-							"value": "1",
+							"value": "",
 							"disabled": true
 						},
 						{
 							"key": "minDelID",
-							"value": "194581",
+							"value": "",
 							"disabled": true
 						},
 						{
@@ -1534,163 +1920,20 @@
 						},
 						{
 							"key": "obj_ids",
-							"value": "1",
+							"value": "",
 							"disabled": true
 						},
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get List File - Get file updated",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "e0b649d3-357f-41af-b625-249da38c8018",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Get List File - Get file updated',",
-							"    endpoint: pm.environment.get('version')+\"/files\",",
-							"    method: \"GET\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Get List File - Get file updated',",
-							"    endpoint: pm.environment.get('version')+\"/files\",",
-							"    method: \"GET\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg;",
-							"if(statusResponse == 200){",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    if(dataResponse.includes(\"files\")){",
-							"        msg.description=\"Get file updated successful\";",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"Get file updated not successful\";",
-							"        msg.description=dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"}",
-							"",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "token",
-						"value": "{{keyapi}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files?uids={{UID}}&modifiedGTE={{DateUploadFile}}&client_ids={{clientID}}",
-					"protocol": "https",
-					"host": [
-						"{{server}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{version}}",
-						"files"
-					],
-					"query": [
-						{
-							"key": "uids",
-							"value": "{{UID}}"
-						},
-						{
-							"key": "ids",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "minID",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "pItem",
-							"value": "1",
-							"disabled": true
-						},
-						{
-							"key": "modifiedGTE",
-							"value": "{{DateUploadFile}}"
 						},
 						{
 							"key": "fields",
-							"value": "id,uid,filename,updated_date,client_id,ext",
-							"disabled": true
+							"value": "id,uid,filename,updated_date,client_id,ext"
 						},
 						{
-							"key": "has_del",
-							"value": "1",
-							"disabled": true
-						},
-						{
-							"key": "client_ids",
-							"value": "{{clientID}}"
-						},
-						{
-							"key": "obj_ids",
-							"value": "aa5bcede-017b-45f1-a6d4-16f85ab76957",
-							"disabled": true
-						},
-						{
-							"key": "minDelID",
-							"value": "140793",
-							"disabled": true
-						},
-						{
-							"key": "ref",
-							"value": "",
-							"disabled": true
+							"key": "minID",
+							"value": "{{id_1}}"
 						}
 					]
 				}
@@ -1787,7 +2030,7 @@
 					"raw": "[\n    {\n        \"ext\": \".jpg\",\n        \"filename\": \"an ninh mang.jpg\",\n        \"local_path\": \"\",\n        \"source\":0,\n        \"url\":\"day la cai url\",\n        \"obj_id\": \"012345\"\n    }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/update",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/update?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1797,6 +2040,12 @@
 						"{{version}}",
 						"files",
 						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1892,7 +2141,7 @@
 					"raw": "[\n    {\n        \"ext\": \".jpg\",\n        \"uid\":\"\",\n        \"filename\": \"an ninh mang.jpg\",\n        \"local_path\": \"\",\n        \"source\":0,\n        \"url\":\"day la cai url\",\n        \"obj_id\": \"012345\"\n    }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/update",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/update?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1902,6 +2151,12 @@
 						"{{version}}",
 						"files",
 						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -1997,7 +2252,7 @@
 					"raw": "[\n    {\n        \"ext\": \".jpg\",\n        \"filename\": \"an ninh mang.jpg\",\n        \"local_path\": \"\",\n        \"source\":0,\n        \"uid\":\"123\",\n        \"url\":\"day la cai url\",\n        \"obj_id\": \"012345\"\n    }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/update",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/update?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2007,6 +2262,12 @@
 						"{{version}}",
 						"files",
 						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2136,7 +2397,7 @@
 					"raw": "[\n    {\n    \t\"uid\": \"{{UID}}\",\n        \"filename\": \"{{update_filename}}\",\n        \"local_path\": \"{{update_local_path}}\",\n        \"source\": 0,\n        \"url\": \"{{update_url}}\",\n        \"obj_id\": 1,\n        \"obj_type\": \"{{update_obj_type}}\",\n        \"client_id\": \"{{update_client_id}}\"\n    }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/update",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/update?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2146,6 +2407,145 @@
 						"{{version}}",
 						"files",
 						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update File - Update file with invalid value inputted",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f91aed97-9b39-49bc-bf8d-9659dc6332f3",
+						"exec": [
+							"",
+							"pm.environment.set(\"update_filename\",\"Update file\");",
+							"pm.environment.set(\"update_local_path\",\"Download\");",
+							"pm.environment.set(\"update_url\",\"https://floware.com\");",
+							"pm.environment.set(\"update_obj_type\",\"VTODO\");",
+							"pm.environment.set(\"update_client_id\",\"f147a173-0933-44c4-96dd-2f4e2edb5fc7\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "56543cbe-ea0f-48d1-a848-d1565ebb8b85",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Update File - Update file with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Update File - Update file with invalid value inputted',",
+							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var txt2 = pm.environment.get(\"update_filename\");",
+							"var txt3 = pm.environment.get(\"update_local_path\");",
+							"var txt4 = pm.environment.get(\"update_url\");",
+							"var txt5 = pm.environment.get(\"update_obj_type\");",
+							"var txt6 = pm.environment.get(\"update_client_id\");",
+							"",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    if(dataResponse.includes(\"error\")){",
+							"        msg.error=\"Cannot update file with invalid value inputted\";",
+							"        msg.description=dataResponse;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error=\"Allow to update file with invalid value inputted\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{keyapi}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n    {\n    \t\"uid\": \"{{UID}}\",\n        \"filename\": \"{{update_filename}}\",\n        \"local_path\": \"{{update_local_path}}\",\n        \"source\": 0,\n        \"url\": \"{{update_url}}\",\n        \"obj_id\": 1,\n        \"obj_type\": \"{{update_obj_type}}\",\n        \"client_id\": \"#12automationqcflo@gmail.automationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.com\"\n    }\n]"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/update?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"update"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2243,7 +2643,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files?uids={{UID}}&modifiedGTE={{DateUploadFile}}&client_ids={{update_client_id}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&modifiedGTE={{DateUploadFile}}&fields=id,uid,filename,updated_date,client_id,ext&client_ids={{update_client_id}}&uids={{UID}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2254,10 +2654,6 @@
 						"files"
 					],
 					"query": [
-						{
-							"key": "uids",
-							"value": "{{UID}}"
-						},
 						{
 							"key": "ids",
 							"value": "3003",
@@ -2274,22 +2670,9 @@
 							"disabled": true
 						},
 						{
-							"key": "modifiedGTE",
-							"value": "{{DateUploadFile}}"
-						},
-						{
-							"key": "fields",
-							"value": "id,uid,filename,updated_date,client_id,ext",
-							"disabled": true
-						},
-						{
 							"key": "has_del",
 							"value": "1",
 							"disabled": true
-						},
-						{
-							"key": "client_ids",
-							"value": "{{update_client_id}}"
 						},
 						{
 							"key": "obj_ids",
@@ -2305,6 +2688,26 @@
 							"key": "ref",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{DateUploadFile}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,uid,filename,updated_date,client_id,ext"
+						},
+						{
+							"key": "client_ids",
+							"value": "{{update_client_id}}"
+						},
+						{
+							"key": "uids",
+							"value": "{{UID}}"
 						}
 					]
 				}
@@ -2347,16 +2750,14 @@
 							"if(statusResponse == 200){",
 							"    msg = msgPassed;",
 							"    msg.status = 200;",
-							"    try{",
-							"        json = JSON.parse(responseBody);",
-							"        if(json.error === undefined){",
-							"            msg.description=\"Download file successful\";",
-							"        }else{",
-							"            msg = msgFailed;",
-							"            msg.error = \"Download file failed\";",
-							"            msg.description=json.description;",
+							"    if(dataResponse.includes(\"Download failed, find not found\")){",
+							"        var json = JSON.parse(responseBody);",
+							"        msg = msgFailed;",
+							"        msg.error = \"Download file failed\nBug: https://floware.atlassian.net/browse/FB-46\";",
+							"        msg.description=json.description;",
+							"    }else{",
+							"        msg.description=\"Download file successful\";",
 							"    }",
-							"    }catch(e){}",
 							"}else  {",
 							"    msg = msgFailed;",
 							"    msg.status = statusResponse;",
@@ -2397,7 +2798,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/download?uid={{UID}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/download?keyapi={{keyapi}}&uid={{UID}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2409,6 +2810,10 @@
 						"download"
 					],
 					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
 						{
 							"key": "uid",
 							"value": "{{UID}}"
@@ -2455,12 +2860,12 @@
 							"    var count = json.data.length;",
 							"    msg = msgPassed;",
 							"    msg.status = 200;",
-							"    if(count > 0){",
+							"    if(count === 0){",
 							"        msg.error = \"Cannot delete file with invalid uid\";",
 							"        msg.description=dataResponse;",
 							"    }else{",
-							"        msg.error = \"Response null data\";",
-							"        msg.description = dataResponse;",
+							"        msg = msgFailed;",
+							"        msg.description=dataResponse;",
 							"    }",
 							"}else  {",
 							"    msg = msgFailed;",
@@ -2502,7 +2907,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/0a123czxczxc",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/0a123?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2511,7 +2916,13 @@
 					"path": [
 						"{{version}}",
 						"files",
-						"0a123czxczxc"
+						"0a123"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2601,7 +3012,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/{{UID}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/{{UID}}?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2611,6 +3022,171 @@
 						"{{version}}",
 						"files",
 						"{{UID}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get List File - Get Change - 1 file deleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e0b649d3-357f-41af-b625-249da38c8018",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Get List File - Get Change - 1 file deleted',",
+							"    endpoint: pm.environment.get('version')+\"/files\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Get List File - Get Change - 1 file deleted',",
+							"    endpoint: pm.environment.get('version')+\"/files\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var idFile = pm.environment.get(\"item_id\");",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"",
+							"    if(dataResponse.includes(\"data_del\") && json.data_del[0].deleted_item.item_id == idFile){",
+							"        msg.description=\"Get a file deleted correctly\";",
+							"        pm.environment.set(\"ModifiedGTE_1\",json.data_del[0].deleted_item.updated_date);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Get a file deleted not correctly\";",
+							"        msg.description = dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files?has_del=1&ids={{item_id}}&keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files"
+					],
+					"query": [
+						{
+							"key": "uids",
+							"value": "067e2280-0e11-4c05-a395-da7b029b6284",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,uid,filename,updated_date,client_id,ext",
+							"disabled": true
+						},
+						{
+							"key": "client_ids",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "obj_ids",
+							"value": "aa5bcede-017b-45f1-a6d4-16f85ab76957",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "ref",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "ids",
+							"value": "{{item_id}}"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2710,7 +3286,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files?minID=-1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&fields=id,uid,filename,updated_date,client_id,ext&minID={{id_1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2732,10 +3308,6 @@
 							"disabled": true
 						},
 						{
-							"key": "minID",
-							"value": "-1"
-						},
-						{
 							"key": "pItem",
 							"value": "",
 							"disabled": true
@@ -2748,11 +3320,6 @@
 						{
 							"key": "modifiedLT",
 							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "fields",
-							"value": "id,uid,filename,updated_date,client_id,ext",
 							"disabled": true
 						},
 						{
@@ -2779,6 +3346,18 @@
 							"key": "obj_ids",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,uid,filename,updated_date,client_id,ext"
+						},
+						{
+							"key": "minID",
+							"value": "{{id_1}}"
 						}
 					]
 				}
@@ -2786,7 +3365,92 @@
 			"response": []
 		},
 		{
-			"name": "Delete File - Delete all files updated",
+			"name": "Delete File - Delete all files uploaded",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f22c05e2-ffcf-44ca-832e-4495952b84a3",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var msgFailed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Failed - Delete File - Delete all files uploaded',",
+							"    endpoint: pm.environment.get('version')+\"/files\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-FILE',",
+							"    title: 'Passed - Delete File - Delete all files uploaded',",
+							"    endpoint: pm.environment.get('version')+\"/files\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    if(!dataResponse.includes(\"data_error\")){",
+							"        var count = json.data.length;",
+							"        // convert Array to String",
+							"        for(var i = 0; i < count; i++){",
+							"            var uid = pm.environment.get(\"uidAllFiles\").toString();",
+							"            var listUID = uid.split(\",\")[i];",
+							"            var idAccount = json.data[i].id;",
+							"            if(listUID === idAccount){",
+							"                msg.description = \"Delete all files uploaded successful.\";",
+							"            }else{",
+							"                msg = msgFailed;",
+							"                msg.error = \"Not found filed uploaded to delete\";",
+							"                msg.description=\"Delete all files uploaded not successful\";",
+							"                break;",
+							"        }",
+							"    }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Not found item to delete\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "DELETE",
 				"header": [
@@ -2801,7 +3465,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/{{uidAllFiles}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/{{uidAllFiles}}?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2811,6 +3475,12 @@
 						"{{version}}",
 						"files",
 						"{{uidAllFiles}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
 					]
 				}
 			},
@@ -2904,7 +3574,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files?uids={{item_id}}&has_del=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&modifiedGTE={{ModifiedGTE_1}}&has_del=1&uids={{item_id}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2915,10 +3585,6 @@
 						"files"
 					],
 					"query": [
-						{
-							"key": "uids",
-							"value": "{{item_id}}"
-						},
 						{
 							"key": "ids",
 							"value": "171664",
@@ -2935,18 +3601,9 @@
 							"disabled": true
 						},
 						{
-							"key": "modifiedGTE",
-							"value": "{{DateUploadFile}}",
-							"disabled": true
-						},
-						{
 							"key": "fields",
 							"value": "id,uid,filename,updated_date,client_id,ext",
 							"disabled": true
-						},
-						{
-							"key": "has_del",
-							"value": "1"
 						},
 						{
 							"key": "client_ids",
@@ -2967,323 +3624,22 @@
 							"key": "ref",
 							"value": "",
 							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get List File - Get Change - 10 files deleted",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "e0b649d3-357f-41af-b625-249da38c8018",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Get List File - Get Change - 10 files deleted',",
-							"    endpoint: pm.environment.get('version')+\"/files\",",
-							"    method: \"GET\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Get List File - Get Change - 10 files deleted',",
-							"    endpoint: pm.environment.get('version')+\"/files\",",
-							"    method: \"GET\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg;",
-							"if(statusResponse == 200){",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    if(dataResponse.includes(\"data_del\")){",
-							"        var count = json.data_del.length;",
-							"        if(count == 10){",
-							"            msg.description=\"Show files deleted with pItem = 10 successful\";",
-							"        }else{",
-							"            msg = msgFailed;",
-							"            msg.error = \"Show files deleted with pItem = 10 NOT successful\";",
-							"            msg.description = dataResponse;",
-							"        }",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"Data response not includes files delelted\";",
-							"        msg.description=dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"}",
-							"",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files?pItem=10&has_del=1",
-					"protocol": "https",
-					"host": [
-						"{{server}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{version}}",
-						"files"
-					],
-					"query": [
-						{
-							"key": "uids",
-							"value": "",
-							"disabled": true
 						},
 						{
-							"key": "ids",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "minID",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "pItem",
-							"value": "10"
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						},
 						{
 							"key": "modifiedGTE",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "fields",
-							"value": "id,uid,filename,updated_date,client_id,ext",
-							"disabled": true
+							"value": "{{ModifiedGTE_1}}"
 						},
 						{
 							"key": "has_del",
 							"value": "1"
 						},
 						{
-							"key": "client_ids",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "obj_ids",
-							"value": "aa5bcede-017b-45f1-a6d4-16f85ab76957",
-							"disabled": true
-						},
-						{
-							"key": "minDelID",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "ref",
-							"value": "",
-							"disabled": true
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get List File - Get Change - a file deleted",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "e0b649d3-357f-41af-b625-249da38c8018",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Get List File - Get Change - a file deleted',",
-							"    endpoint: pm.environment.get('version')+\"/files\",",
-							"    method: \"GET\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Get List File - Get Change - a file deleted',",
-							"    endpoint: pm.environment.get('version')+\"/files\",",
-							"    method: \"GET\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg;",
-							"if(statusResponse == 200){",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    if(dataResponse.includes(\"data_del\")){",
-							"        var count = json.data_del.length;",
-							"        if(count > 0){",
-							"            msg.description=\"Show a deleted with minDelID successful\";",
-							"        }else{",
-							"            msg = msgFailed;",
-							"            msg.error = \"Show a deleted with minDelID NOT successful\";",
-							"            msg.description = dataResponse;",
-							"        }",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.error = \"Data response not includes files delelted\";",
-							"        msg.description=dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"}",
-							"",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files?modifiedGTE={{updated_date_deleted}}&has_del=1&minDelID={{minDelID}}",
-					"protocol": "https",
-					"host": [
-						"{{server}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{version}}",
-						"files"
-					],
-					"query": [
-						{
 							"key": "uids",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "ids",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "minID",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "pItem",
-							"value": "1",
-							"disabled": true
-						},
-						{
-							"key": "modifiedGTE",
-							"value": "{{updated_date_deleted}}"
-						},
-						{
-							"key": "fields",
-							"value": "id,uid,filename,updated_date,client_id,ext",
-							"disabled": true
-						},
-						{
-							"key": "has_del",
-							"value": "1"
-						},
-						{
-							"key": "client_ids",
-							"value": "",
-							"disabled": true
-						},
-						{
-							"key": "obj_ids",
-							"value": "aa5bcede-017b-45f1-a6d4-16f85ab76957",
-							"disabled": true
-						},
-						{
-							"key": "minDelID",
-							"value": "{{minDelID}}"
-						},
-						{
-							"key": "ref",
-							"value": "",
-							"disabled": true
+							"value": "{{item_id}}"
 						}
 					]
 				}
@@ -3298,34 +3654,6 @@
 					"script": {
 						"id": "608de623-81f1-4ae6-9527-bd6504b2f724",
 						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Get List File - Clean up',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"GET\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Get List File - Clean up',",
-							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
-							"    method: \"GET\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg;",
-							"if(statusResponse == 200){",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
 							"    pm.environment.unset(\"DateUploadFile\");",
 							"    pm.environment.unset(\"UID\");",
 							"    pm.environment.unset(\"clientID\");",
@@ -3341,28 +3669,8 @@
 							"    pm.environment.unset(\"idAllFiles\");",
 							"    pm.environment.unset(\"minDelID\");",
 							"    pm.environment.unset(\"updated_date_deleted\");",
-							"",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"}",
-							"",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							""
+							"    pm.environment.unset(\"ModifiedGTE_1\");",
+							"    pm.environment.unset(\"id_1\");"
 						],
 						"type": "text/javascript"
 					}
@@ -3382,7 +3690,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files?",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&fields=id,uid,filename,updated_date,client_id,ext",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3424,11 +3732,6 @@
 							"disabled": true
 						},
 						{
-							"key": "fields",
-							"value": "id,uid,filename,updated_date,client_id,ext",
-							"disabled": true
-						},
-						{
 							"key": "has_del",
 							"value": "",
 							"disabled": true
@@ -3452,6 +3755,14 @@
 							"key": "obj_ids",
 							"value": "",
 							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,uid,filename,updated_date,client_id,ext"
 						}
 					]
 				}

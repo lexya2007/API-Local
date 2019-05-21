@@ -38,7 +38,6 @@ if (fs.existsSync(fileReportUri)){
         .on('end', () => {
             msg = mailOptions;
             var count = results.length;
-            console.log("Testcase: "+results);
             console.log("Testcase Failed: "+count);
             var string = results.toString();
             var anotherString = string.replace(/\,\[/g,'\n - [');

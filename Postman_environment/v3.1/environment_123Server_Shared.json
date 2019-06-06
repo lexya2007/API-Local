@@ -1,0 +1,64 @@
+{
+	"id": "3099d4db-35b0-4612-8644-675cb97a3868",
+	"name": "[Bi]Floware 123 Share v3.1",
+	"values": [
+		{
+			"key": "server",
+			"value": "123flo.com",
+			"enabled": true
+		},
+		{
+			"key": "port",
+			"value": "4041",
+			"enabled": true
+		},
+		{
+			"key": "email_U1",
+			"value": "bi_api01@123flo.com",
+			"enabled": true
+		},
+		{
+			"key": "password_U1",
+			"value": "123456",
+			"enabled": true
+		},
+		{
+			"key": "email_U2",
+			"value": "bi_api02@123flo.com",
+			"enabled": true
+		},
+		{
+			"key": "password_U2",
+			"value": "123456",
+			"enabled": true
+		},
+		{
+			"key": "sabre_port",
+			"value": "8045",
+			"enabled": true
+		},
+		{
+			"key": "alias",
+			"value": "cbad944424393cf309efaf0e70f1b125",
+			"enabled": true
+		},
+		{
+			"key": "appreg",
+			"value": "e70f1b125cbad944424393cf309efaf0",
+			"enabled": true
+		},
+		{
+			"key": "url_report",
+			"value": "http://localhost:3000/report",
+			"enabled": true
+		},
+		{
+			"key": "version",
+			"value": "v3.1/api",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2019-06-05T06:31:51.440Z",
+	"_postman_exported_using": "Postman/7.1.1"
+}

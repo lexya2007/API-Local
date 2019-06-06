@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #create variables
-environment=../Postman_environment/v3.0/environment_123Server.json
+environment=../Postman_environment/v3.1/environment_123Server.json
 
 #run script for each APIs
 

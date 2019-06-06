@@ -49,7 +49,7 @@
 		},
 		{
 			"key": "url_report",
-			"value": "http://localhost:3000/report",
+			"value": "http://localhost:3010/report",
 			"enabled": true
 		},
 		{

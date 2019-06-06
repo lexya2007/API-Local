@@ -1,6 +1,6 @@
 {
-	"id": "a85b6b1c-58b5-4f17-84c8-ddee8e6e4aa1",
-	"name": "Floware 123 v2.0",
+	"id": "ac49bbb0-61b0-4521-bf4d-a2b5af96339b",
+	"name": "Floware 123 Share v3.1",
 	"values": [
 		{
 			"key": "server",
@@ -10,18 +10,30 @@
 		},
 		{
 			"key": "port",
-			"value": "8044",
+			"value": "4041",
 			"description": "",
 			"enabled": true
 		},
 		{
-			"key": "email",
+			"key": "email_U1",
 			"value": "api_test1@123flo.com",
 			"description": "",
 			"enabled": true
 		},
 		{
-			"key": "password",
+			"key": "password_U1",
+			"value": "123456",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "email_U2",
+			"value": "api_test2@123flo.com",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "password_U2",
 			"value": "123456",
 			"description": "",
 			"enabled": true
@@ -45,24 +57,6 @@
 			"enabled": true
 		},
 		{
-			"key": "sig",
-			"value": "",
-			"description": "",
-			"enabled": true
-		},
-		{
-			"key": "keyapi",
-			"value": "",
-			"description": "",
-			"enabled": true
-		},
-		{
-			"key": "token",
-			"value": "",
-			"description": "",
-			"enabled": true
-		},
-		{
 			"key": "url_report",
 			"value": "http://localhost:3010/report",
 			"description": "",
@@ -70,12 +64,42 @@
 		},
 		{
 			"key": "version",
-			"value": "api/v2",
+			"value": "v3.1/api",
 			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "sig_U1",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "keyapi_U1",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "sig_U2",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "keyapi_U2",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "v4uuid",
+			"value": "",
+			"enabled": true
+		},
+		{
+			"key": "delete",
+			"value": "",
 			"enabled": true
 		}
 	],
 	"_postman_variable_scope": "environment",
-	"_postman_exported_at": "2019-04-12T05:04:11.025Z",
-	"_postman_exported_using": "Postman/6.7.3"
+	"_postman_exported_at": "2019-05-30T04:06:58.865Z",
+	"_postman_exported_using": "Postman/6.7.4"
 }

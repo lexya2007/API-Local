@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "78b1c183-326a-4e87-aa8e-70e74b810432",
-		"name": "API-Trash Version 2.0",
+		"_postman_id": "470fd02a-63b5-4972-9533-e5f9bac56feb",
+		"name": "API-Trash v2.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -44,7 +44,7 @@
 							"postman.setEnvironmentVariable(\"keyapi\", keyapi);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-TRASH',",
+							"    collection:'API-Trash',",
 							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Login',",
 							"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
 							"    method: \"POST\",",
@@ -53,7 +53,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-TRASH',",
+							"    collection:'API-Trash',",
 							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Login',",
 							"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
 							"    method: \"POST\",",
@@ -2773,6 +2773,142 @@
 			"response": []
 		},
 		{
+			"name": "Create Trash - Create  over 50 items trashed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5a8b375e-00c5-46ab-bed6-f0d4df121c60",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var msgFailed = {",
+							"    collection:'API-Trash',",
+							"    title: 'Failed - Create Trash - Create  over 50 items trashed',",
+							"    endpoint: pm.environment.get('version')+\"/trash\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Trash',",
+							"    title: 'Passed - Create Trash - Create  over 50 items trashed',",
+							"    endpoint: pm.environment.get('version')+\"/trash\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"error\")){",
+							"        msg.description = \"Response data not allow to create over 50 Items successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Not response data error\\nBug: https://floware.atlassian.net/browse/FB-117\"",
+							"        msg.description=\"Not response data error\";",
+							"    }",
+							"",
+							"    if(dataResponse.includes(\"data\")){",
+							"        var count = json.data.length;",
+							"        var array =[];",
+							"            for(var i =0; i<count;i++){",
+							"            array[i]=json.data[i].trash.id;",
+							"        }",
+							"        pm.environment.set(\"over50items\",array);",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2af82208-2f2d-4102-ac40-5d7d7224cc8c",
+						"exec": [
+							"var stringJson = \"\";",
+							"for(var i = 0; i< 51; i++){",
+							"    var id_trashed = \"item trashed - \"+i;",
+							"    pm.environment.set(\"id-\"+i,id_trashed)",
+							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"obj_id\":\"item trashed - '+i+'\",\"obj_type\":\"VTODO\",\"status\":1,\"sync_token\":0,\"trash_time\":1,\"ref\":1 '+'}';",
+							"}",
+							"pm.environment.set(\"CreateTrash\", stringJson);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"trashs\":\n    [\n        {{CreateTrash}}\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Create Trash - Create 50 items trashed",
 			"event": [
 				{
@@ -2903,6 +3039,116 @@
 					"path": [
 						"{{version}}",
 						"trash"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Trash - 50 items trashed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "163aa772-4e3a-45a1-b6ff-3b856d370240",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var msgFailed = {",
+							"    collection: \"API-Trash\",",
+							"    title: 'Failed - Delete Trash - 50 items trashed',",
+							"    endpoint: pm.environment.get('version')+\"/trash\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API-Trash\",",
+							"    title: 'Passed - Delete Trash - 50 items trashed',",
+							"    endpoint: pm.environment.get('version')+\"/trash\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    if(!dataResponse.includes(\"data_error\")){",
+							"        var count = json.data.length;",
+							"        if(count == 50){",
+							"            msg.description = \"Delete 50 items trashed correctly.\";",
+							"        }else{",
+							"            msg.description=\"Response data null\";",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description=dataResponse;",
+							"    }",
+							"    ",
+							"}else{",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/trash/{{over50items}}?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"trash",
+						"{{over50items}}"
 					],
 					"query": [
 						{
@@ -4287,7 +4533,7 @@
 							"    endpoint: pm.environment.get('version')+\"/trash/update\",",
 							"    method: \"PUT\",",
 							"    error: \"No Error\",",
-							"    status: \"\",",
+							"    status: \"200\",",
 							"    description:\"\",",
 							"};",
 							"",
@@ -4426,7 +4672,7 @@
 							"    endpoint: pm.environment.get('version')+\"/trash\",",
 							"    method: \"GET\",",
 							"    error: \"No Error\",",
-							"    status: \"\",",
+							"    status: \"200\",",
 							"    description:\"\",",
 							"};",
 							"",
@@ -4924,7 +5170,7 @@
 							"    endpoint: pm.environment.get('version')+\"/trash\",",
 							"    method: \"DELETE\",",
 							"    error: \"No Error\",",
-							"    status: \"\",",
+							"    status: \"200\",",
 							"    description:\"\",",
 							"};",
 							"",
@@ -5907,7 +6153,7 @@
 							"    endpoint: pm.environment.get('version')+\"/trash\",",
 							"    method: \"DELETE\",",
 							"    error: \"No Error\",",
-							"    status: \"\",",
+							"    status: \"200\",",
 							"    description:\"\",",
 							"};",
 							"",
@@ -6167,7 +6413,7 @@
 							"    endpoint: pm.environment.get('version')+\"/trash/0\",",
 							"    method: \"DELETE\",",
 							"    error: \"No Error\",",
-							"    status: \"\",",
+							"    status: \"200\",",
 							"    description:\"\",",
 							"};",
 							"",
@@ -6289,7 +6535,7 @@
 							"pm.environment.unset(\"minDell\");",
 							"pm.environment.unset(\"CreateTrash\");",
 							"pm.environment.unset(\"UpdateTrash\");",
-							"",
+							"pm.environment.unset(\"over50items\");",
 							"for(var i = 0; i<50; i++){",
 							"    pm.environment.unset(\"id-\"+i);",
 							"    pm.environment.unset(\"15itemid-\"+i);",

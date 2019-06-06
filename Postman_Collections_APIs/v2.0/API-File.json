@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "cf8efece-20d4-4244-b770-96c7fa690e17",
-		"name": "API - File Version 2.0",
+		"_postman_id": "dd22da03-5e11-4e34-9b58-ff4c6209ac44",
+		"name": "API-File v2.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -139,6 +139,18 @@
 					"script": {
 						"id": "ebbfcf17-3ed2-497c-b8b2-64b7f84841a8",
 						"exec": [
+							"var Version = pm.environment.get(\"version\");",
+							"",
+							"var Server = pm.environment.get(\"server\");",
+							"if(Server == \"123flo.com\"){",
+							"    ",
+							"}else{",
+							"    if(Version.includes(\"api/v2\")){",
+							"        pm.environment.set(\"server\",\"files.flomail.net\")",
+							"    }else{",
+							"        pm.environment.set(\"server\",\"files.floware.com\")",
+							"    }",
+							"}",
 							""
 						],
 						"type": "text/javascript"
@@ -152,7 +164,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - without source file',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -161,7 +173,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - without source file',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -229,13 +241,19 @@
 					"formdata": [
 						{
 							"key": "file",
-							"type": "file",
-							"src": ""
+							"value": "",
+							"type": "file"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE",
+							"type": "text",
+							"disabled": true
 						}
 					]
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}&obj_type=FILE",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -250,6 +268,10 @@
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE"
 						}
 					]
 				}
@@ -277,7 +299,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - update a file',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -286,7 +308,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - update a file',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -358,11 +380,17 @@
 							"key": "file",
 							"type": "file",
 							"src": "../Postman_Collections_APIs/FilesForUpload/file.pdf"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE",
+							"type": "text",
+							"disabled": true
 						}
 					]
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}&obj_type=FILE",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -377,6 +405,10 @@
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE"
 						}
 					]
 				}
@@ -394,7 +426,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Get List File - Get a file uploaded',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"GET\",",
@@ -403,7 +435,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Get List File - Get a file uploaded',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"GET\",",
@@ -464,10 +496,6 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&modifiedGTE={{DateUploadFile}}&fields=id,uid,filename,updated_date,client_id,ext&client_ids={{clientID}}&uids={{UID}}",
 					"protocol": "https",
@@ -561,7 +589,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - update a file 1',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -570,7 +598,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - update a file 1',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -590,7 +618,7 @@
 							"    var description = json.description;",
 							"    if(description==\"Upload successful.\"){",
 							"        msg.description= \"Upload file 1 successful\";",
-							"        ",
+							"        pm.environment.set(\"UID1\",json.file.uid);",
 							"    }else{",
 							"        msg = msgFailed;",
 							"        msg.error = \"upload file not successful\";",
@@ -640,6 +668,11 @@
 							"key": "file",
 							"type": "file",
 							"src": "../Postman_Collections_APIs/FilesForUpload/file1.pdf"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE",
+							"type": "text"
 						}
 					]
 				},
@@ -686,7 +719,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - update a file 2',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -695,7 +728,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - update a file 2',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -764,11 +797,16 @@
 							"key": "file",
 							"type": "file",
 							"src": "../Postman_Collections_APIs/FilesForUpload/file2.csv"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE",
+							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}&=",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -783,6 +821,10 @@
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
+						},
+						{
+							"key": "",
+							"value": ""
 						}
 					]
 				}
@@ -810,7 +852,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - update a file 3',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -819,7 +861,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - update a file 3',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -892,7 +934,7 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}&obj_type=FILE",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -907,6 +949,10 @@
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE"
 						}
 					]
 				}
@@ -934,7 +980,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - update a file 4',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -943,7 +989,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - update a file 4',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1016,7 +1062,7 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}&obj_type=FILE",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1031,6 +1077,10 @@
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE"
 						}
 					]
 				}
@@ -1058,7 +1108,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - update a file 5',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1067,7 +1117,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - update a file 5',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1140,7 +1190,7 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}&obj_type=FILE",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1155,6 +1205,10 @@
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE"
 						}
 					]
 				}
@@ -1182,7 +1236,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - update a file 6',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1191,7 +1245,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - update a file 6',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1264,7 +1318,7 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}&obj_type=FILE",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1279,6 +1333,10 @@
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE"
 						}
 					]
 				}
@@ -1306,7 +1364,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - update a file 7',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1315,7 +1373,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - update a file 7',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1388,7 +1446,7 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}&obj_type=FILE",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1403,6 +1461,10 @@
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE"
 						}
 					]
 				}
@@ -1430,7 +1492,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - update a file 8',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1439,7 +1501,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - update a file 8',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1512,7 +1574,7 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}&obj_type=FILE",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1527,6 +1589,10 @@
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE"
 						}
 					]
 				}
@@ -1554,7 +1620,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - update a file 9',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1563,7 +1629,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - update a file 9',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1635,7 +1701,7 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}&obj_type=FILE",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1650,6 +1716,10 @@
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE"
 						}
 					]
 				}
@@ -1667,7 +1737,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Upload - Big size',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1676,7 +1746,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Upload - Big size',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"POST\",",
@@ -1749,7 +1819,7 @@
 					]
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/upload?keyapi={{keyapi}}&obj_type=FILE",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1764,6 +1834,10 @@
 						{
 							"key": "keyapi",
 							"value": "{{keyapi}}"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE"
 						}
 					]
 				}
@@ -1781,7 +1855,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Get List File - Get all files',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"GET\",",
@@ -1790,7 +1864,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Get List File - Get all files',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"GET\",",
@@ -1857,10 +1931,6 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&fields=id,uid,filename,updated_date,client_id,ext&minID={{id_1}}",
 					"protocol": "https",
@@ -1951,7 +2021,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Update File - Update file without uid',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"PUT\",",
@@ -1960,7 +2030,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Update File - Update file without uid',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"PUT\",",
@@ -2062,7 +2132,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Update File - Update file with null uid',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"PUT\",",
@@ -2071,7 +2141,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Update File - Update file with null uid',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"PUT\",",
@@ -2173,7 +2243,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Update File - Update file with invalid uid',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"PUT\",",
@@ -2182,7 +2252,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Update File - Update file with invalid uid',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"PUT\",",
@@ -2285,7 +2355,7 @@
 							"pm.environment.set(\"update_filename\",\"Update file\");",
 							"pm.environment.set(\"update_local_path\",\"Download\");",
 							"pm.environment.set(\"update_url\",\"https://floware.com\");",
-							"pm.environment.set(\"update_obj_type\",\"VTODO\");",
+							"pm.environment.set(\"update_obj_type\",\"FILE\");",
 							"pm.environment.set(\"update_client_id\",\"f147a173-0933-44c4-96dd-2f4e2edb5fc7\");"
 						],
 						"type": "text/javascript"
@@ -2299,7 +2369,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Update File - Update file with valid uid',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"PUT\",",
@@ -2308,7 +2378,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Update File - Update file with valid uid',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"PUT\",",
@@ -2444,7 +2514,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Update File - Update file with invalid value inputted',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"PUT\",",
@@ -2453,7 +2523,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Update File - Update file with invalid value inputted',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"PUT\",",
@@ -2487,7 +2557,7 @@
 							"}else  {",
 							"    msg = msgFailed;",
 							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
+							"    msg.error = \"status response failed\\nBug: https://floware.atlassian.net/browse/FB-121\";",
 							"    msg.description = dataResponse;",
 							"}",
 							"",
@@ -2562,7 +2632,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - File - Get Change file updated',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"GET\",",
@@ -2571,7 +2641,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - File - Get Change file updated',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"GET\",",
@@ -2638,10 +2708,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&modifiedGTE={{DateUploadFile}}&fields=id,uid,filename,updated_date,client_id,ext&client_ids={{update_client_id}}&uids={{UID}}",
 					"protocol": "https",
@@ -2725,7 +2791,7 @@
 							"",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Download File - Download a file',",
 							"    endpoint: pm.environment.get('version')+\"/files/download\",",
 							"    method: \"GET\",",
@@ -2734,7 +2800,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Download File - Download a file',",
 							"    endpoint: pm.environment.get('version')+\"/files/download\",",
 							"    method: \"GET\",",
@@ -2753,7 +2819,7 @@
 							"    if(dataResponse.includes(\"Download failed, find not found\")){",
 							"        var json = JSON.parse(responseBody);",
 							"        msg = msgFailed;",
-							"        msg.error = \"Download file failed\nBug: https://floware.atlassian.net/browse/FB-46\";",
+							"        msg.error = \"Download file failed;\\nBug: https://floware.atlassian.net/browse/FB-46\";",
 							"        msg.description=json.description;",
 							"    }else{",
 							"        msg.description=\"Download file successful\";",
@@ -2782,6 +2848,27 @@
 						],
 						"type": "text/javascript"
 					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6a998228-3e1e-4914-ae88-5ebfbc2902b1",
+						"exec": [
+							"var Version = pm.environment.get(\"version\");",
+							"",
+							"var Server = pm.environment.get(\"server\");",
+							"if(Server == \"123flo.com\"){",
+							"    ",
+							"}else{",
+							"    if(Version.includes(\"api/v2\")){",
+							"        pm.environment.set(\"server\",\"files.flomail.net\")",
+							"    }else{",
+							"        pm.environment.set(\"server\",\"files.floware.com\")",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
 				}
 			],
 			"request": {
@@ -2793,12 +2880,8 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/download?keyapi={{keyapi}}&uid={{UID}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/download?keyapi={{keyapi}}&uid={{UID}}&obj_type=FILE",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2817,6 +2900,115 @@
 						{
 							"key": "uid",
 							"value": "{{UID}}"
+						},
+						{
+							"key": "obj_type",
+							"value": "FILE"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete File - Delete file with valid uid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b94b2259-8bc0-48fc-89c4-2637d31d3900",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-File',",
+							"    title: 'Failed - Delete File - Delete file with valid uid',",
+							"    endpoint: pm.environment.get('version')+\"/files\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-File',",
+							"    title: 'Passed - Delete File - Delete file with valid uid',",
+							"    endpoint: pm.environment.get('version')+\"/files\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    var count = json.data.length;",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    if(count > 0){",
+							"        msg.description = \"Delete file with valid uid successful.\\nData Response: \\n\"+dataResponse;",
+							"        pm.environment.set(\"item_id\",json.data[0].id);",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files/{{UID1}}?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files",
+						"{{UID1}}"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
 						}
 					]
 				}
@@ -2834,7 +3026,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Delete File - Delete file with invalid uid',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"DELETE\",",
@@ -2843,7 +3035,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Delete File - Delete file with invalid uid',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"DELETE\",",
@@ -2929,111 +3121,6 @@
 			"response": []
 		},
 		{
-			"name": "Delete File - Delete file with valid uid",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "b94b2259-8bc0-48fc-89c4-2637d31d3900",
-						"exec": [
-							"var json = JSON.parse(responseBody);",
-							"",
-							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - Delete File - Delete file with valid uid',",
-							"    endpoint: pm.environment.get('version')+\"/files\",",
-							"    method: \"DELETE\",",
-							"    error: \"Has Error\",",
-							"    status:\"200\",",
-							"    description:\"\",",
-							"};",
-							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - Delete File - Delete file with valid uid',",
-							"    endpoint: pm.environment.get('version')+\"/files\",",
-							"    method: \"DELETE\",",
-							"    error: \"No Error\",",
-							"    status: \"200\",",
-							"    description:\"\",",
-							"};",
-							"// Data response",
-							"var dataResponse = pm.response.text();",
-							"// Status code response",
-							"var statusResponse = responseCode.code;",
-							"var msg;",
-							"if(statusResponse == 200){",
-							"    var count = json.data.length;",
-							"    msg = msgPassed;",
-							"    msg.status = 200;",
-							"    if(count > 0){",
-							"        msg.description = \"Delete file with valid uid successful.\\nData Response: \\n\"+dataResponse;",
-							"        pm.environment.set(\"item_id\",json.data[0].id);",
-							"    }else{",
-							"        msg = msgFailed;",
-							"        msg.description=dataResponse;",
-							"    }",
-							"}else  {",
-							"    msg = msgFailed;",
-							"    msg.status = statusResponse;",
-							"    msg.error = \"status response failed\";",
-							"    msg.description = dataResponse;",
-							"}",
-							"",
-							"pm.sendRequest({",
-							"    url: pm.environment.get(\"url_report\"),",
-							"    method: 'POST',",
-							"    header: {",
-							"        'content-type': 'application/json'",
-							"    },",
-							"    body: {",
-							"        mode: 'raw',",
-							"        raw: JSON.stringify(msg)",
-							"    }",
-							"}, function (err, res) {",
-							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
-							"});",
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "token",
-						"type": "text",
-						"value": "{{keyapi}}"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files/{{UID}}?keyapi={{keyapi}}",
-					"protocol": "https",
-					"host": [
-						"{{server}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"{{version}}",
-						"files",
-						"{{UID}}"
-					],
-					"query": [
-						{
-							"key": "keyapi",
-							"value": "{{keyapi}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Get List File - Get Change - 1 file deleted",
 			"event": [
 				{
@@ -3044,7 +3131,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Get List File - Get Change - 1 file deleted',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"GET\",",
@@ -3053,7 +3140,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Get List File - Get Change - 1 file deleted',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"GET\",",
@@ -3114,10 +3201,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/files?has_del=1&ids={{item_id}}&keyapi={{keyapi}}",
 					"protocol": "https",
@@ -3203,7 +3286,7 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - File - Get all files',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"GET\",",
@@ -3212,7 +3295,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - File - Get all files',",
 							"    endpoint: pm.environment.get('version')+\"/files/upload\",",
 							"    method: \"GET\",",
@@ -3281,10 +3364,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&fields=id,uid,filename,updated_date,client_id,ext&minID={{id_1}}",
 					"protocol": "https",
@@ -3374,7 +3453,7 @@
 						"exec": [
 							"var json = JSON.parse(responseBody);",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Failed - Delete File - Delete all files uploaded',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"DELETE\",",
@@ -3383,7 +3462,7 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
+							"    collection:'API-File',",
 							"    title: 'Passed - Delete File - Delete all files uploaded',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"DELETE\",",
@@ -3413,9 +3492,11 @@
 							"            var idAccount = json.data[i].id;",
 							"            if(listUID === idAccount){",
 							"                msg.description = \"Delete all files uploaded successful.\";",
+							"                pm.environment.set(\"item_id\",json.data[0].id);",
+							"",
 							"            }else{",
 							"                msg = msgFailed;",
-							"                msg.error = \"Not found filed uploaded to delete\";",
+							"                msg.error = \"Not found filed uploaded to delete\\nBug: https://floware.atlassian.net/browse/FB-111\";",
 							"                msg.description=\"Delete all files uploaded not successful\";",
 							"                break;",
 							"        }",
@@ -3487,7 +3568,7 @@
 			"response": []
 		},
 		{
-			"name": "Get List File - Get Change files deleted",
+			"name": "Get List File - Get Change a file deleted",
 			"event": [
 				{
 					"listen": "test",
@@ -3497,8 +3578,8 @@
 							"var json = JSON.parse(responseBody);",
 							"",
 							"var msgFailed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Failed - File - Get Change files deleted',",
+							"    collection:'API-File',",
+							"    title: 'Failed - File - Get Change a files deleted',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"GET\",",
 							"    error: \"Has Error\",",
@@ -3506,8 +3587,8 @@
 							"    description:\"\",",
 							"};",
 							"var msgPassed = {",
-							"    collection:'API-FILE',",
-							"    title: 'Passed - File - Get Change files deleted',",
+							"    collection:'API-File',",
+							"    title: 'Passed - File - Get Change a files deleted',",
 							"    endpoint: pm.environment.get('version')+\"/files\",",
 							"    method: \"GET\",",
 							"    error: \"No Error\",",
@@ -3524,10 +3605,9 @@
 							"    msg = msgPassed;",
 							"    msg.status = 200;",
 							"    if(dataResponse.includes(\"data_del\") && dataResponse.includes(item_id)){",
-							"        msg.description=\"Get change file deleted successful\";",
-							"        var count = parseInt(json.data_del.length);",
-							"        pm.environment.set(\"minDelID\",json.data_del[count-2].deleted_item.id);",
-							"        pm.environment.set(\"updated_date_deleted\",json.data_del[count-1].deleted_item.updated_date);",
+							"        msg.description=\"Get change a file deleted successful\";",
+							"        pm.environment.set(\"updated_date_deleted\",json.data_del[0].deleted_item.updated_date);",
+							"        ",
 							"        ",
 							"    }else{",
 							"        msg = msgFailed;",
@@ -3569,12 +3649,8 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&modifiedGTE={{ModifiedGTE_1}}&has_del=1&uids={{item_id}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/files?ids={{item_id}}&keyapi={{keyapi}}&has_del=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3587,7 +3663,161 @@
 					"query": [
 						{
 							"key": "ids",
+							"value": "{{item_id}}"
+						},
+						{
+							"key": "minID",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,uid,filename,updated_date,client_id,ext",
+							"disabled": true
+						},
+						{
+							"key": "client_ids",
+							"value": "{{clientID}}",
+							"disabled": true
+						},
+						{
+							"key": "obj_ids",
+							"value": "aa5bcede-017b-45f1-a6d4-16f85ab76957",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
 							"value": "171664",
+							"disabled": true
+						},
+						{
+							"key": "ref",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1559547396.756",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1"
+						},
+						{
+							"key": "uids",
+							"value": "{{item_id}}",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get List File - Get Change files deleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e0b649d3-357f-41af-b625-249da38c8018",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-File',",
+							"    title: 'Failed - File - Get Change files deleted',",
+							"    endpoint: pm.environment.get('version')+\"/files\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-File',",
+							"    title: 'Passed - File - Get Change files deleted',",
+							"    endpoint: pm.environment.get('version')+\"/files\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status code response",
+							"var statusResponse = responseCode.code;",
+							"var item_id = pm.environment.get(\"item_id\");",
+							"var modiFiedGTE = pm.environment.get(\"updated_date_deleted\");",
+							"var msg;",
+							"if(statusResponse == 200){",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    if(dataResponse.includes(\"data_del\") && modiFiedGTE == json.data_del[0].deleted_item.updated_date){",
+							"        msg.description=\"Get change file deleted successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Get file updated not successful\";",
+							"        msg.description=dataResponse;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&modifiedGTE={{updated_date_deleted}}&has_del=1",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"files"
+					],
+					"query": [
+						{
+							"key": "ids",
+							"value": "{{item_id}}",
 							"disabled": true
 						},
 						{
@@ -3631,7 +3861,7 @@
 						},
 						{
 							"key": "modifiedGTE",
-							"value": "{{ModifiedGTE_1}}"
+							"value": "{{updated_date_deleted}}"
 						},
 						{
 							"key": "has_del",
@@ -3639,7 +3869,8 @@
 						},
 						{
 							"key": "uids",
-							"value": "{{item_id}}"
+							"value": "{{item_id}}",
+							"disabled": true
 						}
 					]
 				}
@@ -3685,10 +3916,6 @@
 						"value": "{{keyapi}}"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/files?keyapi={{keyapi}}&fields=id,uid,filename,updated_date,client_id,ext",
 					"protocol": "https",

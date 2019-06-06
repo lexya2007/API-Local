@@ -1,0 +1,2411 @@
+{
+	"info": {
+		"_postman_id": "986c6218-2b62-4af5-b5f1-655216d6d5bb",
+		"name": "v3.0 API-Projects_share",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Pre-Condition - Login U1",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "710fc72f-9c01-458d-91e2-999228c54ca0",
+						"exec": [
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U1\")+\":LeftCoastLogic:\"+pm.environment.get(\"password_U1\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig_U1\", hash);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9b65e0a-3805-49b2-a0e8-3b2d205156e2",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U1\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"postman.setEnvironmentVariable(\"keyapi_U1\", keyapi);",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"pm.test(\"Tokenapi is returned\", function () {pm.expect(pm.response.text()).to.include(\"tokenapi\");});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email_U1}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig_U1}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pre-Condition - Login U2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "710fc72f-9c01-458d-91e2-999228c54ca0",
+						"exec": [
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U2\")+\":LeftCoastLogic:\"+pm.environment.get(\"password_U2\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig_U2: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig_U2\", hash);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9b65e0a-3805-49b2-a0e8-3b2d205156e2",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U2\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"pm.environment.set(\"keyapi_U2\", keyapi);",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"pm.test(\"Tokenapi is returned\", function () {pm.expect(pm.response.text()).to.include(\"tokenapi\");});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email_U2}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig_U2}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pre-Condition - Check share projects",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ac1ca948-f942-45a1-aade-ce7cf8d0e878",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var stringJson = \"\";",
+							"var count = json.data.length;",
+							"var j=0;",
+							"",
+							"for(var i = 0; i< count; i++){",
+							"    if(json.data[i].project.proj_type === 3){",
+							"        stringJson = (stringJson === \"\" ? stringJson : stringJson +', ') +' { \"id\" : ' +json.data[i].project.id+ '}';",
+							"        j++;",
+							"    }",
+							"}",
+							"console.log(j);",
+							"",
+							"postman.setEnvironmentVariable(\"delete\", stringJson);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "33913,33914",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "id,item_id,item_type,order_number,kanban_id,collection_id,item_card_order,order_update_time,source_account,created_date,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1552470742",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "171810",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Pre-Condition - Delete share projects",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "24191f37-2d10-4f56-8b74-f78dc4a009ef",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects\": [ \n    \t{{delete}} \n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 create Projects - Share project proj_type = 3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3bd74b65-dbe9-4edb-a70d-2d3a225c7e1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - U1 create Projects - Share project proj_type = 3',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - U1 create Projects - Share project proj_type = 3',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        var proj_name = \"Share\"+ pm.environment.get(\"v4uuid\");",
+							"        // Check data response",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.proj_type === 3)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"create share project success\";",
+							"            ",
+							"            pm.environment.set(\"projectid_share\", json.data[0].project.id);",
+							"            pm.environment.set(\"proj_name_share\", json.data[0].project.proj_name);",
+							"        }else{",
+							"            msg.description = \"create share project fail\";",
+							"        }",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2d5dfe48-cae3-4845-acf2-392cbf536040",
+						"exec": [
+							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"Share{{v4uuid}}\",\n            \"proj_type\": 3\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Projects - U1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - List Projects - U1',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - List Projects - U1',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data[0]){",
+							"        ",
+							"        var projectid_share = pm.environment.get(\"projectid_share\");",
+							"        var proj_name_share = pm.environment.get(\"proj_name_share\");",
+							"        ",
+							"        // Check data response",
+							"        if((json.data[0].project.id === projectid_share) && (json.data[0].project.proj_name === proj_name_share)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"list projects success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&ids={{projectid_share}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{projectid_share}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Projects - U2 show null project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - List Projects - U2 show shared project',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - List Projects - U2 show null project',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data[0]){",
+							"        ",
+							"        var projectid_share = pm.environment.get(\"projectid_share\");",
+							"        var proj_name_share = pm.environment.get(\"proj_name_share\");",
+							"        ",
+							"        // Check data response",
+							"        if((json.data[0].project.id === projectid_share) && (json.data[0].project.proj_name === proj_name_share)){",
+							"            msg = msgFailed;",
+							"            msg.description = \"Fail - show shared project\"",
+							"        }",
+							"    }else{",
+							"        msg = msgPassed;",
+							"        msg.description = \"Pass - show null project\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U2}}&ids={{projectid_share}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{projectid_share}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 invite shared project - Flo account U2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4888c1c0-0c05-4801-9f66-42afcb8c71f3",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - U1 invite shared project - Flo account U2',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - U1 invite shared project - Flo account U2',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"",
+							"    // if success",
+							"    if(!json.data_error){",
+							"        var project_id = pm.environment.get(\"projectid_share\");",
+							"        var card_uid = pm.environment.get(\"v4uuid\");",
+							"        var email = pm.environment.get(\"email_U2\");",
+							"        ",
+							"        // Check data response",
+							"        if((json.data.projects_cards[0].card_uid === card_uid) && (json.data.projects_cards[0].project_id === project_id) && (json.data.projects_users[0].email === email) && (json.data.projects_users[0].status === 0)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"invite shared project success\";",
+							"            ",
+							"            pm.environment.set(\"card_uid_Flo\", json.data.projects_cards[0].card_uid);",
+							"        }else{",
+							"            msg.description = \"invite shared project fail\";",
+							"        }",
+							"        ",
+							"    }",
+							"    // if have errors",
+							"    else{",
+							"        if (json.data_error.projects_cards_errors){",
+							"            //console.log(\"projects_cards_errors\");",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error.projects_cards_errors[0].error;",
+							"            msg.description = \"projects_cards_errors: \" + json.data_error.projects_cards_errors[0].description;",
+							"        }",
+							"        if (json.data_error.projects_users_errors){",
+							"            //console.log(\"projects_users_errors\");",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error.projects_users_errors[0].error;",
+							"            msg.description = \"projects_users_errors: \" + json.data_error.projects_users_errors[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "93e7b7a6-479f-400d-99f7-fb7b551835ff",
+						"exec": [
+							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects_users\": [\n        {\n            \"project_id\": \"{{projectid_share}}\",\n            \"email\": \"{{email_U2}}\",\n            \"card_uid\": \"{{v4uuid}}\",\n            \"href\": \"abcxyz\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/invite?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"invite"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 get members - Flo account U2 not accept",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5eb606c6-dcd1-48d4-bffa-cd9e9ade94dc",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - U1 get members - Flo account U2 not accept',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - U1 get members - Flo account U2 not accept',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data[0]){",
+							"        ",
+							"        if(json.data[0].members.cards[0]){",
+							"            var project_id = pm.environment.get(\"projectid_share\");",
+							"            var email = pm.environment.get(\"email_U2\");",
+							"            var card_uid_Flo = pm.environment.get(\"card_uid_Flo\");",
+							"            var card_uid_NonFlo = pm.environment.get(\"card_uid_NonFlo\");",
+							"            ",
+							"            // Check project_id",
+							"            if(json.data[0].members.project_id === project_id){",
+							"                msg.description = \"checked project_id\";",
+							"                // Check users",
+							"                if((json.data[0].members.users[0].email === email) && (json.data[0].members.users[0].join_status === 0)){",
+							"                    msg.description = \"checked users\";",
+							"                    // Check cards Flo",
+							"                    if((json.data[0].members.cards[0].card_uid === card_uid_Flo) && (json.data[0].members.cards[0].set_account_id === null)){",
+							"                        msg = msgPassed;",
+							"                        msg.description = \"get members project success\";",
+							"                    }",
+							"                }",
+							"            }else{",
+							"                msg.description = \"get members project fail\";",
+							"            }",
+							"        }else{",
+							"            msg.description = \"members: Not have any member\";",
+							"        }",
+							"    }else{",
+							"        msg.description = \"Response null item\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/members?keyapi={{keyapi_U1}}&project_ids[]={{projectid_share}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"members"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{projectid_share}}"
+						},
+						{
+							"key": "project_ids[]",
+							"value": "34811",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update personal setting - U2 not accept",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3ae13187-44dc-48ae-bc48-b4ecdc011037",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - Update personal setting - U2 not accept',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - Update personal setting - U2 not accept',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data[0]){",
+							"",
+							"        var project_id = pm.environment.get(\"projectid_share\");",
+							"        // Check data response",
+							"        if((json.data[0].project_user.project_id === project_id) && (json.data[0].project_user.is_hide === 1) && (json.data[0].project_user.status === 1)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"update personal setting success\";",
+							"        }else{",
+							"            msg.description = \"Fail - Not accept - Bug https://floware.atlassian.net/browse/FB-110\";",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects_users\": [\n        {\n            \"project_id\": {{projectid_share}},\n            \"is_hide\": 1\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/update_personal_setting?keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"update_personal_setting"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U2 accepts invite shared project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6c6e428a-26b5-447b-bc11-cc1638124825",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - Create Projects - U2 accepts invite shared project',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - Create Projects - U2 accepts invite shared project',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data[0]){",
+							"        ",
+							"        var project_id = pm.environment.get(\"projectid_share\");",
+							"        // Check data response",
+							"        if((json.data[0].project_user.project_id === project_id) && (json.data[0].project_user.status === 1)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"accept invite project success\";",
+							"        }else{",
+							"            msg.description = \"accept invite project fail\";",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects\": [\n        {\n            \"id\": \"{{projectid_share}}\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/accept_invite?keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"accept_invite"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 get members - Flo account U2 accepted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5eb606c6-dcd1-48d4-bffa-cd9e9ade94dc",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - U1 get members - Flo account U2 accepted',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - U1 get members - Flo account U2 accepted',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data[0]){",
+							"        ",
+							"        if(json.data[0].members.cards[0]){",
+							"            var project_id = pm.environment.get(\"projectid_share\");",
+							"            var email = pm.environment.get(\"email_U2\");",
+							"            var card_uid_Flo = pm.environment.get(\"card_uid_Flo\");",
+							"            var card_uid_NonFlo = pm.environment.get(\"card_uid_NonFlo\");",
+							"            ",
+							"            // Check project_id",
+							"            if(json.data[0].members.project_id === project_id){",
+							"                msg.description = \"checked project_id\";",
+							"                // Check users",
+							"                if((json.data[0].members.users[0].email === email) && (json.data[0].members.users[0].join_status === 1)){",
+							"                    msg.description = \"checked users\";",
+							"                    // Check cards Flo",
+							"                    if((json.data[0].members.cards[0].card_uid === card_uid_Flo) && (json.data[0].members.cards[0].set_account_id === null)){",
+							"                        msg = msgPassed;",
+							"                        msg.description = \"get members project success\";",
+							"                    }",
+							"                }else{",
+							"                    msg.description = \"Fail - Flo account U2 not accept\";",
+							"                }",
+							"            }else{",
+							"                msg.description = \"get members project fail\";",
+							"            }",
+							"        }else{",
+							"            msg.description = \"members: Not have any member\";",
+							"        }",
+							"    }else{",
+							"        msg.description = \"Response null item\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/members?keyapi={{keyapi_U1}}&project_ids[]={{projectid_share}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"members"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{projectid_share}}"
+						},
+						{
+							"key": "project_ids[]",
+							"value": "34811",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Projects - U2 show shared project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - List Projects - U2 Not show shared project',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - List Projects - U2 show shared project',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data[0]){",
+							"        ",
+							"        var projectid_share = pm.environment.get(\"projectid_share\");",
+							"        var proj_name_share = pm.environment.get(\"proj_name_share\");",
+							"        ",
+							"        // Check data response",
+							"        if((json.data[0].project.id === projectid_share) && (json.data[0].project.proj_name === proj_name_share)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"list shared project success\";",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U2}}&ids={{projectid_share}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{projectid_share}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 invite shared project - Non Flo account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cb09abc3-60be-4ca9-9af8-688e23b37c07",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - U1 invite shared project - Non Flo account',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - U1 invite shared project - Non Flo account',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.projects_cards.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        var project_id = pm.environment.get(\"projectid_share\");",
+							"        var card_uid = pm.environment.get(\"v4uuid\");",
+							"        ",
+							"        // Check data response",
+							"        if((json.data.projects_cards[0].card_uid === card_uid)&&(json.data.projects_cards[0].project_id === project_id)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"invite shared project success\";",
+							"            ",
+							"            pm.environment.set(\"card_uid_NonFlo\", json.data.projects_cards[0].card_uid);",
+							"        }else{",
+							"            msg.description = \"invite shared project fail\";",
+							"        }",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error.projects_cards_errors[0].error;",
+							"            msg.description = \"projects_cards_errors: \" + json.data_error.projects_cards_errors[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e856b2a1-84ab-4dba-bc3d-b08b063f8160",
+						"exec": [
+							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects_users\": [\n        {\n            \"project_id\": \"{{projectid_share}}\",\n            \"email\": \"abc@gmail.com\",\n            \"card_uid\": \"{{v4uuid}}\",\n            \"href\": \"abcxyz123456\",\n            \"set_account_id\": 12345\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/invite?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"invite"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 get members - Flo & non Flo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5eb606c6-dcd1-48d4-bffa-cd9e9ade94dc",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - U1 get members - Flo & non Flo',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - U1 get members - Flo & non Flo',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data[0]){",
+							"        ",
+							"        if(json.data[0].members.cards[0]){",
+							"            var project_id = pm.environment.get(\"projectid_share\");",
+							"            var email = pm.environment.get(\"email_U2\");",
+							"            var card_uid_Flo = pm.environment.get(\"card_uid_Flo\");",
+							"            var card_uid_NonFlo = pm.environment.get(\"card_uid_NonFlo\");",
+							"            ",
+							"            // Check project_id",
+							"            if(json.data[0].members.project_id === project_id){",
+							"                msg.description = \"checked project_id\";",
+							"                // Check users",
+							"                if(json.data[0].members.users[0].email === email){",
+							"                    msg.description = \"checked users\";",
+							"                    // Check cards Flo",
+							"                    if((json.data[0].members.cards[0].card_uid === card_uid_Flo) && (json.data[0].members.cards[0].set_account_id === null)){",
+							"                        msg.description = \"checked cards Flo\";",
+							"                        // Check cards Non Flo",
+							"                        if((json.data[0].members.cards[1].card_uid === card_uid_NonFlo) && (json.data[0].members.cards[1].set_account_id === 12345)){",
+							"                            msg = msgPassed;",
+							"                            msg.description = \"get members project success\";",
+							"                        }",
+							"                    }",
+							"                }",
+							"            }else{",
+							"                msg.description = \"get members project fail\";",
+							"            }",
+							"        }else{",
+							"            msg.description = \"members: Not have any member\";",
+							"        }",
+							"    }else{",
+							"        msg.description = \"Response null item\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/members?keyapi={{keyapi_U1}}&project_ids[]={{projectid_share}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"members"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{projectid_share}}"
+						},
+						{
+							"key": "project_ids[]",
+							"value": "34811",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update personal setting - U2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3ae13187-44dc-48ae-bc48-b4ecdc011037",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - Update personal setting - U2',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - Update personal setting - U2',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data[0]){",
+							"        ",
+							"        var project_id = pm.environment.get(\"projectid_share\");",
+							"        // Check data response",
+							"        if((json.data[0].project_user.project_id === project_id) && (json.data[0].project_user.is_hide === 1) && (json.data[0].project_user.status === 1)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"update personal setting success\";",
+							"        }else{",
+							"            msg.description = \"update personal setting fail\";",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects_users\": [\n        {\n            \"project_id\": {{projectid_share}},\n            \"is_hide\": 1\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/update_personal_setting?keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"update_personal_setting"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 remove members - Flo account U2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1bfbb066-0ee6-4e20-96a4-32f1009d14fa",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - U1 remove members - Flo account U2',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - U1 remove members - Flo account U2',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data.projects_cards[0]){",
+							"        ",
+							"        var project_id = pm.environment.get(\"projectid_share\");",
+							"        var card_uid_Flo = pm.environment.get(\"card_uid_Flo\");",
+							"        ",
+							"        var email = pm.environment.get(\"email_U2\");",
+							"        ",
+							"        // Check projects_cards",
+							"        if((json.data.projects_cards[0].project_id === project_id) && (json.data.projects_cards[0].card_uid === card_uid_Flo)){",
+							"            ",
+							"            // Check projects_users",
+							"            if(json.data.projects_users[0].email === email){",
+							"                msg = msgPassed;",
+							"                msg.description = \"remove members project success\";",
+							"            }",
+							"        }else{",
+							"            msg.description = \"remove members project fail\";",
+							"        }",
+							"    }else{",
+							"        if (json.data_error.projects_cards_errors){",
+							"            //console.log(\"projects_cards_errors\");",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error.projects_cards_errors[0].error;",
+							"            msg.description = \"projects_cards_errors: \" + json.data_error.projects_cards_errors[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects_users\": [\n        {\n            \"project_id\": \"{{projectid_share}}\",\n        \t\"email\": \"{{email_U2}}\",\n            \"card_uid\": \"{{card_uid_Flo}}\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/remove_members?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"remove_members"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Projects - U2 show null project again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - List Projects - U2 show shared project again',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - List Projects - U2 show null project again',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data[0]){",
+							"        ",
+							"        var projectid_share = pm.environment.get(\"projectid_share\");",
+							"        var proj_name_share = pm.environment.get(\"proj_name_share\");",
+							"        ",
+							"        // Check data response",
+							"        if((json.data[0].project.id === projectid_share) && (json.data[0].project.proj_name === proj_name_share)){",
+							"            msg = msgFailed;",
+							"            msg.description = \"Fail - show shared project\"",
+							"        }",
+							"    }else{",
+							"        msg = msgPassed;",
+							"        msg.description = \"Pass - show null project\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U2}}&ids={{projectid_share}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{projectid_share}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 remove members - Non Flo account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1bfbb066-0ee6-4e20-96a4-32f1009d14fa",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Failed - U1 remove members - Non Flo account',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Shared Projects - Passed - U1 remove members - Non Flo account',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    if(json.data.projects_cards[0]){",
+							"        ",
+							"        var project_id = pm.environment.get(\"projectid_share\");",
+							"        var card_uid_NonFlo = pm.environment.get(\"card_uid_NonFlo\");",
+							"",
+							"        // Check projects_cards",
+							"        if((json.data.projects_cards[0].project_id === project_id) && (json.data.projects_cards[0].card_uid === card_uid_NonFlo) && (json.data.projects_cards[0].set_account_id === 12345)){",
+							"",
+							"            msg = msgPassed;",
+							"            msg.description = \"remove members project success\";",
+							"        }else{",
+							"            msg.description = \"remove members project fail\";",
+							"        }",
+							"    }else{",
+							"        if (json.data_error.projects_cards_errors){",
+							"            //console.log(\"projects_cards_errors\");",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error.projects_cards_errors[0].error;",
+							"            msg.description = \"projects_cards_errors: \" + json.data_error.projects_cards_errors[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects_users\": [\n        {\n            \"project_id\": \"{{projectid_share}}\",\n            \"card_uid\": \"{{card_uid_NonFlo}}\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/remove_members?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"remove_members"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U2 delete share project - Show error",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "24191f37-2d10-4f56-8b74-f78dc4a009ef",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Failed - U2 delete share project - No error delete success',",
+							"    endpoint: pm.environment.get(\"version\") + \"/project\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Passed - U2 delete share project - Show error',",
+							"    endpoint:pm.environment.get(\"version\") + \"/project\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        var projectid_share = pm.environment.get(\"projectid_share\")",
+							"        // Check data response",
+							"        if(json.data[0].id == projectid_share){",
+							"            msg = msgFailed;",
+							"            msg.description = \"Fail - No error - delete project success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgPassed;",
+							"        msg.error = json.data_error[0].error;",
+							"        msg.description = json.data_error[0].description;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects\": [\n        {\n            \"id\": {{projectid_share}}\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "U1 detele share project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7c8e5f83-07b8-4fbb-8d19-137934360a1c",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Failed - U1 delete share Projects',",
+							"    endpoint: pm.environment.get(\"version\") + \"/project\",",
+							"    method: \"DELETE\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Passed - U1 delete share Projects',",
+							"    endpoint:pm.environment.get(\"version\") + \"/project\",",
+							"    method: \"DELETE\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if(statusResponse == 200){",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        var projectid_share = pm.environment.get(\"projectid_share\")",
+							"        // Check data response",
+							"        if(json.data[0].id == projectid_share){",
+							"            msg = msgPassed;",
+							"            msg.description = \"delete project success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "14d6e68e-faba-40da-b159-eef947e01312",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects\": [\n        {\n            \"id\": {{projectid_share}}\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

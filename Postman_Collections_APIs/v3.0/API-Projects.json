@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "6c8bdd50-e63e-4796-8f12-0a5bf267b24e",
-		"name": "v2.2 API-Projects",
+		"_postman_id": "014df4d7-fe6a-4585-aab5-38009d28954c",
+		"name": "v3.0 API-Projects",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -14,10 +14,10 @@
 						"id": "710fc72f-9c01-458d-91e2-999228c54ca0",
 						"exec": [
 							"// Use the CryptoJS",
-							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\")+\":LeftCoastLogic:\"+pm.environment.get(\"password\"))+pm.environment.get(\"appreg\")).toString();",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U1\")+\":LeftCoastLogic:\"+pm.environment.get(\"password_U1\"))+pm.environment.get(\"appreg\")).toString();",
 							"",
 							"console.log(\"sig: \" + hash);",
-							"postman.setEnvironmentVariable(\"sig\", hash);",
+							"postman.setEnvironmentVariable(\"sig_U1\", hash);",
 							""
 						],
 						"type": "text/javascript"
@@ -30,10 +30,9 @@
 						"exec": [
 							"var json = JSON.parse(responseBody);",
 							"",
-							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U1\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
 							"",
-							"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
-							"postman.setEnvironmentVariable(\"keyapi\", keyapi);",
+							"postman.setEnvironmentVariable(\"keyapi_U1\", keyapi);",
 							"",
 							"tests[\"Status code is 200\"] = responseCode.code === 200;",
 							"pm.test(\"Tokenapi is returned\", function () {pm.expect(pm.response.text()).to.include(\"tokenapi\");});"
@@ -54,7 +53,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+					"raw": "{\n\t\"email\": \"{{email_U1}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig_U1}}\"\n}"
 				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/users/token",
@@ -111,10 +110,14 @@
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
 							"        ",
+							"        var proj_name = \"Full\"+ pm.environment.get(\"v4uuid\");",
+							"        var calendar_id = pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === \"Full\"+ pm.environment.get(\"v4uuid\")){",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id === calendar_id)&&(json.data[0].project.kanban_mode === 1)){",
 							"            msg = msgPassed;",
-							"            msg.description = \"create projects success\"",
+							"            msg.description = \"create projects success\";",
+							"        }else{",
+							"            msg.description = \"create projects fail - Bug https://floware.atlassian.net/browse/FB-100\";",
 							"        }",
 							"    }else{",
 							"        var count_error = json.data_error.length;",
@@ -169,10 +172,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"Full{{v4uuid}}\",\n            \"proj_color\": \"#d06b64\",\n            \"created_date\": 1540888825.375,\n            \"updated_date\": 1543302249.725,\n            \"calendar_id\": \"ABC005056030716\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": -4,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        }\n    ]\n}"
+					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"Full{{v4uuid}}\",\n            \"proj_color\": \"#d06b64\",\n            \"created_date\": 1540888825.375,\n            \"updated_date\": 1543302249.725,\n            \"calendar_id\": \"{{v4uuid}}\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": -4,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -185,7 +188,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -193,7 +196,7 @@
 			"response": []
 		},
 		{
-			"name": "Create Projects - Not pass param proj_type",
+			"name": "Create Projects - Not pass param proj_type & calendar_id",
 			"event": [
 				{
 					"listen": "test",
@@ -206,7 +209,7 @@
 							"",
 							"var msgFailed = {",
 							"    collection: \"API_Projects\",",
-							"    title: 'Failed - Create Projects - Not pass param proj_type',",
+							"    title: 'Failed - Create Projects - Not pass param proj_type & calendar_id',",
 							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
 							"    method: \"POST\",",
 							"    error: \"Has Error\",",
@@ -215,7 +218,7 @@
 							"};",
 							"var msgPassed = {",
 							"    collection: \"API_Projects\",",
-							"    title: 'Passed - Create Projects - Not pass param proj_type',",
+							"    title: 'Passed - Create Projects - Not pass param proj_type & calendar_id',",
 							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
 							"    method: \"POST\",",
 							"    error: \"No Error\",",
@@ -231,11 +234,11 @@
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
 							"        ",
+							"        var proj_name = \"ABC\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === (\"ABC\" + pm.environment.get(\"v4uuid\"))){",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id !== \"\")){",
 							"            msg = msgPassed;",
 							"            msg.description = \"create projects success\";",
-							"            ",
 							"        }",
 							"    }else{",
 							"        var count_error = json.data_error.length;",
@@ -294,7 +297,7 @@
 					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"ABC{{v4uuid}}\"\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -307,7 +310,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -353,8 +356,9 @@
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
 							"        ",
+							"        var proj_name = \"!@#$%^&*()<>\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === \"!@#$%^&*()<>\" + pm.environment.get(\"v4uuid\")){",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id !== \"\")){",
 							"            msg = msgPassed;",
 							"            msg.description = \"create projects success\"",
 							"",
@@ -415,7 +419,7 @@
 					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"!@#$%^&*()<>{{v4uuid}}\"\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -428,7 +432,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -441,7 +445,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6d6353a4-907f-452e-96e9-6eb491c3b17a",
+						"id": "6fb96c34-1469-4b67-a5cc-79f7cf1c1b5a",
 						"exec": [
 							"tests[\"Status code is 200\"] = responseCode.code === 200;",
 							"var json = JSON.parse(responseBody);",
@@ -474,8 +478,9 @@
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
 							"        ",
+							"        var proj_name = \"ProjectType\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if((json.data[0].projects.proj_name === \"ProjectType\"+pm.environment.get(\"v4uuid\"))&&(json.data[0].projects.proj_type === 0)){",
+							"        if((json.data[0].project.proj_name === proj_name) && (json.data[0].project.calendar_id !== \"\") && (json.data[0].project.proj_type === 0)){",
 							"            msg = msgPassed;",
 							"            msg.description = \"create projects success\"",
 							"            ",
@@ -513,7 +518,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "3441f0e8-94b5-4744-b8ea-044c86b14d84",
+						"id": "1c9789c5-6330-47ca-9efe-11401b586b58",
 						"exec": [
 							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
 						],
@@ -536,7 +541,7 @@
 					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"ProjectType{{v4uuid}}\",\n            \"proj_type\": 0\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -549,7 +554,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -595,11 +600,11 @@
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
 							"        ",
+							"        var proj_name = \"Default\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === (\"Default\")+ pm.environment.get(\"v4uuid\")){",
+							"        if((json.data[0].project.proj_name === proj_name) && (json.data[0].project.calendar_id !== \"\") && (json.data[0].project.proj_type === -1)){",
 							"            msg = msgPassed;",
-							"            msg.description = \"create projects success\"",
-							"            ",
+							"            msg.description = \"create projects success\";",
 							"        }",
 							"    }else{",
 							"        var count_error = json.data_error.length;",
@@ -657,7 +662,7 @@
 					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"Default{{v4uuid}}\",\n            \"proj_type\": -1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -670,7 +675,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -716,11 +721,11 @@
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
 							"        ",
+							"        var proj_name = \"Colour\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === (\"Colour\")+ pm.environment.get(\"v4uuid\")){",
+							"        if((json.data[0].project.proj_name === proj_name) && (json.data[0].project.calendar_id !== \"\") && (json.data[0].project.proj_color === \"#BEBC18\")){",
 							"            msg = msgPassed;",
-							"            msg.description = \"create projects success\"",
-							"",
+							"            msg.description = \"create projects success\";",
 							"        }",
 							"    }else{",
 							"        var count_error = json.data_error.length;",
@@ -778,7 +783,7 @@
 					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"Colour{{v4uuid}}\",\n            \"proj_color\": \"#BEBC18\"\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -791,7 +796,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -840,7 +845,7 @@
 							"        var proj_name = \"Calendar\"+ pm.environment.get(\"v4uuid\");",
 							"        var calendar_id = pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if((json.data[0].projects.proj_name === proj_name)&&(json.data[0].projects.calendar_id === calendar_id)){",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id === calendar_id)){",
 							"            msg = msgPassed;",
 							"            msg.description = \"create projects success\";",
 							"        }",
@@ -900,7 +905,7 @@
 					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"Calendar{{v4uuid}}\",\n            \"calendar_id\": \"{{v4uuid}}\"\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -913,7 +918,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -958,9 +963,9 @@
 							"    // Check number items",
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
-							"        ",
+							"        var proj_name = \"Parent\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === (\"Parent\")+ pm.environment.get(\"v4uuid\")){",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id !== \"\")&&(json.data[0].project.parent_id === 12345)){",
 							"            msg = msgPassed;",
 							"            msg.description = \"create projects success\"",
 							"",
@@ -1021,7 +1026,7 @@
 					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"Parent{{v4uuid}}\",\n            \"parent_id\": 12345\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1034,7 +1039,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -1079,9 +1084,9 @@
 							"    // Check number items",
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
-							"        ",
+							"        var proj_name = \"DueDate\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === \"DueDate\"+ pm.environment.get(\"v4uuid\")){",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id !== \"\")&&(json.data[0].project.due_date === 1548838832)){",
 							"            msg = msgPassed;",
 							"            msg.description = \"create projects success\"",
 							"            ",
@@ -1142,7 +1147,7 @@
 					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"DueDate{{v4uuid}}\",\n            \"due_date\": 1548838832\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1155,7 +1160,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -1200,9 +1205,9 @@
 							"    // Check number items",
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
-							"        ",
+							"        var proj_name = \"Flag\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === (\"Flag\")+ pm.environment.get(\"v4uuid\")){",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id !== \"\")&&(json.data[0].project.flag === 1)){",
 							"            msg = msgPassed;",
 							"            msg.description = \"create projects success\"",
 							"",
@@ -1260,10 +1265,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"Flag{{v4uuid}}\",\n            \"flag\": 11\n        }\n    ]\n}"
+					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"Flag{{v4uuid}}\",\n            \"flag\": 1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1276,7 +1281,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -1321,16 +1326,11 @@
 							"    // Check number items",
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
-							"        ",
+							"        var proj_name = \"IsHide\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === (\"IsHide\")+ pm.environment.get(\"v4uuid\")){",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id !== \"\")&&(json.data[0].project.is_hide === 1)){",
 							"            msg = msgPassed;",
 							"            msg.description = \"create projects success\"",
-							"            ",
-							"            // delete created project to clean up ",
-							"            //var deleted_projectid = pm.environment.get(\"deleted_projectid\");",
-							"            //deleted_projectid = (deleted_projectid !== undefined) ? json.data[0].projects.id+\",\"+deleted_projectid : json.data[0].projects.id;",
-							"            //postman.setEnvironmentVariable(\"deleted_projectid\", deleted_projectid);",
 							"        }",
 							"    }else{",
 							"        var count_error = json.data_error.length;",
@@ -1388,7 +1388,7 @@
 					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"IsHide{{v4uuid}}\",\n            \"is_hide\": 1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1401,7 +1401,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -1446,9 +1446,9 @@
 							"    // Check number items",
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
-							"        ",
+							"        var proj_name = \"Alerts\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === (\"Alerts\")+ pm.environment.get(\"v4uuid\")){",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id !== \"\")&&(json.data[0].project.alerts === \"[{\\\"sound\\\":\\\"\\\",\\\"time\\\":123}, {\\\"sound\\\":\\\"\\\",\\\"time\\\":123}]\")){",
 							"            msg = msgPassed;",
 							"            msg.description = \"create projects success\"",
 							"",
@@ -1509,7 +1509,7 @@
 					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"Alerts{{v4uuid}}\",\n            \"alerts\": \"[{\\\"sound\\\":\\\"\\\",\\\"time\\\":123}, {\\\"sound\\\":\\\"\\\",\\\"time\\\":123}]\"\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1522,7 +1522,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -1567,9 +1567,9 @@
 							"    // Check number items",
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
-							"        ",
+							"        var proj_name = \"IsExpand\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === (\"IsExpand\")+ pm.environment.get(\"v4uuid\")){",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id !== \"\")&&(json.data[0].project.is_expand === 1)){",
 							"            msg = msgPassed;",
 							"            msg.description = \"create projects success\"",
 							"",
@@ -1630,7 +1630,7 @@
 					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"IsExpand{{v4uuid}}\",\n            \"is_expand\": 1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1643,7 +1643,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -1688,16 +1688,11 @@
 							"    // Check number items",
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
-							"        ",
+							"        var proj_name = \"ViewMode\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === \"ViewMode\"+ pm.environment.get(\"v4uuid\")){",
-							"            if(json.data[0].projects.view_mode === 1){",
-							"                msg = msgPassed;",
-							"                msg.description = \"create projects success\"",
-							"            }else{",
-							"                msg.description = \"new project is wrong view_mode\"",
-							"            }",
-							"",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id !== \"\")&&(json.data[0].project.view_mode === 1)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"create projects success\";",
 							"        }",
 							"    }else{",
 							"        var count_error = json.data_error.length;",
@@ -1755,7 +1750,7 @@
 					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"ViewMode{{v4uuid}}\",\n            \"view_mode\": 1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1768,7 +1763,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -1813,16 +1808,11 @@
 							"    // Check number items",
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
-							"        ",
+							"        var proj_name = \"ViewSort\"+ pm.environment.get(\"v4uuid\");",
 							"        // Check data response",
-							"        if(json.data[0].projects.proj_name === \"ViewSort\"+ pm.environment.get(\"v4uuid\")){",
-							"            if(json.data[0].projects.view_sort === 1){",
-							"                msg = msgPassed;",
-							"                msg.description = \"create projects success\"",
-							"            }else{",
-							"                msg.description = \"new project is wrong view_sort\"",
-							"            }",
-							"",
+							"        if((json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id !== \"\")&&(json.data[0].project.view_sort === 1)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"create projects success\";",
 							"        }",
 							"    }else{",
 							"        var count_error = json.data_error.length;",
@@ -1880,7 +1870,7 @@
 					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"ViewSort{{v4uuid}}\",\n            \"view_sort\": 1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -1893,7 +1883,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -1938,9 +1928,9 @@
 							"    // Check number items",
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
-							"        ",
+							"        var proj_name = \"Ref\"+ pm.environment.get(\"v4uuid\");",
 							"        // check value of ref",
-							"        if((json.data[0].projects.ref === 123456)&&(json.data[0].projects.proj_name === \"Ref\"+ pm.environment.get(\"v4uuid\"))){",
+							"        if((json.data[0].project.ref === 123456)&&(json.data[0].project.proj_name === proj_name)&&(json.data[0].project.calendar_id === pm.environment.get(\"v4uuid\"))){",
 							"            msg = msgPassed;",
 							"            msg.description = \"create projects success & ref is correct\";",
 							"        }else{",
@@ -2002,10 +1992,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"Ref{{v4uuid}}\",\n            \"proj_color\": \"#d06b64\",\n            \"created_date\": 1540888825.375,\n            \"updated_date\": 1543302249.725,\n            \"calendar_id\": \"ABC005056030716\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": -4,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1,\n            \"ref\": 123456\n        }\n    ]\n}"
+					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"Ref{{v4uuid}}\",\n            \"proj_color\": \"#d06b64\",\n            \"created_date\": 1540888825.375,\n            \"updated_date\": 1543302249.725,\n            \"calendar_id\": \"{{v4uuid}}\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": -4,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1,\n            \"ref\": 123456\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2018,7 +2008,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -2113,7 +2103,7 @@
 					"raw": "{\n    \"projects\":[\n        {\n            \"proj_name\": \"General\"\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2126,7 +2116,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -2172,31 +2162,31 @@
 							"    var count = json.data.length;",
 							"    if(count !== 0){",
 							"        ",
-							"        var update1 = json.data[0].projects.proj_name;",
-							"        var update2 = json.data[0].projects.proj_color;",
-							"        var update3 = json.data[0].projects.calendar_id;",
-							"        var update4 = json.data[0].projects.parent_id;",
-							"        var update5 = json.data[0].projects.due_date;",
-							"        var update6 = json.data[0].projects.flag;",
-							"        var update7 = json.data[0].projects.info_card_order;",
-							"        var update8 = json.data[0].projects.current_mode;",
-							"        var update9 = json.data[0].projects.is_hide;",
-							"        var update10 = json.data[0].projects.alerts;",
-							"        var update11 = json.data[0].projects.state;",
-							"        var update12 = json.data[0].projects.is_expand;",
-							"        var update13 = json.data[0].projects.order_kanban;",
-							"        var update14 = json.data[0].projects.view_mode;",
-							"        var update15 = json.data[0].projects.view_sort;",
-							"        var update16 = json.data[0].projects.kanban_mode;",
+							"        var update1 = json.data[0].project.proj_name;",
+							"        var update2 = json.data[0].project.proj_color;",
+							"        var update3 = json.data[0].project.calendar_id;",
+							"        var update4 = json.data[0].project.parent_id;",
+							"        var update5 = json.data[0].project.due_date;",
+							"        var update6 = json.data[0].project.flag;",
+							"        var update7 = json.data[0].project.info_card_order;",
+							"        var update8 = json.data[0].project.current_mode;",
+							"        var update9 = json.data[0].project.is_hide;",
+							"        var update10 = json.data[0].project.alerts;",
+							"        var update11 = json.data[0].project.state;",
+							"        var update12 = json.data[0].project.is_expand;",
+							"        var update13 = json.data[0].project.order_kanban;",
+							"        var update14 = json.data[0].project.view_mode;",
+							"        var update15 = json.data[0].project.view_sort;",
+							"        var update16 = json.data[0].project.kanban_mode;",
 							"        ",
 							"        // Check data response",
-							"        if((update1 === \"Success\" + pm.environment.get(\"v4uuid\"))&&(update2 === \"#d06b64\")&&(update3 === \"ABC005056030716\")&&(update4 === 0)&&(update5 === 123456789)&&(update6 === 1)&&(update7 === 1)&&(update8 === 1)&&(update9 === 1)&&(update10 === \"abcxyz\")&&(update11 === 1)&&(update12 === 1)&&(update13 === \"12\")&&(update14 === 1)&&(update15 === 1)&&(update16 === 1)){",
+							"        if((update1 === \"Success\" + pm.environment.get(\"v4uuid\"))&&(update2 === \"#d06b64\")&&(update3 === pm.environment.get(\"v4uuid\"))&&(update4 === 0)&&(update5 === 123456789)&&(update6 === 1)&&(update7 === 1)&&(update8 === 1)&&(update9 === 1)&&(update10 === \"abcxyz\")&&(update11 === 1)&&(update12 === 1)&&(update13 === \"12\")&&(update14 === 1)&&(update15 === 1)&&(update16 === 1)){",
 							"            msg = msgPassed;",
-							"            msg.description = \"update projects success\"",
-							"            ",
-							"            postman.setEnvironmentVariable(\"modifiedTime\", json.data[0].projects.updated_date);",
-							"",
+							"            msg.description = \"update projects success\";",
+							"        }else{",
+							"            msg.description = \"update projects fail - Bug https://floware.atlassian.net/browse/FB-100\";",
 							"        }",
+							"        pm.environment.set(\"modifiedTime\", json.data[0].project.updated_date);",
 							"    }else{",
 							"        var count_error = json.data_error.length;",
 							"        if (count_error !== 0){",
@@ -2238,7 +2228,7 @@
 							"var server = pm.environment.get(\"server\");",
 							"var port = pm.environment.get(\"port\");",
 							"var version = pm.environment.get(\"version\");",
-							"var keyapi = pm.environment.get(\"keyapi\");",
+							"var keyapi = pm.environment.get(\"keyapi_U1\");",
 							"",
 							"var projectname = \"Update_Project\" + pm.environment.get(\"v4uuid\");",
 							"",
@@ -2260,11 +2250,9 @@
 							"    console.log(\"Error: \"+error);",
 							"}else{",
 							"    getResponse = response.json();",
-							"    postman.setEnvironmentVariable(\"projectid_success\", getResponse.data[0].projects.id);",
+							"    pm.environment.set(\"projectid_success\", getResponse.data[0].project.id);",
 							"    }",
-							"})",
-							"",
-							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
+							"})"
 						],
 						"type": "text/javascript"
 					}
@@ -2282,10 +2270,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"projects\": [\n\t\t{\n\t        \"id\": {{projectid_success}},\n            \"proj_name\": \"Success{{v4uuid}}\",\n            \"proj_color\": \"#d06b64\",\n            \"calendar_id\": \"ABC005056030716\",\n            \"parent_id\": 0,\n            \"due_date\": 123456789,\n            \"flag\": 1,\n            \"info_card_order\": 1,\n            \"current_mode\": 1,\n            \"is_hide\": 1,\n            \"alerts\": \"abcxyz\",\n            \"state\": 1,\n            \"is_expand\": 1,\n            \"order_kanban\": \"12\",\n            \"view_mode\": 1,\n            \"view_sort\": 1,\n            \"kanban_mode\": 1\n        }\n    ]\n}"
+					"raw": "{\n    \"projects\": [\n\t\t{\n\t        \"id\": {{projectid_success}},\n            \"proj_name\": \"Success{{v4uuid}}\",\n            \"proj_color\": \"#d06b64\",\n            \"calendar_id\": \"{{v4uuid}}\",\n            \"parent_id\": 0,\n            \"due_date\": 123456789,\n            \"flag\": 1,\n            \"info_card_order\": 1,\n            \"current_mode\": 1,\n            \"is_hide\": 1,\n            \"alerts\": \"abcxyz\",\n            \"state\": 1,\n            \"is_expand\": 1,\n            \"order_kanban\": \"12\",\n            \"view_mode\": 1,\n            \"view_sort\": 1,\n            \"kanban_mode\": 1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects/?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2299,7 +2287,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -2317,7 +2305,7 @@
 							"tests[\"Status code is 200\"] = responseCode.code === 200;",
 							"",
 							"var json = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"projectid_updatefail\", json.data[0].projects.id);",
+							"postman.setEnvironmentVariable(\"projectid_updatefail\", json.data[0].project.id);",
 							""
 						],
 						"type": "text/javascript"
@@ -2349,7 +2337,7 @@
 					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"updatefail{{v4uuid}}\"\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2362,7 +2350,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -2463,10 +2451,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"projects\": [\n\t\t{\n\t        \"id\": {{projectid_updatefail}},\n\t        \"proj_name\": \"General\"\n        }\n    ]\n}"
+					"raw": "{\n    \"projects\": [\n\t\t{\n\t        \"id\": {{projectid_updatefail}},\n\t        \"proj_name\": \"General\",\n\t        \"parent_id\": 0\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects/?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2480,7 +2468,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -2569,7 +2557,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2582,7 +2570,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						},
 						{
 							"key": "fields",
@@ -2711,7 +2699,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&ids={{projectid_success}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&ids={{projectid_success}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2724,16 +2712,16 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{projectid_success}}"
 						},
 						{
 							"key": "fields",
 							"value": "id,proj_name,calendar_id",
 							"disabled": true
-						},
-						{
-							"key": "ids",
-							"value": "{{projectid_success}}"
 						},
 						{
 							"key": "has_del",
@@ -2852,7 +2840,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&fields=id,proj_name,calendar_id",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&fields=id,proj_name,calendar_id",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -2865,7 +2853,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						},
 						{
 							"key": "fields",
@@ -3012,7 +3000,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&minID={{minID}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&minID={{minID}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3025,7 +3013,11 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{minID}}"
 						},
 						{
 							"key": "fields",
@@ -3041,10 +3033,6 @@
 							"key": "has_del",
 							"value": "1",
 							"disabled": true
-						},
-						{
-							"key": "minID",
-							"value": "{{minID}}"
 						},
 						{
 							"key": "pItem",
@@ -3159,7 +3147,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&pItem=2",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&pItem=2",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3172,7 +3160,11 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "pItem",
+							"value": "2"
 						},
 						{
 							"key": "fields",
@@ -3193,10 +3185,6 @@
 							"key": "minID",
 							"value": "36713",
 							"disabled": true
-						},
-						{
-							"key": "pItem",
-							"value": "2"
 						},
 						{
 							"key": "modifiedGTE",
@@ -3306,7 +3294,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&has_del=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&has_del=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3319,7 +3307,11 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1"
 						},
 						{
 							"key": "fields",
@@ -3330,10 +3322,6 @@
 							"key": "ids",
 							"value": "34791,34792",
 							"disabled": true
-						},
-						{
-							"key": "has_del",
-							"value": "1"
 						},
 						{
 							"key": "minID",
@@ -3458,7 +3446,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&modifiedGTE={{modifiedTime}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&modifiedGTE={{modifiedTime}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3471,7 +3459,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						},
 						{
 							"key": "modifiedGTE",
@@ -3612,7 +3600,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&modifiedLT={{modifiedLT}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&modifiedLT={{modifiedLT}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3625,7 +3613,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						},
 						{
 							"key": "modifiedLT",
@@ -3682,7 +3670,17 @@
 							"tests[\"Status code is 200\"] = responseCode.code === 200;",
 							"",
 							"var json = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"projectid_get\", json.data[0].projects.id);"
+							"postman.setEnvironmentVariable(\"projectid_get\", json.data[0].project.id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "90426667-4190-4131-8258-c4ac3b979d26",
+						"exec": [
+							"pm.environment.set(\"v4uuid\", 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8); return v.toString(16); }));"
 						],
 						"type": "text/javascript"
 					}
@@ -3700,10 +3698,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"projectid_get\"\n        }\n    ]\n}"
+					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"projectid_get{{v4uuid}}\"\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3716,7 +3714,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -3809,16 +3807,16 @@
 					{
 						"key": "Content-Type",
 						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
+						"value": "application/json",
+						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "{\n    \"projects\": [\n        {\n            \"id\": \"{{projectid_get}}\"\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects/{{projectid_get}}?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3826,13 +3824,12 @@
 					"port": "{{port}}",
 					"path": [
 						"{{version}}",
-						"projects",
-						"{{projectid_get}}"
+						"projects"
 					],
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -3840,7 +3837,7 @@
 			"response": []
 		},
 		{
-			"name": "List Projects - Precondition get minDelID All",
+			"name": "List Projects - Precondition get minDelID All (has_del, ids)",
 			"event": [
 				{
 					"listen": "test",
@@ -3850,7 +3847,69 @@
 							"tests[\"Status code is 200\"] = responseCode.code === 200;",
 							"",
 							"var json = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"minDelID\", json.data_del[0].deleted_item.id -1);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Failed - List Projects - Precondition get minDelID All (has_del, ids)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_Projects\",",
+							"    title: 'Passed - List Projects - Precondition get minDelID All (has_del, ids)',",
+							"    endpoint: pm.environment.get(\"version\") + \"/projects\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"",
+							"var msg = msgFailed;",
+							"",
+							"if (statusResponse == 200) {",
+							"    msg.status = 200;",
+							"    // Check number items",
+							"    var count_data_del = json.data_del.length;",
+							"    var minDelID = 100000000;",
+							"",
+							"    if (count_data_del !== 0) {",
+							"        // Check data response",
+							"        var projectid_get = pm.environment.get(\"projectid_get\");",
+							"",
+							"        //console.log(projectid_get);",
+							"        if (json.data_del[0].deleted_item.item_id === projectid_get) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list project success\";",
+							"            minDelID = json.data_del[0].deleted_item.id -1;",
+							"        }",
+							"    } else {",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\";",
+							"        msg.description = \"Bug https://floware.atlassian.net/browse/FB-103\";",
+							"    }",
+							"    pm.environment.set(\"minDelID\", minDelID);",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});",
 							""
 						],
 						"type": "text/javascript"
@@ -3875,7 +3934,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&ids={{projectid_get}}&has_del=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&ids={{projectid_get}}&has_del=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -3888,12 +3947,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
-						},
-						{
-							"key": "fields",
-							"value": "id,proj_name,calendar_id",
-							"disabled": true
+							"value": "{{keyapi_U1}}"
 						},
 						{
 							"key": "ids",
@@ -3902,6 +3956,11 @@
 						{
 							"key": "has_del",
 							"value": "1"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
 						},
 						{
 							"key": "minID",
@@ -3973,12 +4032,11 @@
 							"    var count_data_del = json.data_del.length;",
 							"    ",
 							"    if((count_data !== 0)&&(count_data_del !== 0)){",
-							"        ",
-							"        // Check data response",
 							"        var minID = Number(pm.environment.get(\"minID\"));",
 							"        var minDelID = Number(pm.environment.get(\"minDelID\"));",
 							"       ",
-							"        console.log(minID +\" \"+ minDelID)",
+							"        //console.log(minID +\" \"+ minDelID)",
+							"        // Check data response",
 							"        var flag = 1;",
 							"        for (var i = 0; i < count_data; i++) {",
 							"            if (minID >= json.data[i].project.id)",
@@ -3994,10 +4052,10 @@
 							"            msg = msgPassed;",
 							"            msg.description = \"get list projects success\";",
 							"        }",
-							"        ",
 							"    }else{",
 							"        msg = msgFailed;",
-							"        msg.error = \"response null item\"",
+							"        msg.error = \"response null item\";",
+							"        msg.description = \"Failed by bug https://floware.atlassian.net/browse/FB-103\";",
 							"    }",
 							"}else  {",
 							"    msg = msgFailed;",
@@ -4033,7 +4091,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&minID={{minID}}&minDelID={{minDelID}}&has_del=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&minID={{minID}}&minDelID={{minDelID}}&has_del=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4046,7 +4104,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						},
 						{
 							"key": "minID",
@@ -4119,13 +4177,13 @@
 							"            msg = msgPassed;",
 							"            msg.description = \"create 50 projects success\";",
 							"        }else{",
-							"            msg.description = \"number of created projects is not correct\";",
+							"            msg.description = \"number of created projects is not correct - Bug https://floware.atlassian.net/browse/FB-104\";",
 							"        }",
 							"        ",
 							"        // clean up projects",
 							"        var projectid50 =[];",
-							"        for(var i=0; i<count; i++){",
-							"            projectid50[i] = json.data[i].projects.id;",
+							"        for(var i=0; i<50; i++){",
+							"            projectid50[i] = json.data[i].project.id;",
 							"        }",
 							"        pm.environment.set(\"projectid50\", projectid50);",
 							"    }",
@@ -4186,7 +4244,7 @@
 					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_1\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_2\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_3\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_4\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_5\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_6\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_7\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_8\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },{\n            \"proj_name\": \"Proj_{{v4uuid}}_9\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_10\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_11\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_12\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_13\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_14\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_15\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_16\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_17\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_18\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_19\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_20\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_21\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_22\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_23\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_24\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_25\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_26\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_27\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_28\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },{\n            \"proj_name\": \"Proj_{{v4uuid}}_29\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_30\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_31\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_32\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_33\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_34\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_35\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_36\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_37\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_38\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_39\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_40\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_41\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_42\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_43\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_44\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_45\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_46\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_47\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_48\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },{\n            \"proj_name\": \"Proj_{{v4uuid}}_49\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_50\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        },\n        {\n            \"proj_name\": \"Proj_{{v4uuid}}_51\",\n            \"proj_color\": \"#d06b64\",\n            \"parent_id\": 0,\n            \"due_date\": 0,\n            \"flag\": 0,\n            \"proj_type\": 0,\n            \"info_card_order\": 0,\n            \"current_mode\": 0,\n            \"is_hide\": 0,\n            \"alerts\": \"\",\n            \"state\": 1,\n            \"recent_time\": 1543302249.725,\n            \"is_expand\": 0,\n            \"order_storyboard\": \"\",\n            \"order_kanban\": \"\",\n            \"view_mode\": 0,\n            \"view_sort\": 0,\n            \"kanban_mode\": 1\n        }\n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4199,7 +4257,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -4250,7 +4308,7 @@
 							"            msg = msgPassed;",
 							"            msg.description = \"update 50 projects success\";",
 							"        }else{",
-							"            msg.description = \"number of updated projects is not correct\";",
+							"            msg.description = \"number of updated projects is not correct - Bug https://floware.atlassian.net/browse/FB-104\";",
 							"        }",
 							"        ",
 							"        // Clear temp variables",
@@ -4258,7 +4316,7 @@
 							"            postman.clearEnvironmentVariable(\"Project_\"+(i+1));",
 							"        }",
 							"        ",
-							"        pm.environment.set(\"modifiedGTE_upd\", json.data[0].projects.updated_date);",
+							"        pm.environment.set(\"modifiedGTE_upd\", json.data[0].project.updated_date);",
 							"    }",
 							"    // fail - not project data response",
 							"    else{",
@@ -4323,10 +4381,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"projects\": [\n    {\n\t  \"id\": \"{{Project_1}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_1\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_2}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_2\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_3}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_3\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_4}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_4\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_5}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_5\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_6}}\",\n        \"proj_name\": \"Col_{{v4uuid}}_6\",\n        \"proj_color\": \"#d06b64\",\n        \"parent_id\": 0,\n        \"due_date\": 0,\n        \"flag\": 0,\n        \"proj_type\": 0,\n        \"info_card_order\": 0,\n        \"current_mode\": 0,\n        \"is_hide\": 0,\n        \"alerts\": \"\",\n        \"state\": 1,\n        \"recent_time\": 1543302249.725,\n        \"is_expand\": 0,\n        \"order_storyboard\": \"\",\n        \"order_kanban\": \"\",\n        \"view_mode\": 0,\n        \"view_sort\": 0,\n        \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_7}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_7\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_8}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_8\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_9}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_9\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_10}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_10\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_11}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_11\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_12}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_12\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_13}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_13\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_14}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_14\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_15}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_15\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_16}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_16\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_17}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_17\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_18}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_18\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_19}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_19\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_20}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_20\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_21}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_21\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_22}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_22\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_23}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_23\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_24}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_24\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_25}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_25\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_26}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_26\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_27}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_27\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_28}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_28\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_29}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_29\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_30}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_30\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_31}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_31\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_32}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_32\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_33}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_33\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_34}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_34\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_35}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_35\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_36}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_36\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_37}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_37\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_38}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_38\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_39}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_39\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_40}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_40\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_41}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_41\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_42}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_42\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_43}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_43\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_44}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_44\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_45}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_45\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_46}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_46\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_47}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_47\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_48}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_48\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_49}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_49\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_50}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_50\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"12345\",\n      \"proj_name\": \"NO UPDATE_{{v4uuid}}\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    }\n  ]\n}"
+					"raw": "{\n  \"projects\": [\n    {\n\t  \"id\": \"{{Project_1}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_1\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_2}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_2\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_3}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_3\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_4}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_4\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_5}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_5\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_6}}\",\n        \"proj_name\": \"Col_{{v4uuid}}_6\",\n        \"proj_color\": \"#d06b64\",\n        \"parent_id\": 0,\n        \"due_date\": 0,\n        \"flag\": 0,\n        \"proj_type\": 0,\n        \"info_card_order\": 0,\n        \"current_mode\": 0,\n        \"is_hide\": 0,\n        \"alerts\": \"\",\n        \"state\": 1,\n        \"recent_time\": 1543302249.725,\n        \"is_expand\": 0,\n        \"order_storyboard\": \"\",\n        \"order_kanban\": \"\",\n        \"view_mode\": 0,\n        \"view_sort\": 0,\n        \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_7}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_7\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_8}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_8\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_9}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_9\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_10}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_10\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_11}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_11\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_12}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_12\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_13}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_13\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_14}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_14\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_15}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_15\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_16}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_16\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_17}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_17\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_18}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_18\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_19}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_19\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_20}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_20\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_21}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_21\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_22}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_22\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_23}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_23\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_24}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_24\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_25}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_25\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_26}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_26\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_27}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_27\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_28}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_28\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_29}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_29\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_30}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_30\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_31}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_31\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_32}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_32\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_33}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_33\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_34}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_34\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_35}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_35\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_36}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_36\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_37}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_37\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_38}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_38\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_39}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_39\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_40}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_40\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_41}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_41\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_42}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_42\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_43}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_43\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_44}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_44\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n    \t\"id\": \"{{Project_45}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_45\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_46}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_46\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_47}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_47\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_48}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_48\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_49}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_49\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{Project_50}}\",\n      \"proj_name\": \"Col_{{v4uuid}}_50\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    },\n    {\n      \"id\": \"{{projectid_updatefail}}\",\n      \"proj_name\": \"NO UPDATE_{{v4uuid}}\",\n      \"proj_color\": \"#d06b64\",\n      \"parent_id\": 0,\n      \"due_date\": 0,\n      \"flag\": 0,\n      \"proj_type\": 0,\n      \"info_card_order\": 0,\n      \"current_mode\": 0,\n      \"is_hide\": 0,\n      \"alerts\": \"\",\n      \"state\": 1,\n      \"recent_time\": 1543302249.725,\n      \"is_expand\": 0,\n      \"order_storyboard\": \"\",\n      \"order_kanban\": \"\",\n      \"view_mode\": 0,\n      \"view_sort\": 0,\n      \"kanban_mode\": 1\n    }\n  ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4339,7 +4397,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -4384,12 +4442,20 @@
 							"    // Check number items",
 							"    var count_data = json.data.length;",
 							"    ",
-							"    if((count_data === 50)){",
-							"       var minID = Number(pm.environment.get(\"minID_upd\"));",
-							"       ",
-							"       //console.log(minID)",
+							"    if((count_data !== 0)){",
+							"        ",
+							"        var minID = Number(pm.environment.get(\"minID_upd-1\"));",
+							"        var modifiedGTE = Number(pm.environment.get(\"modifiedGTE_upd\"));",
+							"        //console.log(minID)",
 							"        // Check data response",
-							"        if((json.data[0].project.id === minID)){",
+							"        var flag = 1;",
+							"        for (var i = 0; i < count_data; i++) {",
+							"            if ((minID >= json.data[i].project.id)||(modifiedGTE > json.data[i].project.updated_date)){",
+							"                flag = 0;",
+							"                //console.log(i);",
+							"            }",
+							"        }",
+							"        if (flag === 1) {",
 							"            msg = msgPassed;",
 							"            msg.description = \"get list projects success\";",
 							"            ",
@@ -4445,7 +4511,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&minID={{minID_upd-1}}&modifiedGTE={{modifiedGTE_upd}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&minID={{minID_upd-1}}&modifiedGTE={{modifiedGTE_upd}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4458,7 +4524,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						},
 						{
 							"key": "minID",
@@ -4548,7 +4614,15 @@
 					"script": {
 						"id": "14d6e68e-faba-40da-b159-eef947e01312",
 						"exec": [
-							""
+							"var projectid50 = pm.environment.get(\"projectid50\").toString();",
+							"var count = pm.environment.get(\"projectid50\").length;",
+							"",
+							"var stringJson = \"\";",
+							"for(var i = 0; i< count; i++){",
+							"   stringJson = (stringJson === \"\" ? stringJson : stringJson +', ') +' { \"id\" : ' +projectid50.split(\",\")[i]+ '}';",
+							"}",
+							"",
+							"pm.environment.set(\"stringJson\", stringJson);"
 						],
 						"type": "text/javascript"
 					}
@@ -4566,10 +4640,10 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "{\n    \"projects\": [ \n    \t{{stringJson}} \n    ]\n}"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects/{{projectid50}}?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4577,13 +4651,12 @@
 					"port": "{{port}}",
 					"path": [
 						"{{version}}",
-						"projects",
-						"{{projectid50}}"
+						"projects"
 					],
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						}
 					]
 				}
@@ -4601,9 +4674,15 @@
 							"tests[\"Status code is 200\"] = responseCode.code === 200;",
 							"",
 							"var json = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"minDelID_del\", json.data_del[0].deleted_item.id);",
-							"postman.setEnvironmentVariable(\"modifiedGTE_del\", json.data_del[0].deleted_item.updated_date);",
-							""
+							"",
+							"var minDelID_del = 100000000;",
+							"var modifiedGTE_del = 0;",
+							"if(json.data_del.length > 0){",
+							"    minDelID_del = json.data_del[0].deleted_item.id;",
+							"    modifiedGTE_del = json.data_del[0].deleted_item.updated_date",
+							"}",
+							"pm.environment.set(\"minDelID_del\", minDelID_del);",
+							"pm.environment.set(\"modifiedGTE_del\", modifiedGTE_del);"
 						],
 						"type": "text/javascript"
 					}
@@ -4627,7 +4706,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&ids={{minID_upd}}&has_del=1",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&ids={{minID_upd}}&has_del=1",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4640,7 +4719,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						},
 						{
 							"key": "ids",
@@ -4731,12 +4810,11 @@
 							"        if((json.data_del[0].deleted_item.id === minDelID)){",
 							"            msg = msgPassed;",
 							"            msg.description = \"get list projects success\"",
-							"            ",
-							"            postman.clearEnvironmentVariable(\"minDelID_del-1\");",
 							"        }",
 							"    }else{",
 							"        msg = msgFailed;",
 							"        msg.error = \"response null item\"",
+							"        msg.description = \"Failed by bug https://floware.atlassian.net/browse/FB-103\";",
 							"    }",
 							"}else  {",
 							"    msg = msgFailed;",
@@ -4769,7 +4847,9 @@
 							"postman.clearEnvironmentVariable(\"projectid_updatefail\");",
 							"postman.clearEnvironmentVariable(\"minID\");",
 							"postman.clearEnvironmentVariable(\"projectid_get\");",
-							"postman.clearEnvironmentVariable(\"minDelID\");"
+							"postman.clearEnvironmentVariable(\"minDelID\");",
+							"postman.clearEnvironmentVariable(\"minDelID_del-1\");",
+							"postman.clearEnvironmentVariable(\"stringJson\");"
 						],
 						"type": "text/javascript"
 					}
@@ -4798,7 +4878,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}&has_del=1&modifiedGTE={{modifiedGTE_del}}&minDelID={{minDelID_del-1}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi_U1}}&has_del=1&modifiedGTE={{modifiedGTE_del}}&minDelID={{minDelID_del-1}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"
@@ -4811,7 +4891,7 @@
 					"query": [
 						{
 							"key": "keyapi",
-							"value": "{{keyapi}}"
+							"value": "{{keyapi_U1}}"
 						},
 						{
 							"key": "has_del",

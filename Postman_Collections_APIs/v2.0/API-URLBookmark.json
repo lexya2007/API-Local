@@ -238,7 +238,7 @@
 					"raw": "[\n    {\n        \"url\":\"{{url}}\"\n    }\n]"
 				},
 				"url": {
-					"raw": "https://{{server}}:{{port}}/{{version}}//urls?keyapi={{keyapi}}",
+					"raw": "https://{{server}}:{{port}}/{{version}}/urls?keyapi={{keyapi}}",
 					"protocol": "https",
 					"host": [
 						"{{server}}"

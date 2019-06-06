@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "5ec99d27-a177-4311-8f65-0d17fa9ec9bb",
-		"name": "API - Kanbans Version 3.0",
+		"name": "API-Kanbans v3.1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -1275,9 +1275,9 @@
 									"    pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"    });",
-									"    if(!dataResponse.includes(\"error\")){",
+									"    if(dataResponse.includes(\"error\")){",
 									"        msg.description = dataResponse;",
-									"        msg.error = \"Allow create kanban with invalid parameter 'color'\";",
+									"        msg.error = \"Not allow create kanban with invalid parameter 'color'\";",
 									"    }else{",
 									"        msg = msgFailed;",
 									"        msg.error = \"Description response failed\";",
@@ -2629,6 +2629,149 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Create Kanbans - Create over 50 Kanbans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2a3712e8-4267-41dd-b822-a139fc860c66",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API-Kanbans\",",
+									"    title: 'Failed - Create Kanbans - Create over 50 Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanban\",",
+									"    method: \"POST\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API-Kanbans\",",
+									"    title: 'Passed - Create Kanbans - Create over 50 Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanban\",",
+									"    method: \"POST\",",
+									"    error: \"No Error\",",
+									"    status: \"200\",",
+									"    description:\"\",",
+									"};",
+									"",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"var idProj = pm.environment.get(\"idProjectCreated\");",
+									"var msg ;",
+									"var array =[];",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(\"error\")){",
+									"        msg.description=\"Not allow to create over 50 Kanbans\";",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.status = statusResponse;",
+									"        msg.error = \"Not response data error\\nBug: https://floware.atlassian.net/browse/FB-117\"",
+									"        msg.description=\"Not response data error\";",
+									"    }",
+									"    if(dataResponse.includes(\"data\")){",
+									"        var count = json.data.length;",
+									"        var array =[];",
+									"        for(var i =0; i<count;i++){",
+									"            array[i]=json.data[i].kanban.id;",
+									"        }",
+									"        pm.environment.set(\"over50items\",array);",
+									"    }",
+									"    ",
+									"}else  {",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "a8d3e205-8120-4350-acb1-0505faa8b0da",
+								"exec": [
+									"var numberRandom = Math.floor(Math.random()*10000000);",
+									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);",
+									"",
+									"var stringJson = \"\";",
+									"for(var i = 0; i< 52; i++){",
+									"   stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"project_id\": \"{{idProjectCreated}}\",\"name\":\"{{nameCollection}}\",\"color\":\"#4986e7\",\"order_number\":1,\"archive_status\":1,\"order_update_time\":1547534092.088,\"show_done_todo\":1,\"add_new_obj_type\":1,\"sort_by_type\":1,\"kanban_type\":0,\"ref\":1 '+'}';",
+									"}",
+									"",
+									"pm.environment.set(\"CreateKanban\", stringJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {{CreateKanban}}\n    ]\n}\n"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -3678,7 +3821,7 @@
 									"    pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"    });",
-									"    if(dataResponse.includes(\"data_error\")){",
+									"    if(dataResponse.includes(\"error\")){",
 									"        msg.error = \"Cannot update Kanban with invalid value inputted\";",
 									"        msg.description = dataResponse;",
 									"    }else{",
@@ -4222,6 +4365,145 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n    \"kanbans\": [\n        {{UpdateKanban}}\n    ]\n}"
+						},
+						"url": {
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update?keyapi={{keyapi}}",
+							"protocol": "https",
+							"host": [
+								"{{server}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"{{version}}",
+								"kanbans",
+								"update"
+							],
+							"query": [
+								{
+									"key": "keyapi",
+									"value": "{{keyapi}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Kanbans - Update over 50 Kanbans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a80c8cd4-633b-4a25-9ffa-165a367d78f8",
+								"exec": [
+									"var json = JSON.parse(responseBody);",
+									"var msgFailed = {",
+									"    collection: \"API-Kanbans\",",
+									"    title: 'Failed - Update Kanbans - Update over 50 Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanban/update\",",
+									"    method: \"PUT\",",
+									"    error: \"Has Error\",",
+									"    status:\"\",",
+									"    description:\"\",",
+									"};",
+									"var msgPassed = {",
+									"    collection: \"API-Kanbans\",",
+									"    title: 'Passed - Update Kanbans - Update over 50 Kanbans',",
+									"    endpoint: pm.environment.get('version')+\"/kanban/update\",",
+									"    method: \"PUT\",",
+									"    error: \"No Error\",",
+									"    status: \"200\",",
+									"    description:\"\",",
+									"};",
+									"// Data response",
+									"var dataResponse = pm.response.text();",
+									"// Status response",
+									"var statusResponse = responseCode.code;",
+									"// Get project_id from environment",
+									"",
+									"if(statusResponse == 200){",
+									"    msg = msgPassed;",
+									"    msg.status = 200;",
+									"    pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    });",
+									"    if(dataResponse.includes(\"error\")){",
+									"        msg.description=\"Not allow to update over 50 Kanbans\";",
+									"        ",
+									"    }else{",
+									"        msg = msgFailed;",
+									"        msg.status = statusResponse;",
+									"        msg.error = \"Not response data error\\nBug: https://floware.atlassian.net/browse/FB-117\"",
+									"        msg.description=\"Not response data error\";",
+									"    }",
+									"}else{",
+									"    msg = msgFailed;",
+									"    msg.status = statusResponse;",
+									"    msg.error = \"Status response failed\";",
+									"    msg.description=dataResponse;",
+									"}",
+									"",
+									"var Url_report = pm.environment.get(\"url_report\");",
+									"pm.sendRequest({",
+									"    url: Url_report,",
+									"    method: 'POST',",
+									"    header: {",
+									"        'content-type': 'application/json'",
+									"    },",
+									"    body: {",
+									"        mode: 'raw',",
+									"        raw: JSON.stringify(msg)",
+									"    }",
+									"}, function (err, res) {",
+									"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "94d4287c-04b9-4419-b054-5f2b80f0cc7c",
+								"exec": [
+									"var Array_50idKanbans = pm.environment.get(\"50idKanbans[]\");",
+									"console.log(Array_50idKanbans);",
+									"var count = Array_50idKanbans.length;",
+									"// convert Array to String",
+									"var idKanbans = Array_50idKanbans.toString();",
+									"var numberRandom = Math.floor(Math.random()*10000000);",
+									"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);",
+									"",
+									"var stringJson = \"\";",
+									"for(var i = 0; i< count; i++){",
+									"    var listIDKanban = idKanbans.split(\",\")[i];",
+									"    pm.environment.set(\"kanbanid-\"+i,listIDKanban);",
+									"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"id\":'+idKanbans.split(\",\")[i]+ ',\"name\":\"{{nameCollection}}\",\"created_date\":1550653239.696,\"project_id\": {{idProjectCreated}},\"color\":\"#4986e7\",\"order_number\":1,\"archive_status\":1,\"order_kbitem\":1,\"order_update_time\":1547534092.088,\"show_done_todo\":1,\"add_new_obj_type\":1,\"sort_by_type\":1,\"kanban_type\":0,\"archived_time\":1 '+'}';",
+									"}",
+									"pm.environment.set(\"UpdateKanban\", stringJson);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "token",
+								"type": "text",
+								"value": "{{keyapi}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"kanbans\": [\n        {{UpdateKanban}},\n        {\n        \t\"id\": \"{{id_Kanban}}\",\n            \"name\": \"Update Kanban\",\n            \"created_date\": 1550653239.696,\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"color\": \"#F492B3\",\n            \"order_number\": 8,\n            \"archive_status\": 0,\n            \"order_kbitem\": \"\",\n            \"order_update_time\": 0,\n            \"show_done_todo\": 1,\n            \"add_new_obj_type\": 0,\n            \"sort_by_type\": 0,\n            \"archived_time\": 0,\n            \"kanban_type\": 0\n        }\n    ]\n}"
 						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/update?keyapi={{keyapi}}",
@@ -6668,6 +6950,9 @@
 									"pm.environment.unset(\"modifiedGTE-Order\");",
 									"pm.environment.unset(\"id_ArchiveKanban\");",
 									"pm.environment.unset(\"10idKanbans[]\");",
+									"pm.environment.unset(\"CreateKanban\");",
+									"pm.environment.unset(\"idKanban\");",
+									"pm.environment.unset(\"UpdateKanban\");",
 									"// Clean up each id kanbans",
 									"for(var i = 0; i<100; i++){",
 									"    pm.environment.unset(\"kanbanid-\"+i);",

@@ -1,0 +1,3290 @@
+{
+	"info": {
+		"_postman_id": "c7a5d791-5774-4db3-8c47-4b219977c938",
+		"name": "API-Link-Shared",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "RUN ALL SCRIPTS API - LINK FUNCTION SHARED",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
+						"exec": [
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U1\")+\":LeftCoastLogic:\"+pm.environment.get(\"password_U1\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig\", hash);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "64ab487d-2eda-44c8-b027-39943e652ed9",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U1\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+							"postman.setEnvironmentVariable(\"keyapi\", keyapi);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Login',",
+							"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Login',",
+							"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var body = json.description;",
+							"    if(body==\"Flo\"){",
+							"        msg.description=body;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=body;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\"",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email_U1}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token.json",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Owner] - Create Collection Pre-Test",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f143c287-8361-4d2a-aa9c-815ea1c423e1",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Create Collection',",
+							"    endpoint: pm.environment.get('version')+\"/projects.json\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Create Collection',",
+							"    endpoint: pm.environment.get('version')+\"/projects.json\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(dataResponse.includes(\"error\")){",
+							"        msg = msgFailed;",
+							"        msg.description=dataResponse;",
+							"        msg.error = \"Description response failed\";",
+							"    }else{",
+							"        msg = msgPassed;",
+							"        var idProj = json.data[0].project.id;",
+							"        pm.environment.set(\"idProjectCreated\", idProj);",
+							"        msg.description=\"Create new Collection has project_id: \"+idProj;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7b6f26db-5c33-4efb-9fad-b0be0d917b3e",
+						"exec": [
+							"var numberRandom = Math.floor(Math.random() * 10000000);",
+							"postman.setEnvironmentVariable(\"nameCollection\",\"Collection_\"+numberRandom);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects\": [\n        {\n            \"proj_name\": \"{{nameCollection}}\",\n            \"proj_type\": 3\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invite Members to Shared collection",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f143c287-8361-4d2a-aa9c-815ea1c423e1",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Invite Share Collection',",
+							"    endpoint: \"/api/projects.json\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Invite Share Collection',",
+							"    endpoint: \"/api/projects.json\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"var projectID = pm.environment.get(\"idProjectCreated\");",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"",
+							"    if(json.data.projects_users[0].project_id == projectID){",
+							"        msg.description=\"Invite Members to Shared Collection successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description=dataResponse;",
+							"        msg.error = \"Invite Members to Shared Collection not successful\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7b6f26db-5c33-4efb-9fad-b0be0d917b3e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"value": "{{keyapi}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects_users\": [\n        \n        {\n            \"project_id\": \"{{idProjectCreated}}\",\n            \"email\": \"{{email_U2}}\",\n            \"card_uid\": \"/htmh99@flomail.net/XXXXXXXX-1D1F-451D-A716-84CB64FDE0CF.vcf\",\n            \"href\": \"/htmh99@flomail.net/D9B4AB89-1D1F-451D-A716-84CB64FDE0CF.vcf\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/invite?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"invite"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login email invited Shared Collection",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e1b744bb-acc2-4081-aac1-a4f8c9a6cfbb",
+						"exec": [
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U2\")+\":LeftCoastLogic:\"+pm.environment.get(\"password_U2\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig\", hash);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "64ab487d-2eda-44c8-b027-39943e652ed9",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U2\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"postman.setEnvironmentVariable(\"token\", json.tokenapi);",
+							"postman.setEnvironmentVariable(\"keyapi_U2\", keyapi);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Login email invited Shared Collection',",
+							"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Login email invited Shared Collection',",
+							"    endpoint: pm.environment.get('version')+\"/users/token.json\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var body = json.description;",
+							"    if(body==\"Flo\"){",
+							"        msg.description=body;",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"Description response failed\";",
+							"        msg.description=body;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email_U2}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token.json",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accept invite Shared Collection",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f143c287-8361-4d2a-aa9c-815ea1c423e1",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Accept Invite Share Collection',",
+							"    endpoint: \"/api/projects.json\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Accept Invite Share Collection',",
+							"    endpoint: \"/api/projects.json\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var projectID = pm.environment.get(\"idProjectCreated\");",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = statusResponse;",
+							"    if(json.data[0].project_user.project_id == projectID){",
+							"        msg.description=\"Accept invite Shared Collection successful\";",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description=dataResponse;",
+							"        msg.error = \"Accept invite Shared Collection not successful\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"Status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							"",
+							"var Url_report = pm.environment.get(\"url_report\");",
+							"pm.sendRequest({",
+							"    url: Url_report,",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7b6f26db-5c33-4efb-9fad-b0be0d917b3e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi2}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "\n{\n    \"projects\": [\n        {\n            \"id\": \"{{idProjectCreated}}\"\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects/accept_invite?keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects",
+						"accept_invite"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Owner] create calendar object",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "aeb31427-0813-4321-b797-2bc028048976",
+						"exec": [
+							"var numberRandom = Math.floor(Math.random() * 10000000);",
+							"postman.setEnvironmentVariable(\"uidOwnerCreate\",\"20a5a431-02f7-433b-97f7-\"+numberRandom);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "52c59f4e-25d7-4cdc-ba45-5c327c705b0f",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Create calendar Object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Create calendar Object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/caldav\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"Owner create calendar object successful\";",
+							"    var count = json.data.length;",
+							"    if(count==1){",
+							"        uid = json.data[0].calendar_object.uid;",
+							"        if(uid != pm.environment.get(\"uidOwnerCreate\")){",
+							"            msg = msgFailed;",
+							"            msg.description = \"The uid response is not match. The uid is: \"+uid;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"The number item response is not match. The number item is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"calendar_objects\": [\n        {\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidOwnerCreate}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/caldavs?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"caldavs"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member] create calendar object",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "aeb31427-0813-4321-b797-2bc028048976",
+						"exec": [
+							"var numberRandom = Math.floor(Math.random() * 10000000);",
+							"postman.setEnvironmentVariable(\"uidMemberCreate\",\"20a5a431-02f7-433b-97f7-123\"+numberRandom);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "52c59f4e-25d7-4cdc-ba45-5c327c705b0f",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Member Create calendar Object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Member Create calendar Object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/caldav\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"Member create calendar object successful\";",
+							"    var count = json.data.length;",
+							"    if(count==1){",
+							"        uid = json.data[0].calendar_object.uid;",
+							"        if(uid != pm.environment.get(\"uidMemberCreate\")){",
+							"            msg = msgFailed;",
+							"            msg.description = \"The uid response is not match. The uid is: \"+uid;",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"The number item response is not match. The number item is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"calendar_objects\": [\n        {\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidMemberCreate}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/caldavs?keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"caldavs"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Owner] - Get List Link -  After create calendar object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Owner get link share - After create calendar object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Owner get link share - After create calendar object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            array[i] = json.data[i].link.source_id;",
+							"        }",
+							"        var idCalendarObject1 = pm.environment.get(\"uidOwnerCreate\");",
+							"        var idCalendarObject2 = pm.environment.get(\"uidMemberCreate\");",
+							"        ",
+							"        if((array.includes(idCalendarObject1))&&(array.includes(idCalendarObject2))){",
+							"            msg.description = \"Get link share on Owner user is correct\";",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.description = \"Data response is not contain link share\";",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Data response is null\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "141167",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "309760",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member] Get List Link Share - After create calendar object",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Member Get Link Share - After create calendar object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links/shared\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Member Get Link Share - After create calendar object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links/shared\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            array[i] = json.data[i].link.source_id;",
+							"        }",
+							"        var idCalendarObject1 = pm.environment.get(\"uidOwnerCreate\");",
+							"        var idCalendarObject2 = pm.environment.get(\"uidMemberCreate\");",
+							"        ",
+							"        if((array.includes(idCalendarObject1))&&(array.includes(idCalendarObject2))){",
+							"            msg.description = \"Get link share on Member user is correct\";",
+							"            minId = json.data[0].link.id;",
+							"\t\t\tpm.environment.set(\"minId\",minId);",
+							"\t\t\tpm.environment.set(\"updated_date\", json.data[0].link.updated_date);",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.description = \"Data response is not contain link share\";",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"Data response is null\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "{{keyapi2}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links/shared?project_ids[]={{idProjectCreated}}&keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links",
+						"shared"
+					],
+					"query": [
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "141167",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "309760",
+							"disabled": true
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Owner] create calendar object More Item",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "aeb31427-0813-4321-b797-2bc028048976",
+						"exec": [
+							"var numberRandom = Math.floor(Math.random() * 10000123000);",
+							"postman.setEnvironmentVariable(\"uidOwnerCreate0\",\"20a5a431-02f7-433b-97f7-123\"+numberRandom);",
+							"postman.setEnvironmentVariable(\"uidOwnerCreate1\",\"20a5a431-02f7-433b-97f7-456\"+numberRandom);",
+							"postman.setEnvironmentVariable(\"uidOwnerCreate2\",\"20a5a431-02f7-433b-97f7-789\"+numberRandom);",
+							"postman.setEnvironmentVariable(\"uidOwnerCreate3\",\"20a5a431-02f7-433b-97f7-121\"+numberRandom);",
+							"postman.setEnvironmentVariable(\"uidOwnerCreate4\",\"20a5a431-02f7-433b-97f7-098\"+numberRandom);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "52c59f4e-25d7-4cdc-ba45-5c327c705b0f",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Create calendar Object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Create calendar Object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/caldav\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"Owner create more calendar object successful\";",
+							"    var count = json.data.length;",
+							"    if(count==5){",
+							"        ",
+							"        for(i=0; i<count ; i++){",
+							"            uid = json.data[i].calendar_object.uid;",
+							"            if(uid != pm.environment.get(\"uidOwnerCreate\"+i)){",
+							"                msg = msgFailed;",
+							"                msg.description = \"The uid response is not match. The uid is: \"+uid;",
+							"                break;",
+							"            }",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"The number item response is not match. The number item is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"calendar_objects\": [\n        {\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidOwnerCreate0}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        },\n         {\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidOwnerCreate1}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        },\n        {\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidOwnerCreate2}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        },\n        {\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidOwnerCreate3}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        },{\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidOwnerCreate4}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/caldavs?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"caldavs"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member] create calendar object More Item",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "aeb31427-0813-4321-b797-2bc028048976",
+						"exec": [
+							"var numberRandom = Math.floor(Math.random() * 10000123000);",
+							"postman.setEnvironmentVariable(\"uidMemberCreate0\",\"40a5a431-02f7-433b-97f7-123\"+numberRandom);",
+							"postman.setEnvironmentVariable(\"uidMemberCreate1\",\"60a5a431-02f7-433b-97f7-456\"+numberRandom);",
+							"postman.setEnvironmentVariable(\"uidMemberCreate2\",\"70a5a431-02f7-433b-97f7-789\"+numberRandom);",
+							"postman.setEnvironmentVariable(\"uidMemberCreate3\",\"50a5a431-02f7-433b-97f7-121\"+numberRandom);",
+							"postman.setEnvironmentVariable(\"uidMemberCreate4\",\"30a5a431-02f7-433b-97f7-098\"+numberRandom);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "52c59f4e-25d7-4cdc-ba45-5c327c705b0f",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nFailed - Pretest - Member Create calendar Object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"post\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Test Version: '+pm.environment.get('version')+'\\nPassed - Pretest - Member Create calendar Object',",
+							"    endpoint: pm.environment.get(\"version\")+\"/caldav\",",
+							"    method: \"post\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"Member create more calendar object successful\";",
+							"    var count = json.data.length;",
+							"    if(count==5){",
+							"        ",
+							"        for(i=0; i<count ; i++){",
+							"            uid = json.data[i].calendar_object.uid;",
+							"            if(uid != pm.environment.get(\"uidMemberCreate\"+i)){",
+							"                msg = msgFailed;",
+							"                msg.description = \"The uid response is not match. The uid is: \"+uid;",
+							"                break;",
+							"            }",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"The number item response is not match. The number item is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"calendar_objects\": [\n        {\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidMemberCreate0}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        },\n         {\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidMemberCreate1}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        },\n        {\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidMemberCreate2}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        },\n        {\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidMemberCreate3}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        },{\n            \"calendar_object\" : \"BEGIN:VCALENDAR\\nVERSION:2.0\\nPRODID:-//Flo Online//EN\\nMETHOD:PUBLISH\\nCALSCALE:GREGORIAN\\nBEGIN:VJOURNAL\\nUID:{{uidMemberCreate4}}\\nDTSTAMP:20160420T074545Z\\nCREATED:20160420T074545Z\\nSUMMARY:dsad\\nDESCRIPTION:dsad\\nX-LCL-COLOR:#4986e7\\nX-LCL-NOTECONTENT:ZHNhZA==\\nEND:VJOURNAL\\nEND:VCALENDAR\",\n            \"project_id\": {{idProjectCreated}}\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/caldavs?keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"caldavs"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member] Get List Link Share - pItem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Member Get Link Share - pItem = 5',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Member Get Link Share - pItem = 5',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"[Member] Get List Link Share - pItem successful\";",
+							"    var count = json.data.length;",
+							"    if(count !== 5){",
+							"        msg = msgFailed;",
+							"        msg.description = \"parameter pItem don't work\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi2}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links/shared?pItem=5&project_ids[]={{idProjectCreated}}&keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links",
+						"shared"
+					],
+					"query": [
+						{
+							"key": "pItem",
+							"value": "5"
+						},
+						{
+							"key": "minID",
+							"value": "141167",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "309760",
+							"disabled": true
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member] Get List Link Share - ids",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Member Get Link Share - ids={{minId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Member Get Link Share - ids={{minId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"[Member] Get List Link Share - ids successful\";",
+							"    var count = json.data.length;",
+							"    if(count !== 1){",
+							"        msg = msgFailed;",
+							"        msg.description = \"The number data response is not match. The number data is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi2}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links/shared?ids={{minId}}&project_ids[]={{idProjectCreated}}&keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links",
+						"shared"
+					],
+					"query": [
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "141167",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "{{minId}}"
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member] Get List Link Share - minID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Member Get Link Share - minID',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Member Get Link Share - íds',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"[Member] Get List Link Share - minID successful\";",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        for(var i =0; i<count; i++){",
+							"            if(json.data[i].link.id <= pm.environment.get(\"minId\")){",
+							"            msg = msgFailed;",
+							"            msg.description = \"parameter minID: failed\";",
+							"            }",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi2}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links/shared?minID={{minId}}&project_ids[]={{idProjectCreated}}&keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links",
+						"shared"
+					],
+					"query": [
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{minId}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{minId}}",
+							"disabled": true
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member] Get List Link Share - fields 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Get Link - fields=destination_root_uid,meta_data,source_root_uid,email',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Get Link - fields=destination_root_uid,meta_data,source_root_uid,email',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"[Member] Get List Link Share with fields: destination_root_uid,meta_data,source_root_uid,email successful\";",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            if((json.data[i].link.id === undefined)",
+							"                ||(json.data[i].link.source_type !== undefined)",
+							"                ||(json.data[i].link.destination_type !== undefined)",
+							"                ||(json.data[i].link.source_account !== undefined)",
+							"                ||(json.data[i].link.destination_account !== undefined)",
+							"                ||(json.data[i].link.source_id !== undefined)",
+							"                ||(json.data[i].link.created_date !== undefined)",
+							"                ||(json.data[i].link.updated_date !== undefined)",
+							"                ||(json.data[i].link.email === undefined)",
+							"                ||(json.data[i].link.source_root_uid === undefined)",
+							"                ||(json.data[i].link.destination_root_uid === undefined)",
+							"                ||(json.data[i].link.meta_data === undefined)",
+							"            ){",
+							"                msg = msgFailed;",
+							"                msg.description = \"parameter fields: dont work\";",
+							"            }",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi2}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links/shared?project_ids[]={{idProjectCreated}}&fields=destination_root_uid,meta_data,source_root_uid,email&keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links",
+						"shared"
+					],
+					"query": [
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{minId}}",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "{{minId}}",
+							"disabled": true
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "fields",
+							"value": "destination_root_uid,meta_data,source_root_uid,email"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member] Get List Link Share - fields 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Member Get Link Share - fields=source_type,destination_type,source_account,destination_account,source_id,destination_id,created_date,updated_date',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Member Get Link Share - fields=source_type,destination_type,source_account,destination_account,source_id,destination_id,created_date,updated_date',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"[Member] Get List Link Share with fields: source_type,destination_type,source_account,destination_account,source_id,destination_id,created_date,updated_date successful\";",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            if((json.data[i].link.id === undefined)",
+							"                ||(json.data[i].link.source_type === undefined)",
+							"                ||(json.data[i].link.destination_type === undefined)",
+							"                ||(json.data[i].link.source_account === undefined)",
+							"                ||(json.data[i].link.destination_account === undefined)",
+							"                ||(json.data[i].link.source_id === undefined)",
+							"                ||(json.data[i].link.created_date === undefined)",
+							"                ||(json.data[i].link.updated_date === undefined)",
+							"                ||(json.data[i].link.email !== undefined)",
+							"                ||(json.data[i].link.source_root_uid !== undefined)",
+							"                ||(json.data[i].link.destination_root_uid !== undefined)",
+							"                ||(json.data[i].link.meta_data !== undefined)",
+							"            ){",
+							"                msg = msgFailed;",
+							"                msg.description = \"parameter fields: dont work\";",
+							"            }",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse+\"\\nBug: https://floware.atlassian.net/browse/FB-91\";",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi2}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links/shared?minID={{minId}}&project_ids[]={{idProjectCreated}}&fields=source_type,destination_type,source_account,destination_account,source_id,destination_id,created_date,updated_date&keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links",
+						"shared"
+					],
+					"query": [
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{minId}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{minId}}",
+							"disabled": true
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "fields",
+							"value": "source_type,destination_type,source_account,destination_account,source_id,destination_id,created_date,updated_date"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member]Get List Link Share - pItem, minID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var minID = pm.environment.get(\"minId\");",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Member Get Link Share - pItem=5, minID='+minID,",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Member Get Link Share - pItem=5, minID='+minID,",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"[Member] Get List Link Share with pItem=5, minID=\"+minID+ \" successful\";",
+							"    var count = json.data.length;",
+							"    if(count === 5){",
+							"       for(var i =0; i<count; i++){",
+							"            if(json.data[i].link.id <= pm.environment.get(\"minID\")){",
+							"            msg = msgFailed;",
+							"            msg.description = \"parameter minID: failed\";",
+							"            }",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \" - parameter pItem: failed\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi2}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links/shared?minID={{minId}}&project_ids[]={{idProjectCreated}}&pItem=5&keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links",
+						"shared"
+					],
+					"query": [
+						{
+							"key": "minID",
+							"value": "{{minId}}"
+						},
+						{
+							"key": "ids",
+							"value": "300893",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelID}}",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "destination_root_uid,meta_data,source_root_uid,email",
+							"disabled": true
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "minID",
+							"value": "minId",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "5"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member]Get List Link Share - id, minID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var minID = pm.environment.get(\"minId\");",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Member Get Link Share - minID='+minID+', ids='+minID,",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Member Get Link Share - minID='+minID+', ids='+minID,",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"[Member] Get List Link Share with ids=\"+minID+\", minID=\"+minID+ \" successful\";",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        msg = msgFailed;",
+							"        msg.error = \"Data response must be null with parameter ids=\"+minID+\", minID=\"+minID;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"value": "{{keyapi2}}",
+						"type": "text"
+					},
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links/shared?minID={{minId}}&project_ids[]={{idProjectCreated}}&ids={{minId}}&keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links",
+						"shared"
+					],
+					"query": [
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "5",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "{{minDelID}}",
+							"disabled": true
+						},
+						{
+							"key": "fields",
+							"value": "source_type,destination_type,source_account,destination_account,source_id,destination_id,created_date,updated_date",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{minId}}"
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{minId}}"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member] Get List Link Share - get Change",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Member Get Link Share - Get change',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links/shared\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Member Get Link Share - Get Change',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links/shared\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"Member Get Link Share - Get Change with modifiedGTE successful\";",
+							"    var count = json.data.length;",
+							"    if((count !== 0)){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            if(json.data[i].link.updated_date < pm.environment.get(\"updated_date\")){",
+							"                msg = msgFailed;",
+							"                msg.description = \"parameter modifiedGTE: failed\";",
+							"                break;",
+							"            }",
+							"        }",
+							"        ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"The number data response is not match. The number data is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description=dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi2}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links/shared?project_ids[]={{idProjectCreated}}&modifiedGTE={{updated_date}}&keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links",
+						"shared"
+					],
+					"query": [
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "141167",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "309760",
+							"disabled": true
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member] Get List Link Share - get Change , pItem, minID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Member Get Link Share - Get change pItem=3, minID={{minId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links/shared\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Member Get Link Share - Get Change pItem=3, minID={{minId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links/shared\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"Member Get Link Share - Get Change with modifiedGTE, minID, pItem successful\";",
+							"    var count = json.data.length;",
+							"    if((count !== 0)){",
+							"        for (var i = 0; i <count; i++) ",
+							"        {",
+							"            if(json.data[i].link.updated_date < pm.environment.get(\"updated_date\")){",
+							"                msg = msgFailed;",
+							"                msg.description = \"parameter modifiedGTE: failed\";",
+							"                break;",
+							"            }",
+							"             if(json.data[i].link.id <= pm.environment.get(\"minId\")){",
+							"                msg = msgFailed;",
+							"                msg.description = \"parameter minID: failed\";",
+							"            }",
+							"        }",
+							"        ",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.description = \"The number data response is not match. The number data is: \"+count;",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description= dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi2}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links/shared?pItem=3&minID={{minId}}&project_ids[]={{idProjectCreated}}&modifiedGTE={{updated_date}}&keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links",
+						"shared"
+					],
+					"query": [
+						{
+							"key": "pItem",
+							"value": "3"
+						},
+						{
+							"key": "minID",
+							"value": "{{minId}}"
+						},
+						{
+							"key": "ids",
+							"value": "309760",
+							"disabled": true
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Owner] Get List Link Shared",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - Member Get Link Share - Get change pItem=3, minID={{minId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links/shared\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - Member Get Link Share - Get Change pItem=3, minID={{minId}}',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links/shared\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"[Owner] Get all List Link Shared successful\";",
+							"    var count = json.data.length;",
+							"    if(count>0){",
+							"        for(var i=0; i<count; i++){",
+							"            array[i]=json.data[i].link.id;",
+							"        }",
+							"        pm.environment.set(\"allLinkShared\",array);",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description= dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi2}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links?project_ids[]={{idProjectCreated}}&keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links"
+					],
+					"query": [
+						{
+							"key": "pItem",
+							"value": "3",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{minId}}",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "309760",
+							"disabled": true
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}",
+							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Owner] Delete Link Shared",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - [Owner] Delete Link Shared',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"delete\",",
+							"    error: \"Has Error\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - [Owner] Delete Link Shared',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links\",",
+							"    method: \"delete\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"var dataResponse = pm.response.text();",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description = \"[Owner] Delete Link Shared successful\";",
+							"    var count = json.data.length;",
+							"    for(var i=0; i<count; i++){",
+							"        if(dataResponse.includes(json.data[i].id)){",
+							"            msg.description = \"Delete all links successfull\";",
+							"        }else{",
+							"            msg = msgFailed;",
+							"            msg.description = \"Data response not includes id deleted\";",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description = dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "08b9d9d2-7420-4c63-9c84-8a874f76e8bd",
+						"exec": [
+							"var projectids = pm.environment.get(\"allLinkShared\").toString();",
+							"var count = pm.environment.get(\"allLinkShared\").length;",
+							"var stringJson = \"\";",
+							"for(var i = 0; i<count; i++){",
+							"    if(projectids.split(\",\")[i] !== \"\"){",
+							"        stringJson = (stringJson === \"\" ? stringJson : stringJson +', ') +' { \"id\" : ' +projectids.split(\",\")[i]+ '}';",
+							"    }",
+							"    pm.environment.set(\"deleteAllLinkShared\", stringJson);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"links\": [\n        {{deleteAllLinkShared}}\n        \n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "141167",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "309760",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Member] Get List Link Shared after deleted from Owner",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0c26255-4e65-4847-92ca-481424a2f34a",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var array = [];",
+							"",
+							"var msgFailed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Failed - [Member] Get List Link Shared after deleted from Owner',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links/shared\",",
+							"    method: \"get\",",
+							"    error: \"shit shit shit shit\",",
+							"    status:\"200\",",
+							"    description:\"\",",
+							"};",
+							"var msgPassed = {",
+							"    collection:'API-Link-Shared',",
+							"    title: 'Passed - [Member] Get List Link Shared after deleted from Owner',",
+							"    endpoint: pm.environment.get(\"version\")+\"/links/shared\",",
+							"    method: \"get\",",
+							"    error: \"No Error\",",
+							"    status: \"200\",",
+							"    description:\"\",",
+							"};",
+							"",
+							"// Data response",
+							"var dataResponse = pm.response.text();",
+							"// Status response",
+							"var statusResponse = responseCode.code;",
+							"var msg ;",
+							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
+							"    msg = msgPassed;",
+							"    msg.status = 200;",
+							"    msg.description=\"[Member] Get List Link Shared after deleted from Owner successful\";",
+							"    var count = json.data.length;",
+							"    if((count !== 0)){",
+							"        msg = msgFailed;",
+							"        msg.description=\"[Member] Get List Link Shared - Still show link deleted from Owner\";",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\";",
+							"    msg.description= dataResponse;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: 'http://localhost:3000/report',",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"}, function (err, res) {",
+							"    pm.environment.set(\"authorization\", \"Bearer \" + res.json().token);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi2}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links/shared?project_ids[]={{idProjectCreated}}&keyapi={{keyapi_U2}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links",
+						"shared"
+					],
+					"query": [
+						{
+							"key": "pItem",
+							"value": "3",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "{{minId}}",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "309760",
+							"disabled": true
+						},
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{updated_date}}",
+							"disabled": true
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U2}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Projects",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3b8d8900-c2ec-4358-8a6d-d06800d205e1",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"var array =[];",
+							"var count = json.data.length;",
+							"if(count>0){",
+							"    for(var i=0; i<count; i++){",
+							"        if(json.data[i].project.proj_type == 3){",
+							"            array[i] = json.data[i].project.id;",
+							"        }",
+							"        pm.environment.set(\"allIDProjects[]\",array);",
+							"    }",
+							"}else{",
+							"    pm.environment.set(\"allIDProjects[]\",null);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						},
+						{
+							"key": "fields",
+							"value": "id,proj_name,calendar_id",
+							"disabled": true
+						},
+						{
+							"key": "ids",
+							"value": "34791,34792",
+							"disabled": true
+						},
+						{
+							"key": "has_del",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "1058130",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1548144027",
+							"disabled": true
+						},
+						{
+							"key": "minDelID",
+							"value": "1058130",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Detele Projects - All Shared Collection",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7c8e5f83-07b8-4fbb-8d19-137934360a1c",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "14d6e68e-faba-40da-b159-eef947e01312",
+						"exec": [
+							"var projectids = pm.environment.get(\"allIDProjects[]\").toString();",
+							"var count = pm.environment.get(\"allIDProjects[]\").length;",
+							"var stringJson = \"\";",
+							"for(var i = 0; i<count; i++){",
+							"    if(projectids.split(\",\")[i] !== \"\"){",
+							"        stringJson = (stringJson === \"\" ? stringJson : stringJson +', ') +' { \"id\" : ' +projectids.split(\",\")[i]+ '}';",
+							"    }",
+							"    pm.environment.set(\"stringJson\", stringJson);",
+							"}",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projects\": [ \n    \t{{stringJson}} \n    ]\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/projects?keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"projects"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get List  Link Shared  - Clear Up",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "913a607c-5221-467d-b6bf-84bd258fa9a1",
+						"exec": [
+							"// Clean up environment",
+							"pm.environment.unset(\"nameCollection\");",
+							"pm.environment.unset(\"keyapi_U2\");",
+							"pm.environment.unset(\"idProjectCreated\");",
+							"pm.environment.unset(\"uidOwnerCreate\");",
+							"pm.environment.unset(\"uidMemberCreate\");",
+							"pm.environment.unset(\"minId\");",
+							"pm.environment.unset(\"updated_date\");",
+							"pm.environment.unset(\"allIDProjects[]\");",
+							"pm.environment.unset(\"stringJson\")",
+							"pm.environment.unset(\"deleteAllLinkShared\")",
+							"pm.environment.unset(\"allLinkShared\")",
+							"// Clean up each id kanbans",
+							"for(var i = 0; i<50; i++){",
+							"    pm.environment.unset(\"linkId\"+i);",
+							"    pm.environment.unset(\"uidMemberCreate\"+i);",
+							"    pm.environment.unset(\"uidOwnerCreate\"+i);",
+							"    ",
+							"}",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "token",
+						"type": "text",
+						"value": "{{keyapi}}"
+					}
+				],
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/links?project_ids[]={{idProjectCreated}}&keyapi={{keyapi}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"links"
+					],
+					"query": [
+						{
+							"key": "project_ids[]",
+							"value": "{{idProjectCreated}}"
+						},
+						{
+							"key": "keyapi",
+							"value": "{{keyapi}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3e8a0005-8780-4a71-96c0-168cf53b8794",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "71a2c721-06c4-4914-bf87-7c3c96f39960",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

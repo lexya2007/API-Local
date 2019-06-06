@@ -12,6 +12,7 @@ try {
 
 var bodyParser = require('body-parser');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+
 var csvFilename = './tests/output/reports_failed.csv';//path of csv file
 const csvWriter = createCsvWriter({
     path: csvFilename,
@@ -23,8 +24,17 @@ const csvWriter = createCsvWriter({
         {id: 'priority', title: 'Priority Level'}
     ]
 });
-var version;
+
+var csvAPIFile = './tests/output/reports_API.csv';// path of All scripts API file
+const csvWriterAPI = createCsvWriter({
+    path: csvAPIFile,
+    header: [
+        {id: 'summary', title: 'Summary'}
+    ]
+});
+
 var app = express();
+var temp;
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
@@ -46,7 +56,6 @@ app.post('/report', function(req, res) {
     var outputFailed = './tests/output/reports_failed_' + collection + '.txt'; // path of the failed Tc
 
     console.log(JSON.stringify(req.body));
-
     fs.appendFileSync(outputFilename, 'Title TC: ' + req.body['title'] + '\n' + 'endpoint: ' + req.body['endpoint'] + '\n' + 'method: ' + req.body['method'] + '\n' + 'error: ' + req.body['error'] + '\n' + 'status: ' + req.body['status'] + '\n' + 'response message: ' + req.body['description'] + '\n' + '\n'); // write to the file system
 
 
@@ -59,25 +68,60 @@ app.post('/report', function(req, res) {
             priority: 'P3 - Normal',
         }
     ];
-
     //Create failed TC report
     if (req.body['title'].includes("Failed")) {
         //Write file txt failed report
         fs.appendFileSync(outputFailed, 'Title TC: ' + req.body['title'] + '\n' + 'endpoint: ' + req.body['endpoint'] + '\n' + 'method: ' + req.body['method'] + '\n' + 'error: ' + req.body['error'] + '\n' + 'status: ' + req.body['status'] + '\n' + 'response message: ' + req.body['description'] + '\n' + '\n'); // write to the file system
-
-
+        // Check file csv failed not existing
+        if (!fs.existsSync(csvFilename)){
+            csvWriter.writeRecords([
+                {
+                    project: 'Project',
+                    assigned: 'Assigned To',
+                    summary: 'Summary',
+                    description: 'Description',
+                    priority: 'Priority Level'
+                }])
+        }
         // Write csv file
         csvWriter.writeRecords(data)
             .then(()=> console.log('The CSV file was written successfully'));
-
     }
 
+    var dataRunAPIs = [
+        {
+            summary:req.body['collection']
+        }
+    ];
+    if (temp!==outputFilename){
+        if (!fs.existsSync(csvAPIFile)){
+            csvWriterAPI.writeRecords([
+            {
+                summary: 'Summary'
+            }]) 
+        }
+        // write file API running
+        csvWriterAPI.writeRecords(dataRunAPIs)
+            .then(()=> console.log('All files API running was written successfully'));
+    }else {
+        if (!fs.existsSync(csvAPIFile)){
+            csvWriterAPI.writeRecords([
+            {
+                summary: 'Summary'
+            }])
+            // write file API running
+            csvWriterAPI.writeRecords(dataRunAPIs)
+            .then(()=> console.log('All files API running was written successfully'));
+        }
+        
+    }
+    temp = outputFilename;
+    
     res.send({ result: 'success' });
 
 });
 
-
-var port = 3020;
+var port = 3010;
 app.listen(port);
 console.log('Report service started on port %d ...!!', port);
 console.log("listening...\n.\n.\n");

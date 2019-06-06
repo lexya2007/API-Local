@@ -58,7 +58,7 @@
 		},
 		{
 			"key": "url_report",
-			"value": "http://localhost:3020/report",
+			"value": "http://localhost:3010/report",
 			"description": "",
 			"enabled": true
 		},

@@ -1,0 +1,1542 @@
+{
+	"info": {
+		"_postman_id": "4ce6d422-ffe2-42e2-82d4-bcf799d4bb32",
+		"name": "v3.0 API-DeviceToken",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Pre-Condition - Login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "710fc72f-9c01-458d-91e2-999228c54ca0",
+						"exec": [
+							"// Use the CryptoJS",
+							"var hash = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U1\")+\":LeftCoastLogic:\"+pm.environment.get(\"password_U1\"))+pm.environment.get(\"appreg\")).toString();",
+							"",
+							"console.log(\"sig: \" + hash);",
+							"postman.setEnvironmentVariable(\"sig_U1\", hash);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9b65e0a-3805-49b2-a0e8-3b2d205156e2",
+						"exec": [
+							"var json = JSON.parse(responseBody);",
+							"",
+							"var keyapi = CryptoJS.MD5( CryptoJS.MD5(pm.environment.get(\"email_U1\") + pm.environment.get(\"appreg\")) + json.tokenapi).toString();",
+							"",
+							"postman.setEnvironmentVariable(\"keyapi_U1\", keyapi);",
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"pm.test(\"Tokenapi is returned\", function () {pm.expect(pm.response.text()).to.include(\"tokenapi\");});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{email_U1}}\",\n\t\"alias\": \"{{alias}}\",\n\t\"sig\": \"{{sig_U1}}\"\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/users/token",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"users",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Device Token - FloInternal or FloExternal iphone",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8e85ed67-7e8b-4f4d-9b6f-4889885d581b",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - Create Device Token - FloInternal or FloExternal iphone',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - Create Device Token - FloInternal or FloExternal iphone',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        // Check data response",
+							"        if ((json.data[0].device_token.device_token === \"0123456789012345678901234567890123456789\")&&(json.data[0].device_token.device_type === 0)) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create device_token success\"",
+							"",
+							"            pm.environment.set(\"devicetoken_create\", json.data[0].device_token.device_token);",
+							"            pm.environment.set(\"devicetokenid_create\", json.data[0].device_token.id);",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_token\": {\n        \"device_token\": \"0123456789012345678901234567890123456789\",\n        \"device_type\": 0,\n        \"device_uuid\": \"\",\n        \"cert_env\": 0,\n        \"time_sent_silent\": 0,\n        \"time_received_silent\": 12345,\n        \"status_app_run\": 0,\n        \"env_silent\": 0,\n        \"device_env\": 0\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Device Token - Flo iPad QC",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "eecf7054-5e88-4782-8e46-93ffba1427f2",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - Create Device Token - Flo iPad QC',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - Create Device Token - Flo iPad QC',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        // Check data response",
+							"        if ((json.data[0].device_token.device_token === \"0123456789012345678901234567890123456788\")&&(json.data[0].device_token.device_type === 1)) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create device_token success\"",
+							"",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_token\": {\n        \"device_token\": \"0123456789012345678901234567890123456788\",\n        \"device_type\": 1,\n        \"device_uuid\": \"\",\n        \"cert_env\": 0,\n        \"time_sent_silent\": 0,\n        \"time_received_silent\": 0,\n        \"status_app_run\": 0,\n        \"env_silent\": 0,\n        \"device_env\": 0\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Device Token - Flo iPad Production",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "966d87c7-b47f-475c-8fed-a1bc399f7a84",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - Create Device Token - Flo iPad Production',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - Create Device Token - Flo iPad Production',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        // Check data response",
+							"        if ((json.data[0].device_token.device_token === \"0123456789012345678901234567890123456787\")&&(json.data[0].device_token.device_type === 2)) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create device_token success\"",
+							"",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_token\": {\n        \"device_token\": \"0123456789012345678901234567890123456787\",\n        \"device_type\": 2,\n        \"device_uuid\": \"\",\n        \"cert_env\": 0,\n        \"time_sent_silent\": 0,\n        \"time_received_silent\": 0,\n        \"status_app_run\": 0,\n        \"env_silent\": 0,\n        \"device_env\": 0\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Device Token - FloQC iphone",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "79fca07d-0779-4c70-9fa6-65def0503c76",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - Create Device Token - FloQC iphone',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - Create Device Token - FloQC iphone',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        // Check data response",
+							"        if ((json.data[0].device_token.device_token === \"0123456789012345678901234567890123456786\")&&(json.data[0].device_token.device_type === 3)) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create device_token success\"",
+							"",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_token\": {\n        \"device_token\": \"0123456789012345678901234567890123456786\",\n        \"device_type\": 3,\n        \"device_uuid\": \"\",\n        \"cert_env\": 0,\n        \"time_sent_silent\": 0,\n        \"time_received_silent\": 0,\n        \"status_app_run\": 0,\n        \"env_silent\": 0,\n        \"device_env\": 0\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Device Token - FloDEV iphone",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b49d73a9-c531-4949-b4ba-38d8cf24a4a3",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "155f3d1a-898f-4be4-b7c1-9354f3dc5a74",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - Create Device Token - FloDEV iphone',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"POST\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description: \"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - Create Device Token - FloDEV iphone',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"POST\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description: \"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if (statusResponse === 200) {",
+							"    msg.status = 200;",
+							"",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if (count !== 0) {",
+							"",
+							"        // Check data response",
+							"        if ((json.data[0].device_token.device_token === \"0123456789012345678901234567890123456785\")&&(json.data[0].device_token.device_type === 4)) {",
+							"            msg = msgPassed;",
+							"            msg.description = \"create device_token success\"",
+							"",
+							"        }",
+							"    } else {",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0) {",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"} else {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							"",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_token\": {\n        \"device_token\": \"0123456789012345678901234567890123456785\",\n        \"device_type\": 4,\n        \"device_uuid\": \"\",\n        \"cert_env\": 0,\n        \"time_sent_silent\": 0,\n        \"time_received_silent\": 0,\n        \"status_app_run\": 0,\n        \"env_silent\": 0,\n        \"device_env\": 0\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Device Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0763a41b-ee0c-4971-bceb-1854445ff0b4",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - Update Device Token',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"PUT\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - Update Device Token',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"PUT\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    //console.log(count);",
+							"    if(count !== 0){",
+							"        ",
+							"        var update1 = json.data[0].device_token.device_type;",
+							"        var update2 = json.data[0].device_token.device_uuid;",
+							"        var update3 = json.data[0].device_token.cert_env;",
+							"        var update4 = json.data[0].device_token.time_sent_silent;",
+							"        var update5 = json.data[0].device_token.status_app_run;",
+							"        var update6 = json.data[0].device_token.env_silent;",
+							"        var update7 = json.data[0].device_token.device_token;",
+							"        var update8 = json.data[0].device_token.device_env;",
+							"        ",
+							"        // Check data response",
+							"        if((update1 === 0)&&(update2 === \"1234567\")&&(update3 === 1)&&(update4 === 1234567)&&(update5 === 1)&&(update6 === 1)&&(update7 === \"0123456789012345678901234567890123456789\")&&(update8 === 1)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"update device_token success\"",
+							"            ",
+							"            pm.environment.set(\"modifiedTime\", json.data[0].device_token.updated_date);",
+							"        }",
+							"    }else{",
+							"        var count_error = json.data_error.length;",
+							"        if (count_error !== 0){",
+							"            msg = msgFailed;",
+							"            msg.error = json.data_error[0].error;",
+							"            msg.description = json.data_error[0].description;",
+							"        }",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"device_token\": {\n        \"device_token\":\"{{devicetoken_create}}\",\n        \"device_type\": 0,\n        \"device_uuid\": \"1234567\",\n        \"cert_env\": 1,\n        \"time_sent_silent\": 1234567,\n        \"status_app_run\": 1,\n        \"env_silent\": 1,\n        \"replied\": 1,\n        \"device_env\": 1\n    }\n}"
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Device Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "770c35af-d755-45ac-bbb2-cd2dab27c61e",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - List Device Token',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - List Device Token',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        // Check data response",
+							"        if(\"device_token\" in json.data[0]){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list device_token success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "ids",
+							"value": "5497",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "5497",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1547693383",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1547693571",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Device Token - with modifiedGTE",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ecbbb31f-68a9-40a2-9080-7980ce2446a9",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - List Device Token - with modifiedGTE',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - List Device Token - with modifiedGTE',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        var dataResponse = pm.response.text();",
+							"        // Check data response",
+							"        if(dataResponse.includes(pm.environment.get(\"devicetokenid_create\"))){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list device_token success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cd3e5076-cbc3-4a91-8504-58e1997dccf1",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}&modifiedGTE={{modifiedTime}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "{{modifiedTime}}"
+						},
+						{
+							"key": "ids",
+							"value": "5497",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "5497",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1547693571",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Device Token - with modifiedLT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ecbbb31f-68a9-40a2-9080-7980ce2446a9",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - List Device Token - with modifiedLT',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - List Device Token - with modifiedLT',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        var dataResponse = pm.response.text();",
+							"        // Check data response",
+							"        if(dataResponse.includes(pm.environment.get(\"devicetokenid_create\"))){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list device_token success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8509b92e-211d-4cb3-8c46-d2a0cfb1f25b",
+						"exec": [
+							"var tempTime = pm.environment.get(\"modifiedTime\");",
+							"",
+							"postman.setEnvironmentVariable(\"modifiedLT\", Number(tempTime) + 1);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}&modifiedLT={{modifiedLT}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "modifiedLT",
+							"value": "{{modifiedLT}}"
+						},
+						{
+							"key": "ids",
+							"value": "5497",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "5497",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1547693383",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Device Token - with ids",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ecbbb31f-68a9-40a2-9080-7980ce2446a9",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - List Device Token - with ids',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - List Device Token - with ids',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        var devicetokenid = pm.environment.get(\"devicetokenid_create\")",
+							"        // Check data response",
+							"        if((\"device_token\" in json.data[0])&&(json.data[0].device_token.id == devicetokenid)){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list device_token success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}&ids={{devicetokenid_create}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "ids",
+							"value": "{{devicetokenid_create}}"
+						},
+						{
+							"key": "minID",
+							"value": "5497",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1547693383",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1547693571",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Device Token - with minID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ecbbb31f-68a9-40a2-9080-7980ce2446a9",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - List Device Token - with minID',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - List Device Token - with minID',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count !== 0){",
+							"        ",
+							"        // Check data response",
+							"        var minID = pm.environment.get(\"minID\");",
+							"        var flag = 1;",
+							"        for(var i = 0; i< count; i++){",
+							"            if(minID >= json.data[i].device_token.id)",
+							"                flag = 0;",
+							"        }",
+							"        //console.log(flag);",
+							"        if(flag === 1){",
+							"            msg = msgPassed;",
+							"            msg.description = \"get list canvas success\"",
+							"        }",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ca4e94b9-ebb7-44bf-ba69-3606610f14f4",
+						"exec": [
+							"var tempId = pm.environment.get(\"devicetokenid_create\");",
+							"",
+							"postman.setEnvironmentVariable(\"minID\", Number(tempId) - 1);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}&minID={{minID}}",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "minID",
+							"value": "{{minID}}"
+						},
+						{
+							"key": "ids",
+							"value": "5497",
+							"disabled": true
+						},
+						{
+							"key": "pItem",
+							"value": "2",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1547693383",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1547693571",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Device Token - with pItem",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ecbbb31f-68a9-40a2-9080-7980ce2446a9",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"var json = JSON.parse(responseBody);",
+							"var statusResponse = responseCode.code;",
+							"",
+							"var msgFailed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Failed - List Device Token - with pItem',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"Has Error\",",
+							"    status: \"\",",
+							"    description:\"No message\",",
+							"};",
+							"var msgPassed = {",
+							"    collection: \"API_DeviceToken\",",
+							"    title: 'Passed - List Device Token - with pItem',",
+							"    endpoint: pm.environment.get(\"version\") + \"/devicetoken\",",
+							"    method: \"GET\",",
+							"    error: \"No Error\",",
+							"    status: 200,",
+							"    description:\"No message\",",
+							"};",
+							"var msg = msgFailed;",
+							"// Check status",
+							"if(statusResponse === 200){",
+							"    msg.status = 200;",
+							"    ",
+							"    // Check number items",
+							"    var count = json.data.length;",
+							"    if(count === 2){",
+							"        msg = msgPassed;",
+							"        msg.description = \"get list device_token success\"",
+							"    }else{",
+							"        msg = msgFailed;",
+							"        msg.error = \"response null item\"",
+							"    }",
+							"}else  {",
+							"    msg = msgFailed;",
+							"    msg.status = statusResponse;",
+							"    msg.error = \"status response failed\"",
+							"    msg.description = json.description;",
+							"}",
+							" ",
+							"pm.sendRequest({",
+							"    url: pm.environment.get(\"url_report\"),",
+							"    method: 'POST',",
+							"    header: {",
+							"        'content-type': 'application/json'",
+							"    },",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: JSON.stringify(msg)",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{server}}:{{port}}/{{version}}/devicetoken?keyapi={{keyapi_U1}}&pItem=2",
+					"protocol": "https",
+					"host": [
+						"{{server}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{version}}",
+						"devicetoken"
+					],
+					"query": [
+						{
+							"key": "keyapi",
+							"value": "{{keyapi_U1}}"
+						},
+						{
+							"key": "pItem",
+							"value": "2"
+						},
+						{
+							"key": "ids",
+							"value": "5497",
+							"disabled": true
+						},
+						{
+							"key": "minID",
+							"value": "5497",
+							"disabled": true
+						},
+						{
+							"key": "modifiedGTE",
+							"value": "1547693383",
+							"disabled": true
+						},
+						{
+							"key": "modifiedLT",
+							"value": "1547693571",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

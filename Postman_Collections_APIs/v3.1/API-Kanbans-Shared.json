@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "8965a2a5-0d25-40bf-b30b-96d3dc95d7c8",
-		"name": "API - Kanbans Version 3.0 Shared",
+		"_postman_id": "047df856-edb3-4e7f-aa95-fb01fc8db75c",
+		"name": "API-Kanbans v3.1 Shared",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -644,7 +644,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"POST\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -771,7 +771,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"POST\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -898,7 +898,7 @@
 									"    endpoint: \"/api/kanban\",",
 									"    method: \"POST\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -1042,7 +1042,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -1101,10 +1101,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&ids={{id_Kanban_member}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -1158,7 +1154,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -1217,10 +1213,6 @@
 								"value": "{{keyapi_U2}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&ids={{id_Kanban}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -1274,7 +1266,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -1333,10 +1325,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&ids={{id_Kanban_member}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -1390,7 +1378,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -1449,10 +1437,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&ids={{id_Kanban}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -1506,7 +1490,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -1573,10 +1557,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&project_ids[]={{idProjectCreated}}&has_del=0",
 							"protocol": "https",
@@ -1630,7 +1610,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -1697,10 +1677,6 @@
 								"value": "{{keyapi_U2}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&project_ids[]={{idProjectCreated}}&has_del=0",
 							"protocol": "https",
@@ -1764,7 +1740,7 @@
 									"    endpoint: \"/api/kanban\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"var msg ;",
@@ -1826,10 +1802,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&pItem=20&fields=project_id,name,color,updated_date,created_date,id&project_ids[]={{idProjectCreated}}&minID=",
 							"protocol": "https",
@@ -1916,7 +1888,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"var msg ;",
@@ -1981,10 +1953,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=1&project_ids[]={{idProjectCreated}}&modifiedGTE={{ModifiedGTE}}",
 							"protocol": "https",
@@ -2072,7 +2040,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
 									"    method: \"PUT\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -2189,7 +2157,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -2247,10 +2215,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&modifiedGTE={{modifiedGTE_1}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -2304,7 +2268,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
 									"    method: \"PUT\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -2421,7 +2385,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -2479,10 +2443,6 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -2536,7 +2496,7 @@
 									"    endpoint: \"/api/kanban/update\",",
 									"    method: \"PUT\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -2695,7 +2655,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"var msg ;",
@@ -2764,10 +2724,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE-0}}&fields=project_id,name,color,updated_date,created_date,id&has_del=0&project_ids[]={{idProjectCreated}}&minID=",
 							"protocol": "https",
@@ -2858,7 +2814,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"var msg ;",
@@ -2916,10 +2872,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE-0}}&pItem=20&fields=project_id,name,color,updated_date,created_date,id&project_ids[]={{idProjectCreated}}&minID=",
 							"protocol": "https",
@@ -3000,7 +2952,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
 									"    method: \"PUT\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"// Data response",
@@ -3129,7 +3081,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -3194,10 +3146,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&project_ids[]={{idProjectCreated}}&modifiedGTE={{modifiedGTE-Order}}",
 							"protocol": "https",
@@ -3286,7 +3234,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
 									"    method: \"PUT\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -3403,7 +3351,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -3461,10 +3409,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?keyapi={{keyapi}}&modifiedGTE={{modifiedGTE}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -3519,7 +3463,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans/update\",",
 									"    method: \"PUT\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -3636,7 +3580,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -3694,10 +3638,6 @@
 								"value": "{{keyapi_U2}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?keyapi={{keyapi_U2}}&modifiedGTE={{modifiedGTE_1}}&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -3752,7 +3692,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"POST\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -3880,7 +3820,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"POST\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -4008,7 +3948,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"POST\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -4147,7 +4087,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -4216,10 +4156,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans/archived?keyapi={{keyapi}}&has_del=0&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -4279,7 +4215,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"DELETE\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"// Status response",
@@ -4392,7 +4328,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"DELETE\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"// Status response",
@@ -4506,7 +4442,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"// Data response",
@@ -4527,6 +4463,7 @@
 									"        msg.description=\"Data response id Kanban delete correctly\";",
 									"    }else{",
 									"        msg = msgFailed;",
+									"        msg.error = \"Data response id Kanban delete incorrectly\\nBug: https://floware.atlassian.net/browse/FB-101\"; ",
 									"        msg.description = \"Data response id Kanban delete incorrectly\\nBug: https://floware.atlassian.net/browse/FB-101\";",
 									"    }",
 									"}else  {",
@@ -4566,10 +4503,6 @@
 								"value": "{{keyapi_U2}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&project_ids[]={{idProjectCreated}}&has_del=1",
 							"protocol": "https",
@@ -4638,7 +4571,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"// Data response",
@@ -4700,10 +4633,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&project_ids[]={{idProjectCreated}}&has_del=1",
 							"protocol": "https",
@@ -4772,7 +4701,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -4838,10 +4767,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=0&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -4895,7 +4820,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"DELETE\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"",
@@ -5037,7 +4962,7 @@
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"// Data response",
@@ -5059,7 +4984,8 @@
 									"        pm.environment.set(\"modifiedGTE-1\",json.data_del[19].deleted_item.updated_date)",
 									"    }else{",
 									"        msg = msgFailed;",
-									"        msg.description = \"Not show 20 Kanbans deleted in 1 page, pItem = 20 & has_del = 1 & minDellID\";",
+									"        msg.error= \"Not show 20 Kanbans deleted in 1 page, pItem = 20 & has_del = 1 & minDellID\\nBug: https://floware.atlassian.net/browse/FB-101\";",
+									"        msg.description = \"Not show 20 Kanbans deleted in 1 page, pItem = 20 & has_del = 1 & minDellID\\nBug: https://floware.atlassian.net/browse/FB-101\";",
 									"    }",
 									"}else  {",
 									"    msg = msgFailed;",
@@ -5096,10 +5022,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi_U2}}&has_del=1&minDelID={{minDellID}}&pItem=20&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
@@ -5138,7 +5060,7 @@
 					"response": []
 				},
 				{
-					"name": "Get List Kanban  - [Owner] Get Changes 10 Kanbans deleted with modifiedGTE",
+					"name": "Get List Kanban  - [Owner] Get Changes 10 Kanbans deleted with minDellID",
 					"event": [
 						{
 							"listen": "test",
@@ -5148,7 +5070,7 @@
 									"var json = JSON.parse(responseBody);",
 									"var msgFailed = {",
 									"    collection: \"API_Kanbans_shared\",",
-									"    title: 'Failed - Get List Kanban  - [Owner] Get Changes 10 Kanbans deleted with modifiedGTE',",
+									"    title: 'Failed - Get List Kanban  - [Owner] Get Changes 10 Kanbans deleted with minDellID',",
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"Has Error\",",
@@ -5157,11 +5079,11 @@
 									"};",
 									"var msgPassed = {",
 									"    collection: \"API_Kanbans_shared\",",
-									"    title: 'Passed - Get List Kanban  - [Owner] Get Changes 10 Kanbans deleted with modifiedGTE',",
+									"    title: 'Passed - Get List Kanban  - [Owner] Get Changes 10 Kanbans deleted with minDellID',",
 									"    endpoint: pm.environment.get('version')+\"/kanbans\",",
 									"    method: \"GET\",",
 									"    error: \"No Error\",",
-									"    status: \"200\",",
+									"    status: \"\",",
 									"    description:\"\",",
 									"};",
 									"// Data response",
@@ -5170,7 +5092,7 @@
 									"var statusResponse = responseCode.code;",
 									"// Get project_id from environment",
 									"var idKanban = pm.environment.get(\"id_Kanban\");",
-									"var modifiedGTE = pm.environment.get(\"modifiedGTE-1\");",
+									"var minDellID = pm.environment.get(\"minDellID\");",
 									"var msg ;",
 									"if(statusResponse == 200){",
 									"    msg = msgPassed;",
@@ -5179,12 +5101,12 @@
 									"    pm.response.to.have.status(200);",
 									"    });",
 									"    var count = json.data_del.length;",
-									"    var timeupdate = json.data_del[0].deleted_item.updated_date;",
-									"    if(count === 10 && timeupdate == modifiedGTE){",
-									"        msg.description=\"Show 10 Kanbans deleted in 1 page, pItem = 10 & has_del = 1 & ModifiedGTE = \"+modifiedGTE;",
+									"    var MinID = json.data_del[0].deleted_item.id;",
+									"    if(count === 10 && MinID > pm.environment.get(\"minDellID\")){",
+									"        msg.description=\"Show 10 Kanbans deleted in 1 page, pItem = 10 & has_del = 1 & minDellID = \"+minDellID;",
 									"    }else{",
 									"        msg = msgFailed;",
-									"        msg.description = \"Not show 10 Kanbans deleted in 1 page, pItem = 10 & has_del = 1 & ModifiedGTE = \"+modifiedGTE;",
+									"        msg.description = \"Not show 10 Kanbans deleted in 1 page, pItem = 10 & has_del = 1 & minDellID = \"+minDellID;",
 									"        msg.error = \"Error\";",
 									"    }",
 									"}else  {",
@@ -5221,12 +5143,8 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=1&minDelID={{minDellID}}&pItem=10&modifiedGTE={{modifiedGTE-1}}&project_ids[]={{idProjectCreated}}",
+							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=1&minDelID={{minDellID}}&pItem=10&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",
 							"host": [
 								"{{server}}"
@@ -5255,7 +5173,8 @@
 								},
 								{
 									"key": "modifiedGTE",
-									"value": "{{modifiedGTE-1}}"
+									"value": "{{modifiedGTE-1}}",
+									"disabled": true
 								},
 								{
 									"key": "project_ids[]",
@@ -5486,10 +5405,6 @@
 								"value": "{{keyapi}}"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "https://{{server}}:{{port}}/{{version}}/kanbans?keyapi={{keyapi}}&has_del=0&project_ids[]={{idProjectCreated}}",
 							"protocol": "https",

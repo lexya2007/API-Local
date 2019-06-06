@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "22741945-2d99-4310-a8bd-0a5698667edb",
-		"name": "API - Obj Order Version 2.0",
+		"_postman_id": "0d697c7f-d61d-4428-af84-b7b793b3bd01",
+		"name": "API-Obj Order v2.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -311,12 +311,12 @@
 							"    pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"    });",
-							"    if(dataResponse.includes(\"data_error\")){",
+							"    if(!dataResponse.includes(\"error\")){",
 							"        msg.error = \"Cannot update order 2 items with invalid value\";",
 							"        msg.description=dataResponse;",
 							"    }else{",
 							"        msg = msgFailed;",
-							"        msg.error = \"Allow to update order 2 items with invalid value\";",
+							"        msg.error = \"Allow to update order 2 items with invalid value\"",
 							"        msg.description=dataResponse;",
 							"    }",
 							"}else  {",
@@ -362,7 +362,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[{\n        \"obj_id\": \"d67d64f4-2c66-4dbf-8405-bb31b5d8e4a1\"\n}, {\n        \"obj_id\": \"12automationqcflo@gmail.automationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.comautomationqcflo@gmail.com\"\n}]"
+					"raw": ""
 				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?keyapi={{keyapi}}&returnRes=1&objtype=2",
@@ -1043,7 +1043,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n\n\t{ \n\t\t\"obj_id\":\"1\",\n\t\t\"source_account\":1\n\t},\n\t{ \n\t\t\"obj_id\":\"2\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"3\",\n\t\t\"source_account\":1\n\t},\n\t{ \n\t\t\"obj_id\":\"4\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"5\",\n\t\t\"source_account\":1\n\t},\n\t{ \n\t\t\"obj_id\":\"6\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"7\",\n\t\t\"source_account\":1\n\t},\n\t{ \n\t\t\"obj_id\":\"8\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"9\",\n\t\t\"source_account\":1\n\t},\n\t{ \n\t\t\"obj_id\":\"10\",\n\t\t\"source_account\":0\n\t}\n\n]"
+					"raw": "[\n\n\t{ \n\t\t\"obj_id\":\"1\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"2\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"3\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"4\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"5\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"6\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"7\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"8\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"9\",\n\t\t\"source_account\":0\n\t},\n\t{ \n\t\t\"obj_id\":\"10\",\n\t\t\"source_account\":0\n\t}\n\n]"
 				},
 				"url": {
 					"raw": "https://{{server}}:{{port}}/{{version}}/objorder/update?keyapi={{keyapi}}&objtype=2&returnRes=1",

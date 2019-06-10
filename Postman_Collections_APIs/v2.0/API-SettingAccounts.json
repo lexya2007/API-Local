@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3e36851f-8b57-496b-97af-82e15aaf5a97",
+		"_postman_id": "7261153e-8133-4006-acda-847ac5dcd7bb",
 		"name": "API-Setting Accounts v2.0",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -65,7 +65,9 @@
 							"var statusResponse = responseCode.code;",
 							"var msg ;",
 							"if(statusResponse == 200){",
-							"    ",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
 							"    msg = msgPassed;",
 							"    msg.status = 200;",
 							"    var body = json.description;",
@@ -1439,9 +1441,10 @@
 							"var numberRandom = Math.floor(Math.random()*10000000);",
 							"var stringJson = \"\";",
 							"for(var i = 0; i< 50; i++){",
-							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"user_income\":\"bi_api'+i+'@123flo.com\",\"account_type\":2,\"description\":\"123 FLO ACCOUNT\" '+'}';",
+							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"user_income\":\"bi_api'+i+'@123flo.com\",\"account_type\":3,\"useSSL_income\":0,\"auth_type_smtp\":0,\"server_smtp\":\"mail.123flo.com\",\"user_smtp\":\"bi_api'+i+'@123flo.com\",\"pass_smtp\":\"123456\",\"useSSL_smtp\":0,\"server_income\":\"mail.123flo.com\",\"auth_type\":0,\"full_name\":\"Bi 123 flo\",\"port_smtp\":\"25\",\"port_income\":\"143\",\"pass_income\":\"123456\",\"ref\":\"55582AD2-0968-4E93-B963-F6E1C842F741\",\"email_address\":\"bi_api'+i+'@123flo.com\",\"description\":\"123 FLO ACCOUNT\" '+'}';",
 							"}",
-							"pm.environment.set(\"CreateSettingAccount\", stringJson);"
+							"pm.environment.set(\"CreateSettingAccount\", stringJson);",
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -1521,6 +1524,9 @@
 							"var msg ;",
 							"var array =[];",
 							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
 							"    msg = msgPassed;",
 							"    msg.status = statusResponse;",
 							"    if(dataResponse.includes(\"error\")){",
@@ -1652,6 +1658,9 @@
 							"var msg ;",
 							"",
 							"if(statusResponse == 200){",
+							"    pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
 							"    msg = msgPassed;",
 							"    msg.status = 200;",
 							"    if(dataResponse.includes(\"data\")){",
@@ -3360,7 +3369,7 @@
 							"for(var i = 0; i<count; i++){",
 							"    var listIDAccount = idAccounts.split(\",\")[i];",
 							"    pm.environment.set(\"Accountid-\"+i,listIDAccount);",
-							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"id\":'+listIDAccount+',\"pass_income\":\"string hash RSA\",\"account_type\": 2,\"port_income\": \"456\",\"port_smtp\": \"123\",\"full_name\": \"TEST API - '+listIDAccount+'\" '+'}';",
+							"    stringJson = (stringJson === \"\" ? stringJson : stringJson+', ')+'{ \"id\":'+listIDAccount+',\"full_name\": \"TEST API - '+listIDAccount+'\" '+'}';",
 							"}",
 							"pm.environment.set(\"UpdateSettingAccount\", stringJson);"
 						],
@@ -5163,6 +5172,9 @@
 					"script": {
 						"id": "72204808-b266-449b-b207-a930043a5590",
 						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"    });",
 							"// Clean up environment",
 							"pm.environment.unset(\"allIDAccounts[]\");",
 							"pm.environment.unset(\"idGoogle\");",
